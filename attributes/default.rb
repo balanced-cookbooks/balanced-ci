@@ -17,8 +17,8 @@
 #
 
 # Overrides for ci templates
-override['ci']['repository_template'] = 'https://github.com/balanced/%s.git'
-override['ci']['builder_recipe_template'] = 'balanced-ci::%s'
+override['ci']['repository'] = 'https://github.com/balanced/%{name}.git'
+override['ci']['builder_recipe'] = 'balanced-ci::%{name}'
 
 # Jenkins server settings
 override['jenkins']['server']['install_method'] = 'war'

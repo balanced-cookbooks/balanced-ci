@@ -2,6 +2,8 @@ site :opscode
 
 metadata
 cookbook 'ci', path: '../ci'
+cookbook 'jenkins', path: '../balanced-jenkins'
+cookbook 'poise', path: '../poise'
 
 # For now
 cookbook 'balanced-rabbitmq', path: '../confucius/cookbooks/balanced-rabbitmq'

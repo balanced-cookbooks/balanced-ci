@@ -16,7 +16,22 @@
 # limitations under the License.
 #
 
+include_recipe 'python'
 include_recipe 'balanced-rabbitmq'
 include_recipe 'balanced-elasticsearch'
 include_recipe 'balanced-postgres'
 include_recipe 'balanced-mongodb'
+
+package 'libxml2-dev'
+package 'libxslt1-dev'
+
+include_recipe 'postgresql::ruby'
+postgresql_database_user 'balanced' do
+  connection host: 'localhost'
+  password ''
+end
+
+postgresql_database 'balanced_test' do
+  connection host: 'localhost'
+end
+
