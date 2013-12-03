@@ -4,6 +4,7 @@ metadata
 cookbook 'ci', path: '../ci'
 cookbook 'jenkins', path: '../balanced-jenkins'
 cookbook 'poise', path: '../poise'
+cookbook 'postgresql', path: '../postgresql'
 
 # For now
 cookbook 'balanced-rabbitmq', path: '../confucius/cookbooks/balanced-rabbitmq'

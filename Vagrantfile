@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
   # via the IP. Host-only networks can talk to the host machine as well as
   # any other machines on the same network, but cannot be accessed (through this
   # network interface) by any external networks.
-  config.vm.network :private_network, ip: "33.33.33.10"
+  #config.vm.network :private_network, ip: "33.33.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -41,14 +41,14 @@ Vagrant.configure("2") do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
-  # config.vm.provider :virtualbox do |vb|
-  #   # Don't boot with headless mode
-  #   vb.gui = true
-  #
-  #   # Use VBoxManage to customize the VM. For example to change memory:
-  #   vb.customize ["modifyvm", :id, "--memory", "1024"]
-  # end
-  #
+  config.vm.provider :virtualbox do |vb|
+    # Don't boot with headless mode
+    # vb.gui = true
+
+    # Use VBoxManage to customize the VM. For example to change memory:
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+  end
+
   # View the documentation for the provider you're using for more
   # information on available options.
 
@@ -72,15 +72,29 @@ Vagrant.configure("2") do |config|
   # to skip installing and copying to Vagrant's shelf.
   # config.berkshelf.except = []
 
-  config.vm.provision :chef_solo do |chef|
-    chef.roles_path = 'test/roles'
-    chef.log_level = :debug
-    chef.json = { }
+  def chef_solo_config(config, *recipes, &block)
+    config.vm.provision :chef_solo do |chef|
+      chef.log_level = :debug
+      chef.json = { }
 
-    chef.run_list = %w{
-      recipe[apt]
-      role[ci-server]
-      role[ci-builder-balanced]
-    }
+      chef.run_list = ['recipe[apt]'] + recipes.map{|r| "recipe[#{r}]"}
+      block.call(chef) if block
+    end
   end
+
+  config.vm.define 'master' do |master|
+    master.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+    chef_solo_config(master, 'balanced-ci::server')
+    master.vm.network :private_network, ip: "10.2.3.4"
+  end
+
+  config.vm.define 'builder' do |builder|
+    chef_solo_config(builder, 'balanced-ci::balanced') do |chef|
+      chef.json['ci'] = {server_url: 'http://10.2.3.4:8080/'}
+    end
+    builder.vm.network :private_network, ip: "10.2.3.5"
+  end
+
 end

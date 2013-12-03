@@ -16,22 +16,35 @@
 # limitations under the License.
 #
 
-include_recipe 'python'
-include_recipe 'balanced-rabbitmq'
-include_recipe 'balanced-elasticsearch'
-include_recipe 'balanced-postgres'
-include_recipe 'balanced-mongodb'
+ci_job 'balanced' do
+  repository 'git@github.com:PoundPay/balanced.git'
+  source 'job-balanced.xml.erb'
 
-package 'libxml2-dev'
-package 'libxslt1-dev'
+  builder_recipe do
+    include_recipe 'python'
+    include_recipe 'balanced-rabbitmq'
+    include_recipe 'balanced-elasticsearch'
+    include_recipe 'balanced-postgres'
+    include_recipe 'balanced-mongodb'
 
-include_recipe 'postgresql::ruby'
-postgresql_database_user 'balanced' do
-  connection host: 'localhost'
-  password ''
+    package 'libxml2-dev'
+    package 'libxslt1-dev'
+
+    include_recipe 'postgresql::ruby'
+    postgresql_database_user 'balanced' do
+      connection host: 'localhost'
+      password ''
+    end
+
+    postgresql_database 'balanced_test' do
+      connection host: 'localhost'
+    end
+
+    # YOLO and I don't care right now
+    execute "psql -c 'alter user balanced with superuser'" do
+      user 'postgres'
+    end
+  end
 end
 
-postgresql_database 'balanced_test' do
-  connection host: 'localhost'
-end
-
+include_recipe 'balanced-ci'
