@@ -16,4 +16,7 @@
 # limitations under the License.
 #
 
-ci_job 'balanced'
+ci_deploy_key 'deploy' do
+  key citadel['deploy_key/deploy.pem']
+end
+

@@ -5,6 +5,8 @@ cookbook 'ci', path: '../ci'
 cookbook 'jenkins', path: '../balanced-jenkins'
 cookbook 'poise', path: '../poise'
 cookbook 'postgresql', path: '../postgresql'
+cookbook 'citadel', path: '../citadel'
+cookbook 'balanced-citadel', path: '../balanced-citadel'
 
 # For now
 cookbook 'balanced-rabbitmq', path: '../confucius/cookbooks/balanced-rabbitmq'

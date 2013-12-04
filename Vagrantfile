@@ -75,7 +75,12 @@ Vagrant.configure("2") do |config|
   def chef_solo_config(config, *recipes, &block)
     config.vm.provision :chef_solo do |chef|
       chef.log_level = :debug
-      chef.json = { }
+      chef.json = {
+        citadel: {
+            access_key_id: ENV['BALANCED_AWS_ACCESS_KEY_ID'] || ENV['AWS_ACCESS_KEY_ID'] || ENV['ACCESS_KEY_ID'],
+            secret_access_key: ENV['BALANCED_AWS_SECRET_ACCESS_KEY'] || ENV['AWS_SECRET_ACCESS_KEY'] || ENV['SECRET_ACCESS_KEY'],
+          },
+        }
 
       chef.run_list = ['recipe[apt]'] + recipes.map{|r| "recipe[#{r}]"}
       block.call(chef) if block
