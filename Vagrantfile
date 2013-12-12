@@ -52,9 +52,6 @@ Vagrant.configure("2") do |config|
   # View the documentation for the provider you're using for more
   # information on available options.
 
-  config.ssh.max_tries = 40
-  config.ssh.timeout   = 120
-
   config.omnibus.chef_version = "11.8.0"
 
   # The path to the Berksfile to use with Vagrant Berkshelf
