@@ -25,6 +25,11 @@ ci_server 'balanced-ci' do
   component 'google_auth' do
     domain 'balancedpayments.com'
   end
+  component 'secure_slaves' do
+    master_key citadel['jenkins_server/master.key']
+    secrets_key citadel['jenkins_server/hudson.util.Secret']
+    encrypted_api_token citadel['jenkins_server/apiToken']
+  end
 end
 
 jenkins_plugin 'github'

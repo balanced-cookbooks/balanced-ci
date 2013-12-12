@@ -19,6 +19,7 @@
 ci_job 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
   source 'job-balanced.xml.erb'
+  server_api_key citadel['jenkins_builder/hashedToken']
 
   builder_recipe do
     include_recipe 'python'
@@ -30,6 +31,7 @@ ci_job 'balanced' do
     package 'libxml2-dev'
     package 'libxslt1-dev'
 
+    include_recipe 'postgresql::client'
     include_recipe 'postgresql::ruby'
     postgresql_database_user 'balanced' do
       connection host: 'localhost'
