@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define 'master' do |master|
+  config.vm.define 'server' do |master|
     master.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
     end
