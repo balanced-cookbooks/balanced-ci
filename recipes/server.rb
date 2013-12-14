@@ -30,6 +30,11 @@ ci_server 'balanced-ci' do
     secrets_key citadel['jenkins_server/hudson.util.Secret']
     encrypted_api_token citadel['jenkins_server/apiToken']
   end
+  component 'ssl' do
+    certificate citadel['jenkins_server/ssl.pem']
+    key citadel['jenkins_server/ssl.key']
+    hostname 'ci.vandelay.io'
+  end
 end
 
 jenkins_plugin 'github'

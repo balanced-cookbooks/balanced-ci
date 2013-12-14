@@ -27,7 +27,6 @@ override['jenkins']['server']['home_dir_group'] = node['jenkins']['server']['use
 override['jenkins']['server']['plugins_dir_group'] = node['jenkins']['server']['user']
 override['jenkins']['server']['log_dir_group'] = node['jenkins']['server']['user']
 override['jenkins']['server']['ssh_dir_group'] = node['jenkins']['server']['user']
-override['jenkins']['http_proxy']['host_name'] = 'ci.vandelay.io'
 
 # Node settings
 override['jenkins']['node']['user'] = 'jenkins'
