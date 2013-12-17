@@ -25,7 +25,7 @@ license 'Apache 2.0'
 description 'Installs and configures Balanced CI server and jobs'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-depends 'ci', '~> 1.0.0'
+depends 'ci', '~> 1.0.6'
 depends 'balanced-citadel', '~> 1.0.0'
 
 # For build slaves
