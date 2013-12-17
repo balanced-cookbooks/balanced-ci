@@ -22,6 +22,7 @@ ci_job 'balanced' do
   server_api_key citadel['jenkins_builder/hashedToken']
 
   builder_recipe do
+    include_recipe 'git'
     include_recipe 'python'
     include_recipe 'balanced-rabbitmq'
     include_recipe 'balanced-elasticsearch'
