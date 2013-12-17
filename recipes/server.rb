@@ -33,7 +33,6 @@ ci_server 'balanced-ci' do
   component 'ssl' do
     certificate citadel['jenkins_server/ssl.pem']
     key citadel['jenkins_server/ssl.key']
-    hostname 'ci.vandelay.io'
   end
 end
 

@@ -88,7 +88,9 @@ Vagrant.configure("2") do |config|
     master.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
     end
-    chef_solo_config(master, 'balanced-ci::server')
+    chef_solo_config(master, 'balanced-ci::server') do |chef|
+      chef.json['ci'] = {server_hostname: 'ci.dev'}
+    end
     master.vm.network :private_network, ip: "10.2.3.4"
   end
 

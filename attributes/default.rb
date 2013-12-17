@@ -19,7 +19,8 @@
 # Overrides for ci templates
 override['ci']['repository'] = 'https://github.com/balanced/%{name}.git'
 override['ci']['builder_recipe'] = 'balanced-ci::%{name}'
-override['ci']['server_url'] = 'https://ci.vandelay.io/'
+default['ci']['server_url'] = 'https://ci.vandelay.io/'
+default['ci']['server_hostname'] = 'ci.vandelay.io'
 
 # Jenkins server settings
 override['jenkins']['server']['install_method'] = 'war'
