@@ -21,6 +21,7 @@ node.override['ci']['is_builder'] = false
 
 ci_server 'balanced-ci' do
   path '/var/lib/jenkins'
+  slave_agent_port 56898
   component 'git'
   component 'google_auth' do
     domain 'balancedpayments.com'
