@@ -7,10 +7,10 @@
       "locked_version": "2.3.0"
     },
     "ci": {
-      "locked_version": "1.0.6"
+      "locked_version": "1.0.8"
     },
     "jenkins": {
-      "locked_version": "99.1.0"
+      "locked_version": "99.1.2"
     },
     "poise": {
       "locked_version": "1.0.0"
