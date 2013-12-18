@@ -49,7 +49,7 @@ ci_job 'balanced' do
     end
   end
 
-  command <<-COMMAND
+  command <<-'COMMAND'
 PYENV_HOME=$WORKSPACE/.pyenv/
 
 # Consistent environments are more consistent
@@ -58,11 +58,11 @@ PATH=$PATH:/usr/local/bin
 
 # Delete previously built virtualenv if requirements have changed
 REBUILD_VIRTUALENV=0
-REQ_FILES=&quot;requirements.txt deploy-requirements.txt test-requirements.txt requirements-deploy.txt requirements-test.txt&quot;
+REQ_FILES="requirements.txt deploy-requirements.txt test-requirements.txt requirements-deploy.txt requirements-test.txt"
 
 for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
-  LAST_REQUIREMENTS=&quot;$WORKSPACE/../$req&quot;
-  REQS=&quot;$WORKSPACE/$req&quot;
+  LAST_REQUIREMENTS="$WORKSPACE/../$req"
+  REQS="$WORKSPACE/$req"
   if [ -e $REQS ]; then
      if [ ! -e $LAST_REQUIREMENTS ] || ! diff -aq $LAST_REQUIREMENTS $REQS; then
         REBUILD_VIRTUALENV=1
@@ -70,7 +70,7 @@ for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
      cp $REQS $LAST_REQUIREMENTS
   fi
 done
-if [ -d $PYENV_HOME ] &amp;&amp; [ $REBUILD_VIRTUALENV -ne 0 ]; then
+if [ -d $PYENV_HOME ] && [ $REBUILD_VIRTUALENV -ne 0 ]; then
    rm -rf $PYENV_HOME
 fi
 
@@ -91,10 +91,10 @@ pip install --quiet pep8
 pip install --quiet nosexcover
 
 # Clear out stale .pyc files
-find $WORKSPACE -path $PYENV_HOME -prune -o -name &quot;*.pyc&quot; -print0 | xargs -0 rm
+find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
 
 # Rebuild test db if necessary/possible
-REBUILD_DB_SCRIPTS=&quot;scripts/db-recreate-test scripts/recreate-test-db db/rebuild-db&quot;
+REBUILD_DB_SCRIPTS="scripts/db-recreate-test scripts/recreate-test-db db/rebuild-db"
 for script in $REBUILD_DB_SCRIPTS; do
   if [ -e $script ]; then
     $script
@@ -103,7 +103,7 @@ for script in $REBUILD_DB_SCRIPTS; do
 done
 
 # Rebuild test es if necessary/possible
-REBUILD_ES_SCRIPTS=&quot;scripts/recreate-test-es&quot;
+REBUILD_ES_SCRIPTS="scripts/recreate-test-es"
 for script in $REBUILD_ES_SCRIPTS; do
   if [ -e $script ]; then
     $script
@@ -112,7 +112,7 @@ for script in $REBUILD_ES_SCRIPTS; do
 done
 
 # Rebuild test msg if necessary/possible
-REBUILD_MSG_SCRIPTS=&quot;scripts/recreate-test-msg&quot;
+REBUILD_MSG_SCRIPTS="scripts/recreate-test-msg"
 for script in $REBUILD_MSG_SCRIPTS; do
   if [ -e $script ]; then
     $script
@@ -128,7 +128,7 @@ else
 fi
 
 # Pylint
-python -c &quot;import sys, pylint.lint; pylint.lint.Run(sys.argv[1:])&quot; --output-format=parseable --include-ids=y --reports=n --disable=R0904,R0201,R0903,E1101,C0111,W0232,C0103,W0142,W0201,W0511,E1002,E1103,W0403,R0801 --generated-members= --ignore-iface-methods= --dummy-variables-rgx= balanced_service/ | tee pylint.out
+python -c "import sys, pylint.lint; pylint.lint.Run(sys.argv[1:])" --output-format=parseable --include-ids=y --reports=n --disable=R0904,R0201,R0903,E1101,C0111,W0232,C0103,W0142,W0201,W0511,E1002,E1103,W0403,R0801 --generated-members= --ignore-iface-methods= --dummy-variables-rgx= balanced_service/ | tee pylint.out
 
 # Pep8
 find balanced_service -name \*.py | xargs pep8 --ignore=E711 | tee pep8.out
