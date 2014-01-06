@@ -1,0 +1,17 @@
+<%- Array(@triggers).each do |trigger| -%>
+<hudson.plugins.parameterizedtrigger.BuildTrigger>
+  <configs>
+    <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      <configs>
+        <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          <properties>PP_BUILD=${GIT_COMMIT}
+PP_BRANCH=${GIT_BRANCH}</properties>
+        </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+      </configs>
+      <projects><%= trigger[:name] %></projects>
+      <condition><%= trigger[:condition] %></condition>
+      <triggerWithNoParameters>false</triggerWithNoParameters>
+    </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+  </configs>
+</hudson.plugins.parameterizedtrigger.BuildTrigger>
+<%- end -%>
