@@ -38,6 +38,9 @@ ci_server 'balanced-ci' do
 end
 
 jenkins_plugin 'github'
+jenkins_plugin 'join'
+jenkins_plugin 'parameterized-trigger'
 
 include_recipe 'balanced-ci'
 include_recipe 'balanced-ci::balanced'
+include_recipe 'balanced-ci::precog'
