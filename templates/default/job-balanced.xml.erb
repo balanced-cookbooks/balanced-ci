@@ -326,6 +326,7 @@
       <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
       <sendToIndividuals>false</sendToIndividuals>
     </hudson.tasks.Mailer>
+<% @downstream_triggers.each do |job_name, condition| %>
     <hudson.plugins.parameterizedtrigger.BuildTrigger>
       <configs>
         <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
@@ -335,12 +336,14 @@
 PP_BRANCH=${GIT_BRANCH}</properties>
             </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
           </configs>
-          <projects>balanced-enforce-coverage</projects>
-          <condition>SUCCESS</condition>
+          <projects><%= job_name %></projects>
+          <condition><%= condition %></condition>
           <triggerWithNoParameters>false</triggerWithNoParameters>
         </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
       </configs>
     </hudson.plugins.parameterizedtrigger.BuildTrigger>
+<% end %>
+<% @downstream_joins.each do |job_name, condition| %>
     <join.JoinTrigger>
       <joinProjects></joinProjects>
       <joinPublishers>
@@ -353,8 +356,8 @@ PP_BRANCH=${GIT_BRANCH}</properties>
 PP_BRANCH=${GIT_BRANCH}</properties>
                 </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
               </configs>
-              <projects>balanced-deploy-staging</projects>
-              <condition>SUCCESS</condition>
+              <projects><%= job_name %></projects>
+              <condition><%= condition %></condition>
               <triggerWithNoParameters>false</triggerWithNoParameters>
             </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
           </configs>
@@ -362,6 +365,7 @@ PP_BRANCH=${GIT_BRANCH}</properties>
       </joinPublishers>
       <evenIfDownstreamUnstable>false</evenIfDownstreamUnstable>
     </join.JoinTrigger>
+<% end %>
   </publishers>
   <buildWrappers/>
 </project>

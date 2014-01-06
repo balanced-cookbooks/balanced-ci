@@ -21,6 +21,8 @@ site :opscode
 
 metadata
 
+cookbook 'ci', path: '/Users/marshall/code/balanced/cookbooks/ci'
+
 group :test do
   cookbook 'apt'
 end
