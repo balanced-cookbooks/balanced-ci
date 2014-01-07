@@ -8,8 +8,8 @@
 PP_BRANCH=${GIT_BRANCH}</properties>
         </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
       </configs>
-      <projects><%= trigger[:name] %></projects>
-      <condition><%= trigger[:condition] %></condition>
+      <projects><%= trigger %></projects>
+      <condition>SUCCESS</condition>
       <triggerWithNoParameters>false</triggerWithNoParameters>
     </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
   </configs>
