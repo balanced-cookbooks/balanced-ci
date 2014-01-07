@@ -18,6 +18,7 @@
       <startNotification>false</startNotification>
     </jenkins.plugins.hipchat.HipChatNotifier_-HipChatJobProperty>
   </properties>
+  <% if @repository %>
   <scm class="hudson.plugins.git.GitSCM">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
@@ -56,6 +57,7 @@
     <scmName></scmName>
   </scm>
   <scmCheckoutRetryCount>3</scmCheckoutRetryCount>
+  <% end %>
   <%- if @builder_label -%>
   <assignedNode><%= @builder_label %></assignedNode>
   <canRoam>false</canRoam>
@@ -79,13 +81,13 @@
     </hudson.tasks.Shell>
   </builders>
   <publishers>
-    <% if @cobertura %><%= render '_publishers/cobertura.rb', variables: @cobertura.is_a?(Hash) ? @cobertura : {} %><% end %>
-    <% if @junit %><%= render '_publishers/junit.rb', variables: @junit.is_a?(Hash) ? @junit : {} %><% end %>
-    <% if @violations %><%= render '_publishers/violations.rb', variables: @violations.is_a?(Hash) ? @violations : {} %><% end %>
-    <% if @clone_workspace %><%= render '_publishers/clone_workspace.rb', variables: @clone_workspace.is_a?(Hash) ? @clone_workspace : {} %><% end %>
-    <% if @mailer %><%= render '_publishers/mailer.rb', variables: @mailer.is_a?(Hash) ? @mailer : {} %><% end %>
-    <% if @build_trigger %><%= render '_publishers/build_trigger.rb', variables: @build_trigger.is_a?(Hash) ? @build_trigger : {} %><% end %>
-    <% if @join_trigger %><%= render '_publishers/join_trigger.rb', variables: @join_trigger.is_a?(Hash) ? @join_trigger : {} %><% end %>
+    <% if @cobertura %><%= render '_publishers/cobertura.erb', variables: @cobertura.is_a?(Hash) ? @cobertura : {} %><% end %>
+    <% if @junit %><%= render '_publishers/junit.erb', variables: @junit.is_a?(Hash) ? @junit : {} %><% end %>
+    <% if @violations %><%= render '_publishers/violations.erb', variables: @violations.is_a?(Hash) ? @violations : {} %><% end %>
+    <% if @clone_workspace %><%= render '_publishers/clone_workspace.erb', variables: @clone_workspace.is_a?(Hash) ? @clone_workspace : {} %><% end %>
+    <% if @mailer %><%= render '_publishers/mailer.erb', variables: @mailer.is_a?(Hash) ? @mailer : {} %><% end %>
+    <% if @downstream_triggers %><%= render '_publishers/build_trigger.erb', :variables => {:triggers => @downstream_triggers } %><% end %>
+    <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
   </publishers>
   <buildWrappers/>
 </project>
