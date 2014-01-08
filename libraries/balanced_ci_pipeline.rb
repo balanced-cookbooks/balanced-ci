@@ -16,6 +16,12 @@
 # limitations under the License.
 #
 
+def mvp_builder
+  include_recipe 'git'
+  include_recipe 'python'
+end
+
+
 class Chef
   class Resource::BalancedCiPipeline < Resource
     include Poise(parent: CiServer, parent_optional: true)
@@ -49,7 +55,7 @@ class Chef
 
     def create_test_job
       the_resource = new_resource
-      ci_job "#{new_resource.name}-test" do
+      balanced_ci_job "#{new_resource.name}-test" do
 
         parent new_resource.parent
         repository new_resource.repository
@@ -57,8 +63,6 @@ class Chef
         downstream_joins ["#{new_resource.name}-build"]
         server_api_key citadel['jenkins_builder/hashedToken']
         builder_label new_resource.name
-
-        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
@@ -106,14 +110,12 @@ class Chef
     end # /create_test_job
 
     def create_build_job
-      ci_job "#{new_resource.name}-build" do
+      balanced_ci_job "#{new_resource.name}-build" do
         parent new_resource.parent
         builder_label new_resource.name
 
         downstream_triggers ["#{new_resource.name}-deploy-staging"]
         downstream_joins []
-
-        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
@@ -136,14 +138,12 @@ class Chef
     end
 
     def create_enforce_coverage_job
-      ci_job "#{new_resource.name}-enforce-coverage" do
+      balanced_ci_job "#{new_resource.name}-enforce-coverage" do
         parent new_resource.parent
         builder_label new_resource.name
 
         downstream_triggers []
         downstream_joins []
-
-        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
@@ -166,15 +166,13 @@ class Chef
     end
 
     def create_staging_deploy_job
-      ci_job "#{new_resource.name}-deploy-staging" do
+      balanced_ci_job "#{new_resource.name}-deploy-staging" do
         parent new_resource.parent
         repository new_resource.repository
         builder_label new_resource.name
 
         downstream_triggers ["acceptance"]
         downstream_joins ["#{new_resource.name}-deploy-test"]
-
-        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
@@ -197,15 +195,10 @@ class Chef
     end
 
     def create_test_deploy_job
-      ci_job "#{new_resource.name}-deploy-test" do
+      balanced_ci_job "#{new_resource.name}-deploy-test" do
         parent new_resource.parent
         repository new_resource.repository
         builder_label new_resource.name
-
-        downstream_triggers []
-        downstream_joins []
-
-        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
@@ -223,20 +216,17 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
+        fab deploy -R staging
+
         COMMAND
       end
     end
 
     def create_acceptance_job
-      ci_job "acceptance" do
+      balanced_ci_job "acceptance" do
         parent new_resource.parent
         repository new_resource.repository
         builder_label new_resource.name
-
-        downstream_triggers []
-        downstream_joins []
-
-        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
