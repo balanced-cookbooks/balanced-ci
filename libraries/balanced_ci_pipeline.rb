@@ -39,6 +39,7 @@ class Chef
           create_enforce_coverage_job
           create_build_job
           create_staging_deploy_job
+          create_acceptance_job
           create_test_deploy_job
         end
       end
@@ -173,6 +174,8 @@ class Chef
         downstream_triggers ["acceptance"]
         downstream_joins ["#{new_resource.name}-deploy-test"]
 
+        source 'job-balanced.xml.erb'
+
         builder_recipe do
           include_recipe 'git'
           include_recipe 'python'
@@ -201,6 +204,39 @@ class Chef
 
         downstream_triggers []
         downstream_joins []
+
+        source 'job-balanced.xml.erb'
+
+        builder_recipe do
+          include_recipe 'git'
+          include_recipe 'python'
+        end
+
+        command <<-COMMAND.gsub!(/^ {10}/, '')
+          echo Build is: ${PP_BUILD}
+
+          PYENV_HOME=$WORKSPACE/.pyenv/
+
+          # Consistent environments are more consistent
+          source /etc/profile
+
+          virtualenv $PYENV_HOME
+          . $PYENV_HOME/bin/activate
+
+        COMMAND
+      end
+    end
+
+    def create_acceptance_job
+      ci_job "acceptance" do
+        parent new_resource.parent
+        repository new_resource.repository
+        builder_label new_resource.name
+
+        downstream_triggers []
+        downstream_joins []
+
+        source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
