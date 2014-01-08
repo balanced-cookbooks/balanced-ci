@@ -21,7 +21,8 @@ site :opscode
 
 metadata
 
-cookbook 'ci', path: '/Users/marshall/code/balanced/cookbooks/ci'
+cookbook 'ci', path: '../ci'
+cookbook 'jenkins', path: '../jenkins'
 
 group :test do
   cookbook 'apt'

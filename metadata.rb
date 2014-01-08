@@ -31,6 +31,7 @@ depends 'balanced-citadel', '~> 1.0.0'
 # For build slaves
 depends 'database'
 depends 'python'
+depends 'balanced-python'
 depends 'balanced-rabbitmq'
 depends 'balanced-elasticsearch'
 depends 'balanced-postgres'

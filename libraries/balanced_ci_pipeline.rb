@@ -47,19 +47,22 @@ class Chef
     private
 
     def create_test_job
+      the_resource = new_resource
       ci_job "#{new_resource.name}-test" do
+
         parent new_resource.parent
         repository new_resource.repository
         downstream_triggers ["#{new_resource.name}-enforce-coverage"]
         downstream_joins ["#{new_resource.name}-build"]
-        builder_label 'master'  # ?
+        server_api_key citadel['jenkins_builder/hashedToken']
+        builder_label new_resource.name
 
         source 'job-balanced.xml.erb'
 
         builder_recipe do
           include_recipe 'git'
           include_recipe 'python'
-          include_recipe 'python-balanced'
+          include_recipe 'balanced-python'
           include_recipe 'balanced-rabbitmq'
           include_recipe 'balanced-elasticsearch'
           include_recipe 'balanced-postgres'
@@ -71,17 +74,17 @@ class Chef
           include_recipe 'postgresql::client'
           include_recipe 'postgresql::ruby'
 
-          postgresql_database_user new_resource.test_db_name do
-            connection host: new_resource.test_db_host
+          postgresql_database_user the_resource.test_db_user do
+            connection host: the_resource.test_db_host
             password ''
           end
 
-          postgresql_database new_resource.test_db_name do
-            connection host: new_resource.test_db_host
+          postgresql_database the_resource.test_db_name do
+            connection host: the_resource.test_db_host
           end
 
           # YOLO and I don't care right now
-          execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
+          execute "psql -c 'alter user #{the_resource.test_db_user} with superuser'" do
             user 'postgres'
           end
         end
@@ -104,10 +107,10 @@ class Chef
     def create_build_job
       ci_job "#{new_resource.name}-build" do
         parent new_resource.parent
+        builder_label new_resource.name
 
         downstream_triggers ["#{new_resource.name}-deploy-staging"]
         downstream_joins []
-        builder_label 'master'  # ?
 
         source 'job-balanced.xml.erb'
 
@@ -134,10 +137,10 @@ class Chef
     def create_enforce_coverage_job
       ci_job "#{new_resource.name}-enforce-coverage" do
         parent new_resource.parent
+        builder_label new_resource.name
 
         downstream_triggers []
         downstream_joins []
-        builder_label 'master'  # ?
 
         source 'job-balanced.xml.erb'
 
@@ -165,7 +168,7 @@ class Chef
       ci_job "#{new_resource.name}-deploy-staging" do
         parent new_resource.parent
         repository new_resource.repository
-        builder_label 'master'  # ?
+        builder_label new_resource.name
 
         downstream_triggers ["acceptance"]
         downstream_joins ["#{new_resource.name}-deploy-test"]
@@ -194,7 +197,7 @@ class Chef
       ci_job "#{new_resource.name}-deploy-test" do
         parent new_resource.parent
         repository new_resource.repository
-        builder_label 'master'  # ?
+        builder_label new_resource.name
 
         downstream_triggers []
         downstream_joins []

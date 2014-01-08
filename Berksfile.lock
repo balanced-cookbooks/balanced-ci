@@ -6,6 +6,9 @@
     "ci": {
       "path": "../ci"
     },
+    "jenkins": {
+      "locked_version": "99.1.4"
+    },
     "apt": {
       "locked_version": "2.3.0"
     },
@@ -41,6 +44,9 @@
     },
     "yum": {
       "locked_version": "2.4.4"
+    },
+    "balanced-python": {
+      "locked_version": "0.1.1"
     },
     "balanced-rabbitmq": {
       "locked_version": "0.1.1"
@@ -87,11 +93,17 @@
     "runit": {
       "locked_version": "1.4.0"
     },
-    "jenkins": {
-      "locked_version": "99.1.4"
+    "git": {
+      "locked_version": "2.7.0"
+    },
+    "dmg": {
+      "locked_version": "2.0.8"
+    },
+    "partial_search": {
+      "locked_version": "1.0.6"
     },
     "poise": {
-      "locked_version": "1.0.0"
+      "locked_version": "1.0.2"
     },
     "apache2": {
       "locked_version": "1.8.4"
@@ -107,15 +119,6 @@
     },
     "ohai": {
       "locked_version": "1.1.12"
-    },
-    "git": {
-      "locked_version": "2.7.0"
-    },
-    "dmg": {
-      "locked_version": "2.0.8"
-    },
-    "partial_search": {
-      "locked_version": "1.0.6"
     }
   }
 }

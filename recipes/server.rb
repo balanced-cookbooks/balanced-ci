@@ -43,4 +43,3 @@ jenkins_plugin 'parameterized-trigger'
 
 include_recipe 'balanced-ci'
 include_recipe 'balanced-ci::balanced'
-include_recipe 'balanced-ci::precog'
