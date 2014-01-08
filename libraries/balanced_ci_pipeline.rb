@@ -33,6 +33,12 @@ class Chef
     attribute(:test_db_user, kind_of: String, required: true)
     attribute(:test_db_name, kind_of: String, required: true)
     attribute(:test_db_host, kind_of: String, default: 'localhost', required: true)
+
+    attribute(:test_command, kind_of: String, default: 'python setup.py test || echo 1', required: true)
+    attribute(:deploy_test_command, kind_of: String, default: 'fab up -R test || echo 1', required: true)
+    attribute(:deploy_staging_command, kind_of: String, default: 'fab up -R staging || echo 1', required: true)
+    attribute(:ensure_quality_command, kind_of: String, default: 'echo 1', required: true)
+    attribute(:build_command, kind_of: String, default: 'python setup.py upload_package || echo 1', required: true)
   end
 
   class Provider::BalancedCiPipeline < Provider
@@ -42,7 +48,7 @@ class Chef
       converge_by("create CI pipeline for #{new_resource.name}") do
         notifying_block do
           create_test_job
-          create_enforce_coverage_job
+          create_build_quality_job
           create_build_job
           create_staging_deploy_job
           create_acceptance_job
@@ -105,6 +111,8 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
+          #{new_resource.test_command}
+
         COMMAND
       end
     end # /create_test_job
@@ -133,12 +141,14 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
+          #{new_resource.build_command}
+
         COMMAND
       end
     end
 
-    def create_enforce_coverage_job
-      balanced_ci_job "#{new_resource.name}-enforce-coverage" do
+    def create_build_quality_job
+      balanced_ci_job "#{new_resource.name}-enforce-quality" do
         parent new_resource.parent
         builder_label new_resource.name
 
@@ -160,6 +170,8 @@ class Chef
 
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
+
+          #{new_resource.ensure_quality_command}
 
         COMMAND
       end
@@ -190,6 +202,8 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
+          #{new_resource.deploy_staging_command}
+
         COMMAND
       end
     end
@@ -217,6 +231,8 @@ class Chef
           . $PYENV_HOME/bin/activate
 
         fab deploy -R staging
+
+          #{new_resource.deploy_test_command}
 
         COMMAND
       end
