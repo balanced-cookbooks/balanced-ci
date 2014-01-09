@@ -51,7 +51,12 @@ class Chef
 
     attribute(:project_prefix, kind_of: String, default: '')
 
-    attribute(:test_template, template: true, default_source: 'test-command.sh.erb')
+    attribute(:test_template, template: true, default_source: 'commands/test.sh.erb')
+    attribute(:build_template, template: true, default_source: 'commands/build.sh.erb')
+    attribute(:quality_template, template: true, default_source: 'commands/quality.sh.erb')
+    attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb')
+    attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb')
+    attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb')
 
   end
 
@@ -135,22 +140,8 @@ class Chef
 
         builder_recipe { mvp_builder }
 
-        command <<-COMMAND.gsub!(/^ {10}/, '')
-          echo Build is: ${PP_BUILD}
+        command new_resource.build_template_content
 
-          PYENV_HOME=$WORKSPACE/.pyenv/
-
-          # Consistent environments are more consistent
-          source /etc/profile
-
-          virtualenv $PYENV_HOME
-          . $PYENV_HOME/bin/activate
-
-          pip install bfab
-
-          #{new_resource.build_command}
-
-        COMMAND
       end
     end
 
@@ -166,28 +157,8 @@ class Chef
 
         builder_recipe { mvp_builder }
 
-        command <<-COMMAND.gsub!(/^ {10}/, '')
-          echo Build is: ${PP_BUILD}
+        command new_resource.quality_template_content
 
-          PYENV_HOME=$WORKSPACE/.pyenv/
-
-          # Consistent environments are more consistent
-          source /etc/profile
-
-          virtualenv $PYENV_HOME
-          . $PYENV_HOME/bin/activate
-
-          pip install coverage pep8 pylint
-
-          # Pylint
-          python -c "import sys, pylint.lint; pylint.lint.Run(sys.argv[1:])" --output-format=parseable --include-ids=y --reports=n --disable=R0904,R0201,R0903,E1101,C0111,W0232,C0103,W0142,W0201,W0511,E1002,E1103,W0403,R0801 --generated-members= --ignore-iface-methods= --dummy-variables-rgx= #{new_resource.package_name}/ | tee pylint.out
-
-          # Pep8
-          find #{new_resource.package_name} -name \*.py | xargs pep8 --ignore=E711 | tee pep8.out
-
-          #{new_resource.ensure_quality_command}
-
-        COMMAND
       end
     end
 
@@ -204,22 +175,8 @@ class Chef
 
         builder_recipe { mvp_builder }
 
-        command <<-COMMAND.gsub!(/^ {10}/, '')
-          echo Build is: ${PP_BUILD}
+        command new_resource.deploy_staging_template_content
 
-          PYENV_HOME=$WORKSPACE/.pyenv/
-
-          # Consistent environments are more consistent
-          source /etc/profile
-
-          virtualenv $PYENV_HOME
-          . $PYENV_HOME/bin/activate
-
-          pip install bfab
-
-          #{new_resource.deploy_staging_command}
-
-        COMMAND
       end
     end
 
@@ -233,22 +190,8 @@ class Chef
 
         builder_recipe { mvp_builder }
 
-        command <<-COMMAND.gsub!(/^ {10}/, '')
-          echo Build is: ${PP_BUILD}
+        command new_resource.deploy_test_template_content
 
-          PYENV_HOME=$WORKSPACE/.pyenv/
-
-          # Consistent environments are more consistent
-          source /etc/profile
-
-          virtualenv $PYENV_HOME
-          . $PYENV_HOME/bin/activate
-
-          pip install bfab
-
-          #{new_resource.deploy_test_command}
-
-        COMMAND
       end
     end
 
@@ -262,18 +205,8 @@ class Chef
 
         builder_recipe { mvp_builder }
 
-        command <<-COMMAND.gsub!(/^ {10}/, '')
-          echo Build is: ${PP_BUILD}
+        command new_resource.acceptance_template_content
 
-          PYENV_HOME=$WORKSPACE/.pyenv/
-
-          # Consistent environments are more consistent
-          source /etc/profile
-
-          virtualenv $PYENV_HOME
-          . $PYENV_HOME/bin/activate
-
-        COMMAND
       end
     end
 

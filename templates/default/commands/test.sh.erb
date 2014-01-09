@@ -9,14 +9,14 @@ REBUILD_VIRTUALENV=0
 REQ_FILES="requirements.txt deploy-requirements.txt test-requirements.txt requirements-deploy.txt requirements-test.txt"
 
 for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
-LAST_REQUIREMENTS="$WORKSPACE/../$req"
-REQS="$WORKSPACE/<%= @new_resource.project_prefix %>$req"
-if [ -e $REQS ]; then
-    if [ ! -e $LAST_REQUIREMENTS ] || ! diff -aq $LAST_REQUIREMENTS $REQS; then
-        REBUILD_VIRTUALENV=1
+    LAST_REQUIREMENTS="$WORKSPACE/../$req"
+    REQS="$WORKSPACE/<%= @new_resource.project_prefix %>$req"
+    if [ -e $REQS ]; then
+        if [ ! -e $LAST_REQUIREMENTS ] || ! diff -aq $LAST_REQUIREMENTS $REQS; then
+            REBUILD_VIRTUALENV=1
+        fi
+        cp $REQS $LAST_REQUIREMENTS
     fi
-    cp $REQS $LAST_REQUIREMENTS
-fi
 done
 
 if [ -d $PYENV_HOME ] && [ $REBUILD_VIRTUALENV -ne 0 ]; then
@@ -29,9 +29,9 @@ virtualenv $PYENV_HOME
 pip install --quiet nosexcover
 
 for req in $REQ_FILES; do
-if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>$req ]; then
-  pip install -r $WORKSPACE/<%= @new_resource.project_prefix %>$req
-fi
+    if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>$req ]; then
+        pip install -r $WORKSPACE/<%= @new_resource.project_prefix %>$req
+    fi
 done
 
 if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>setup.py ]; then
@@ -48,10 +48,10 @@ find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
 # Rebuild test db if necessary/possible
 REBUILD_SCRIPTS="scripts/recreate-test"
 for script in $REBUILD_SCRIPTS; do
-if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>$script ]; then
-    $WORKSPACE/<%= @new_resource.project_prefix %>$script
-    break
-fi
+    if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>$script ]; then
+        $WORKSPACE/<%= @new_resource.project_prefix %>$script
+        break
+    fi
 done
 
 <%= @new_resource.test_command %>
