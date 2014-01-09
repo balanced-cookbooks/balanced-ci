@@ -74,7 +74,7 @@ class Chef
 
       balanced_ci_job "#{new_resource.name}-test" do
         parent new_resource.parent
-        builder_label new_resource.name
+        builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job-balanced.xml.erb'
@@ -176,7 +176,7 @@ class Chef
     def create_build_job
       balanced_ci_job "#{new_resource.name}-build" do
         parent new_resource.parent
-        builder_label new_resource.name
+        builder_label 'builder'
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job-balanced.xml.erb'
 
@@ -207,7 +207,7 @@ class Chef
     def create_build_quality_job
       balanced_ci_job "#{new_resource.name}-enforce-quality" do
         parent new_resource.parent
-        builder_label new_resource.name
+        builder_label 'builder'
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job-balanced.xml.erb'
 
@@ -244,7 +244,7 @@ class Chef
     def create_staging_deploy_job
       balanced_ci_job "#{new_resource.name}-deploy-staging" do
         parent new_resource.parent
-        builder_label new_resource.name
+        builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job-balanced.xml.erb'
@@ -276,7 +276,7 @@ class Chef
     def create_test_deploy_job
       balanced_ci_job "#{new_resource.name}-deploy-test" do
         parent new_resource.parent
-        builder_label new_resource.name
+        builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job-balanced.xml.erb'
@@ -305,7 +305,7 @@ class Chef
     def create_acceptance_job
       balanced_ci_job "acceptance" do
         parent new_resource.parent
-        builder_label new_resource.name
+        builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job-balanced.xml.erb'
