@@ -23,6 +23,7 @@ metadata
 
 cookbook 'ci', path: '../ci'
 cookbook 'jenkins', path: '../jenkins'
+cookbook 'poise', github: 'poise/poise'
 
 group :test do
   cookbook 'apt'

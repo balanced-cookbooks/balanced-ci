@@ -7,7 +7,12 @@
       "path": "../ci"
     },
     "jenkins": {
-      "locked_version": "99.1.4"
+      "path": "../jenkins"
+    },
+    "poise": {
+      "locked_version": "1.0.3",
+      "git": "git://github.com/poise/poise.git",
+      "ref": "c713f8089258801f5d0af0306efb8943288e5e6d"
     },
     "apt": {
       "locked_version": "2.3.0"
@@ -21,6 +26,27 @@
     "postfix": {
       "locked_version": "3.0.4"
     },
+    "nginx": {
+      "locked_version": "2.0.4"
+    },
+    "bluepill": {
+      "locked_version": "2.3.0"
+    },
+    "rsyslog": {
+      "locked_version": "1.9.0"
+    },
+    "build-essential": {
+      "locked_version": "1.4.2"
+    },
+    "ohai": {
+      "locked_version": "1.1.12"
+    },
+    "runit": {
+      "locked_version": "1.4.0"
+    },
+    "yum": {
+      "locked_version": "2.4.4"
+    },
     "database": {
       "locked_version": "1.4.0"
     },
@@ -29,9 +55,6 @@
     },
     "openssl": {
       "locked_version": "1.1.0"
-    },
-    "build-essential": {
-      "locked_version": "1.4.2"
     },
     "postgresql": {
       "locked_version": "3.2.0"
@@ -44,9 +67,6 @@
     },
     "python": {
       "locked_version": "1.4.4"
-    },
-    "yum": {
-      "locked_version": "2.4.4"
     },
     "balanced-python": {
       "locked_version": "0.1.1"
@@ -93,9 +113,6 @@
     "mongodb": {
       "locked_version": "0.13.7"
     },
-    "runit": {
-      "locked_version": "1.4.0"
-    },
     "git": {
       "locked_version": "2.7.0"
     },
@@ -104,24 +121,6 @@
     },
     "partial_search": {
       "locked_version": "1.0.6"
-    },
-    "poise": {
-      "locked_version": "1.0.0"
-    },
-    "apache2": {
-      "locked_version": "1.8.4"
-    },
-    "nginx": {
-      "locked_version": "2.0.4"
-    },
-    "bluepill": {
-      "locked_version": "2.3.0"
-    },
-    "rsyslog": {
-      "locked_version": "1.9.0"
-    },
-    "ohai": {
-      "locked_version": "1.1.12"
     }
   }
 }

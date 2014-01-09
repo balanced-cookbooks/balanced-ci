@@ -43,8 +43,8 @@ class Chef
 
     attribute(:project_url, kind_of: String, default: nil)
     attribute(:branch, kind_of: String, default: nil)
-    attribute(:cobertura, kind_of: String, default: nil)
-    attribute(:mailer, kind_of: String, default: nil)
+    attribute(:cobertura, kind_of: Hash, default: nil)
+    attribute(:mailer, kind_of: Hash, default: nil)
     attribute(:junit, kind_of: Hash, default: {})
     attribute(:violations, kind_of: Hash, default: {})
     attribute(:clone_workspace, kind_of: Hash, default: {})
