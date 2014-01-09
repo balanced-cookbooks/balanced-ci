@@ -1,5 +1,5 @@
 <hudson.plugins.cobertura.CoberturaPublisher>
-  <coberturaReportFile>**/coverage.xml</coberturaReportFile>
+  <coberturaReportFile><%= @report || '**/coverage.xml' %></coberturaReportFile>
   <onlyStable>false</onlyStable>
   <healthyTarget>
     <targets class="enum-map" enum-type="hudson.plugins.cobertura.targets.CoverageMetric">

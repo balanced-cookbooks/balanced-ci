@@ -19,6 +19,7 @@
 def mvp_builder
   include_recipe 'git'
   include_recipe 'python'
+  include_recipe 'balanced-python'
 end
 
 class Chef
@@ -39,6 +40,15 @@ class Chef
     attribute(:ensure_quality_command, kind_of: String, default: 'echo 1', required: true)
     attribute(:build_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
     attribute(:source, kind_of: String, required: true, default: 'job-balanced.xml.erb')
+
+    attribute(:project_url, kind_of: String, default: nil)
+    attribute(:branch, kind_of: String, default: nil)
+    attribute(:cobertura, kind_of: String, default: nil)
+    attribute(:mailer, kind_of: String, default: nil)
+    attribute(:junit, kind_of: Hash, default: {})
+    attribute(:violations, kind_of: Hash, default: {})
+    attribute(:clone_workspace, kind_of: Hash, default: {})
+
   end
 
   class Provider::BalancedCiPipeline < Provider

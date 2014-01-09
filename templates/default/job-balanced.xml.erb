@@ -11,7 +11,7 @@
   <keepDependencies>false</keepDependencies>
   <properties>
     <com.coravy.hudson.plugins.github.GithubProjectProperty>
-      <projectUrl>https://github.com/PoundPay/balanced</projectUrl>
+      <projectUrl><%= @project_url %></projectUrl>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <jenkins.plugins.hipchat.HipChatNotifier_-HipChatJobProperty>
       <room></room>
@@ -31,7 +31,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>ci-test</name>
+        <name><%= @branch %></name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <disableSubmodules>false</disableSubmodules>
@@ -58,6 +58,14 @@
   </scm>
   <scmCheckoutRetryCount>3</scmCheckoutRetryCount>
   <% end %>
+
+  <%- if @inherit -%>
+  <scm class="hudson.plugins.cloneworkspace.CloneWorkspaceSCM">
+    <parentJobName><%= @inherit %></parentJobName>
+    <criteria>Any</criteria>
+  </scm>
+  <% end %>
+
   <%- if @builder_label -%>
   <assignedNode><%= @builder_label %></assignedNode>
   <canRoam>false</canRoam>

@@ -27,6 +27,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
 depends 'ci', '~> 1.0.10'
 depends 'balanced-citadel', '~> 1.0.0'
+depends 'postfix', '~> 3.0.4'
 
 # For build slaves
 depends 'database'

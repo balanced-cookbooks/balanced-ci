@@ -43,9 +43,8 @@ class Chef
 
 end
 
-node.override['ci']['repository'] = 'git@github.com:PoundPay/balanced.git'
-
 custom_ci_pipeline 'custom' do
+  repository 'git@github.com:PoundPay/balanced.git'
   package_name 'balanced_service'
   test_db_user 'balanced'
   test_db_name 'balanced_test'

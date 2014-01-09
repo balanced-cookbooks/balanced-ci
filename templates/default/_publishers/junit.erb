@@ -1,5 +1,5 @@
 <hudson.tasks.junit.JUnitResultArchiver>
-  <testResults>nosetests.xml</testResults>
+  <testResults><%= @test_results || '**/nosetests.xml' %></testResults>
   <keepLongStdio>false</keepLongStdio>
   <testDataPublishers/>
 </hudson.tasks.junit.JUnitResultArchiver>

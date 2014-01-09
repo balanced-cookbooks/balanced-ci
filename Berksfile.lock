@@ -18,6 +18,9 @@
     "citadel": {
       "locked_version": "1.0.0"
     },
+    "postfix": {
+      "locked_version": "3.0.4"
+    },
     "database": {
       "locked_version": "1.4.0"
     },

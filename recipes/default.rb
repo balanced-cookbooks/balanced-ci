@@ -20,3 +20,4 @@ ci_deploy_key 'deploy' do
   key citadel['deploy_key/deploy.pem']
 end
 
+include_recipe 'postfix'
