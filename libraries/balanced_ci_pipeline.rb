@@ -33,11 +33,11 @@ class Chef
     attribute(:test_db_name, kind_of: String, required: true)
     attribute(:test_db_host, kind_of: String, default: 'localhost', required: true)
 
-    attribute(:test_command, kind_of: String, default: 'python setup.py test || echo 1', required: true)
-    attribute(:deploy_test_command, kind_of: String, default: 'fab up -R test || echo 1', required: true)
-    attribute(:deploy_staging_command, kind_of: String, default: 'fab up -R staging || echo 1', required: true)
+    attribute(:test_command, kind_of: String, default: 'python setup.py test', required: true)
+    attribute(:deploy_test_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
+    attribute(:deploy_staging_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
     attribute(:ensure_quality_command, kind_of: String, default: 'echo 1', required: true)
-    attribute(:build_command, kind_of: String, default: 'python setup.py upload_package || echo 1', required: true)
+    attribute(:build_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
     attribute(:source, kind_of: String, required: true, default: 'job-balanced.xml.erb')
   end
 
@@ -112,8 +112,50 @@ class Chef
           # Consistent environments are more consistent
           source /etc/profile
 
+
+          REBUILD_VIRTUALENV=0
+          REQ_FILES="requirements.txt deploy-requirements.txt test-requirements.txt requirements-deploy.txt requirements-test.txt"
+
+          for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
+            LAST_REQUIREMENTS="$WORKSPACE/../$req"
+            REQS="$WORKSPACE/$req"
+            if [ -e $REQS ]; then
+               if [ ! -e $LAST_REQUIREMENTS ] || ! diff -aq $LAST_REQUIREMENTS $REQS; then
+                  REBUILD_VIRTUALENV=1
+               fi
+               cp $REQS $LAST_REQUIREMENTS
+            fi
+          done
+
+          if [ -d $PYENV_HOME ] && [ $REBUILD_VIRTUALENV -ne 0 ]; then
+             rm -rf $PYENV_HOME
+          fi
+
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
+
+          pip install --quiet nosexcover
+
+          for req in $REQ_FILES; do
+            if [ -e $WORKSPACE/$req ]; then
+              pip install -r $WORKSPACE/$req
+            fi
+          done
+
+          if [ -e $WORKSPACE/setup.py ]; then
+            python $WORKSPACE/setup.py develop
+          fi
+
+          find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
+
+          # Rebuild test db if necessary/possible
+          REBUILD_SCRIPTS="scripts/recreate-test"
+          for script in $REBUILD_SCRIPTS; do
+            if [ -e $WORKSPACE/$script ]; then
+              $WORKSPACE/$script
+              break
+            fi
+          done
 
           #{new_resource.test_command}
 
@@ -144,6 +186,8 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
+          pip install bfab
+
           #{new_resource.build_command}
 
         COMMAND
@@ -172,6 +216,14 @@ class Chef
 
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
+
+          pip install coverage pep8 pylint
+
+          # Pylint
+          python -c "import sys, pylint.lint; pylint.lint.Run(sys.argv[1:])" --output-format=parseable --include-ids=y --reports=n --disable=R0904,R0201,R0903,E1101,C0111,W0232,C0103,W0142,W0201,W0511,E1002,E1103,W0403,R0801 --generated-members= --ignore-iface-methods= --dummy-variables-rgx= #{new_resource.package_name}/ | tee pylint.out
+
+          # Pep8
+          find #{new_resource.package_name} -name \*.py | xargs pep8 --ignore=E711 | tee pep8.out
 
           #{new_resource.ensure_quality_command}
 
@@ -203,6 +255,8 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
+          pip install bfab
+
           #{new_resource.deploy_staging_command}
 
         COMMAND
@@ -230,7 +284,7 @@ class Chef
           virtualenv $PYENV_HOME
           . $PYENV_HOME/bin/activate
 
-        fab deploy -R staging
+          pip install bfab
 
           #{new_resource.deploy_test_command}
 
