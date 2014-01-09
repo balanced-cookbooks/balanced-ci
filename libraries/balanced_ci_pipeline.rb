@@ -49,6 +49,10 @@ class Chef
     attribute(:violations, kind_of: Hash, default: {})
     attribute(:clone_workspace, kind_of: Hash, default: {})
 
+    attribute(:project_prefix, kind_of: String, default: '')
+
+    attribute(:foo, template: true, default_source: 'foo.erb')
+
   end
 
   class Provider::BalancedCiPipeline < Provider
@@ -114,6 +118,8 @@ class Chef
           end
         end
 
+        #command new_resource.foo_content
+
         command <<-COMMAND.gsub!(/^ {10}/, '')
           echo Build is: ${PP_BUILD}
 
@@ -122,13 +128,12 @@ class Chef
           # Consistent environments are more consistent
           source /etc/profile
 
-
           REBUILD_VIRTUALENV=0
           REQ_FILES="requirements.txt deploy-requirements.txt test-requirements.txt requirements-deploy.txt requirements-test.txt"
 
           for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
             LAST_REQUIREMENTS="$WORKSPACE/../$req"
-            REQS="$WORKSPACE/$req"
+            REQS="$WORKSPACE/#{new_resource.project_prefix}$req"
             if [ -e $REQS ]; then
                if [ ! -e $LAST_REQUIREMENTS ] || ! diff -aq $LAST_REQUIREMENTS $REQS; then
                   REBUILD_VIRTUALENV=1
@@ -147,13 +152,18 @@ class Chef
           pip install --quiet nosexcover
 
           for req in $REQ_FILES; do
-            if [ -e $WORKSPACE/$req ]; then
-              pip install -r $WORKSPACE/$req
+            if [ -e $WORKSPACE/#{new_resource.project_prefix}$req ]; then
+              pip install -r $WORKSPACE/#{new_resource.project_prefix}$req
             fi
           done
 
-          if [ -e $WORKSPACE/setup.py ]; then
-            python $WORKSPACE/setup.py develop
+          if [ -e $WORKSPACE/#{new_resource.project_prefix}setup.py ]; then
+            if [ -z "#{new_resource.project_prefix}" ]
+            then
+              python $WORKSPACE/setup.py develop
+            else
+              pushd $WORKSPACE/#{new_resource.project_prefix} && python setup.py develop && popd;
+            fi
           fi
 
           find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
@@ -161,8 +171,8 @@ class Chef
           # Rebuild test db if necessary/possible
           REBUILD_SCRIPTS="scripts/recreate-test"
           for script in $REBUILD_SCRIPTS; do
-            if [ -e $WORKSPACE/$script ]; then
-              $WORKSPACE/$script
+            if [ -e $WORKSPACE/#{new_resource.project_prefix}$script ]; then
+              $WORKSPACE/#{new_resource.project_prefix}$script
               break
             fi
           done
