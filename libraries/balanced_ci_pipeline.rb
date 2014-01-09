@@ -21,7 +21,6 @@ def mvp_builder
   include_recipe 'python'
 end
 
-
 class Chef
   class Resource::BalancedCiPipeline < Resource
     include Poise(parent: CiServer, parent_optional: true)
@@ -39,6 +38,7 @@ class Chef
     attribute(:deploy_staging_command, kind_of: String, default: 'fab up -R staging || echo 1', required: true)
     attribute(:ensure_quality_command, kind_of: String, default: 'echo 1', required: true)
     attribute(:build_command, kind_of: String, default: 'python setup.py upload_package || echo 1', required: true)
+    attribute(:source, kind_of: String, required: true, default: 'job-balanced.xml.erb')
   end
 
   class Provider::BalancedCiPipeline < Provider
@@ -61,14 +61,18 @@ class Chef
 
     def create_test_job
       the_resource = new_resource
-      balanced_ci_job "#{new_resource.name}-test" do
 
+      balanced_ci_job "#{new_resource.name}-test" do
         parent new_resource.parent
-        repository new_resource.repository
-        downstream_triggers ["#{new_resource.name}-enforce-coverage"]
-        downstream_joins ["#{new_resource.name}-build"]
-        server_api_key citadel['jenkins_builder/hashedToken']
         builder_label new_resource.name
+        repository new_resource.repository
+        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
+        source 'job-balanced.xml.erb'
+
+        downstream_triggers ["#{new_resource.name}-enforce-quality"]
+        downstream_joins ["#{new_resource.name}-build"]
+
+        server_api_key citadel['jenkins_builder/hashedToken']
 
         builder_recipe do
           include_recipe 'git'
@@ -121,14 +125,13 @@ class Chef
       balanced_ci_job "#{new_resource.name}-build" do
         parent new_resource.parent
         builder_label new_resource.name
+        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
+        source 'job-balanced.xml.erb'
 
         downstream_triggers ["#{new_resource.name}-deploy-staging"]
         downstream_joins []
 
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-        end
+        builder_recipe { mvp_builder }
 
         command <<-COMMAND.gsub!(/^ {10}/, '')
           echo Build is: ${PP_BUILD}
@@ -151,14 +154,13 @@ class Chef
       balanced_ci_job "#{new_resource.name}-enforce-quality" do
         parent new_resource.parent
         builder_label new_resource.name
+        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
+        source 'job-balanced.xml.erb'
 
         downstream_triggers []
         downstream_joins []
 
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-        end
+        builder_recipe { mvp_builder }
 
         command <<-COMMAND.gsub!(/^ {10}/, '')
           echo Build is: ${PP_BUILD}
@@ -180,16 +182,15 @@ class Chef
     def create_staging_deploy_job
       balanced_ci_job "#{new_resource.name}-deploy-staging" do
         parent new_resource.parent
-        repository new_resource.repository
         builder_label new_resource.name
+        repository new_resource.repository
+        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
+        source 'job-balanced.xml.erb'
 
         downstream_triggers ["acceptance"]
         downstream_joins ["#{new_resource.name}-deploy-test"]
 
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-        end
+        builder_recipe { mvp_builder }
 
         command <<-COMMAND.gsub!(/^ {10}/, '')
           echo Build is: ${PP_BUILD}
@@ -211,13 +212,12 @@ class Chef
     def create_test_deploy_job
       balanced_ci_job "#{new_resource.name}-deploy-test" do
         parent new_resource.parent
-        repository new_resource.repository
         builder_label new_resource.name
+        repository new_resource.repository
+        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
+        source 'job-balanced.xml.erb'
 
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-        end
+        builder_recipe { mvp_builder }
 
         command <<-COMMAND.gsub!(/^ {10}/, '')
           echo Build is: ${PP_BUILD}
@@ -241,13 +241,12 @@ class Chef
     def create_acceptance_job
       balanced_ci_job "acceptance" do
         parent new_resource.parent
-        repository new_resource.repository
         builder_label new_resource.name
+        repository new_resource.repository
+        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
+        source 'job-balanced.xml.erb'
 
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-        end
+        builder_recipe { mvp_builder }
 
         command <<-COMMAND.gsub!(/^ {10}/, '')
           echo Build is: ${PP_BUILD}

@@ -13,10 +13,11 @@ class Chef
 
     def create_job
       jenkins_job new_resource.job_name do
-        source new_resource.source || 'job-balanced.xml.erb'
+        source new_resource.source
         cookbook new_resource.cookbook
         content new_resource.content
         parent new_resource.parent
+
         options do
           repository new_resource.repository
           command REXML::Text.normalize(new_resource.command)
