@@ -23,6 +23,6 @@ if [ "$STRICT" == "true" ]; then
     COVERAGE_ARGS="$COVERAGE_ARGS --strict"
 fi
 
-COVERAGE_FILE=coverage.xml
+COVERAGE_FILE=<%= @new_resource.project_prefix %>coverage.xml
 
 <%= @new_resource.ensure_quality_command %>
