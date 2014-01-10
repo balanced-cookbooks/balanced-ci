@@ -27,8 +27,8 @@ class Chef
     attribute(:cobertura, kind_of: String, default: nil)
     attribute(:mailer, kind_of: String, default: nil)
     attribute(:junit, kind_of: String, default: nil)
-    attribute(:violations, kind_of: String, default: nil)
-    attribute(:clone_workspace, kind_of: String, default: nil)
+    attribute(:violations, equal_to: [true, false])
+    attribute(:clone_workspace, equal_to: [true, false])
     attribute(:inherit, kind_of: String, default: nil)
 
     def default_options

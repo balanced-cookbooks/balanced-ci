@@ -27,9 +27,11 @@ class Chef
   class Resource::BalancedCiPipeline < Resource
     include Poise(parent: CiServer, parent_optional: true)
     actions(:enable)
+    attr_reader :jobs
 
     attribute(:package_name, kind_of: String, required: true)
     attribute(:repository, kind_of: String, default: lazy { node['ci']['repository'] }, required: true)
+    attribute(:pipeline, kind_of: Array, default: %w{test quality build acceptance deploy_staging deploy_test})
 
     attribute(:test_db_user, kind_of: String, required: true)
     attribute(:test_db_name, kind_of: String, required: true)
@@ -59,6 +61,14 @@ class Chef
     attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb')
     attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb')
 
+    def initialize(*args)
+      super
+      @jobs = {}
+    end
+
+    def job(name, &block)
+      (@jobs[name] ||= []) << block
+    end
   end
 
   class Provider::BalancedCiPipeline < Provider
@@ -67,165 +77,126 @@ class Chef
     def action_enable
       converge_by("create CI pipeline for #{new_resource.name}") do
         notifying_block do
-          create_test_job
-          create_build_quality_job
-          create_build_job
-          create_staging_deploy_job
-          create_acceptance_job
-          create_test_deploy_job
+          new_resource.pipeline.each do |name|
+            create_job(name)
+          end
         end
       end
     end
 
     private
 
-    def create_test_job
-      the_resource = new_resource
+    def self.default_job(name, &block)
+      @default_jobs ||= {}
+      @default_jobs[name] = block if block
+      @default_jobs[name]
+    end
 
-      balanced_ci_job "#{new_resource.name}-test" do
+    def create_job(name)
+      job = balanced_ci_job "#{new_resource.name}-#{name}" do
         parent new_resource.parent
-        builder_label 'builder'
         repository new_resource.repository
         branch new_resource.branch
-        clone_workspace 'yes please'
-        junit '**/nosetests.xml'
-
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
-
-        downstream_triggers ["#{new_resource.name}-enforce-quality"]
-        downstream_joins ["#{new_resource.name}-build"]
-
         server_api_key citadel['jenkins_builder/hashedToken']
+      end
+      job.instance_exec(default_job(name)) if default_job(name)
+      if new_resource.jobs[name]
+        new_resource.jobs[name].each do |block|
+          job.instance_exec(block)
+        end
+      end
+      job
+    end
 
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-          include_recipe 'balanced-python'
-          include_recipe 'balanced-rabbitmq'
-          include_recipe 'balanced-elasticsearch'
-          include_recipe 'balanced-postgres'
-          include_recipe 'balanced-mongodb'
+    # Run unit tests
+    default_job 'test' do
+      command new_resource.test_template_content
+      clone_workspace true
+      junit '**/nosetests.xml'
+      downstream_triggers ["#{new_resource.name}-quality"]
+      downstream_joins ["#{new_resource.name}-build"]
+      builder_recipe do
+        include_recipe 'git'
+        include_recipe 'python'
+        include_recipe 'balanced-python'
+        include_recipe 'balanced-rabbitmq'
+        include_recipe 'balanced-elasticsearch'
+        include_recipe 'balanced-postgres'
+        include_recipe 'balanced-mongodb'
 
-          package 'libxml2-dev'
-          package 'libxslt1-dev'
+        package 'libxml2-dev'
+        package 'libxslt1-dev'
 
-          include_recipe 'postgresql::client'
-          include_recipe 'postgresql::ruby'
+        include_recipe 'postgresql::client'
+        include_recipe 'postgresql::ruby'
 
-          postgresql_database_user the_resource.test_db_user do
-            connection host: the_resource.test_db_host
-            password ''
-          end
-
-          postgresql_database the_resource.test_db_name do
-            connection host: the_resource.test_db_host
-          end
-
-          # YOLO and I don't care right now
-          execute "psql -c 'alter user #{the_resource.test_db_user} with superuser'" do
-            user 'postgres'
-          end
+        postgresql_database_user the_resource.test_db_user do
+          connection host: the_resource.test_db_host
+          password ''
         end
 
-        command new_resource.test_template_content
+        postgresql_database the_resource.test_db_name do
+          connection host: the_resource.test_db_host
+        end
 
-      end
-    end # /create_test_job
-
-    def create_build_job
-      balanced_ci_job "#{new_resource.name}-build" do
-        parent new_resource.parent
-        builder_label 'builder'
-        inherit "#{new_resource.name}-test"
-        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job.xml.erb'
-
-        downstream_triggers ["#{new_resource.name}-deploy-staging"]
-        downstream_joins []
-
-        builder_recipe { mvp_builder }
-
-        command new_resource.build_template_content
-
+        # YOLO and I don't care right now
+        execute "psql -c 'alter user #{the_resource.test_db_user} with superuser'" do
+          user 'postgres'
+        end
       end
     end
 
-    def create_build_quality_job
-      balanced_ci_job "#{new_resource.name}-enforce-quality" do
-        parent new_resource.parent
-        builder_label 'builder'
-        inherit "#{new_resource.name}-test"
-        cobertura '**/coverage.xml'
-        violations 'yes please'
-        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job.xml.erb'
+    # Run linters and other code quality checks
+    default_job 'quality' do
+      inherit "#{new_resource.name}-test"
+      command new_resource.quality_template_content
+      cobertura '**/coverage.xml'
+      violations true
 
-        downstream_triggers []
-        downstream_joins []
-
-        builder_recipe do
-          include_recipe 'git'
-          include_recipe 'python'
-          include_recipe 'balanced-python'
-          package 'libxml2-dev'
-          package 'libxslt1-dev'
-          python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
-            action :install
-          end
-      end
-
-        command new_resource.quality_template_content
-
+      builder_recipe do
+        include_recipe 'git'
+        include_recipe 'python'
+        include_recipe 'balanced-python'
+        package 'libxml2-dev'
+        package 'libxslt1-dev'
+        python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
+          action :install
+        end
       end
     end
 
-    def create_staging_deploy_job
-      balanced_ci_job "#{new_resource.name}-deploy-staging" do
-        parent new_resource.parent
-        builder_label 'builder'
-        inherit "#{new_resource.name}-test"
-        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job.xml.erb'
-
-        downstream_triggers ["acceptance"]
-        downstream_joins ["#{new_resource.name}-deploy-test"]
-
-        builder_recipe { mvp_builder }
-
-        command new_resource.deploy_staging_template_content
-
-      end
+    # Build an omnibus package and push to unstable channel
+    default_job 'build' do
+      inherit "#{new_resource.name}-test"
+      command new_resource.build_template_content
+      # Until we know this works well, don't do any deployment
+      #downstream_triggers ["#{new_resource.name}-deploy_staging"]
+      builder_recipe { mvp_builder }
     end
 
-    def create_test_deploy_job
-      balanced_ci_job "#{new_resource.name}-deploy-test" do
-        parent new_resource.parent
-        builder_label 'builder'
-        inherit "#{new_resource.name}-test"
-        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job.xml.erb'
-
-        builder_recipe { mvp_builder }
-
-        command new_resource.deploy_test_template_content
-
-      end
+    # Run acceptance tests
+    default_job 'acceptance' do
+      inherit "#{new_resource.name}-test"
+      command new_resource.acceptance_template_content
+      builder_recipe { mvp_builder }
     end
 
-    def create_acceptance_job
-      balanced_ci_job "acceptance" do
-        parent new_resource.parent
-        builder_label 'builder'
-        inherit "#{new_resource.name}-test"
-        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job.xml.erb'
+    # Deploy to staging environment
+    default_job 'deploy_staging' do
+      inherit "#{new_resource.name}-test"
+      command new_resource.deploy_staging_template_content
+      downstream_triggers ["acceptance"]
+      downstream_joins ["#{new_resource.name}-deploy_test"]
+      builder_recipe { mvp_builder }
+    end
 
-        builder_recipe { mvp_builder }
-
-        command new_resource.acceptance_template_content
-
-      end
+    # Deploy to test environment (which is not where tests are run, FYI)
+    default_job 'deploy_test' do
+      inherit "#{new_resource.name}-test"
+      command new_resource.deploy_test_template_content
+      builder_recipe { mvp_builder }
     end
 
   end
