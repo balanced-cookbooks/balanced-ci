@@ -18,7 +18,7 @@
 balanced_ci_pipeline 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
   project_url 'https://github.com/PoundPay/balanced'
-  branch 'release'
+  branch '**/*release'
   package_name 'balanced_service'
   test_db_user 'balanced'
   test_db_name 'balanced_test'

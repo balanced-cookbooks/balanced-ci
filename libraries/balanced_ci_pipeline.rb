@@ -39,7 +39,7 @@ class Chef
     attribute(:deploy_staging_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
     attribute(:ensure_quality_command, kind_of: String, default: 'echo 1', required: true)
     attribute(:build_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
-    attribute(:source, kind_of: String, required: true, default: 'job-balanced.xml.erb')
+    attribute(:source, kind_of: String, required: true, default: 'job.xml.erb')
 
     attribute(:project_url, kind_of: String, default: nil)
     attribute(:branch, kind_of: String, default: nil)
@@ -86,7 +86,7 @@ class Chef
         builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job-balanced.xml.erb'
+        source 'job.xml.erb'
 
         downstream_triggers ["#{new_resource.name}-enforce-quality"]
         downstream_joins ["#{new_resource.name}-build"]
@@ -133,7 +133,7 @@ class Chef
         parent new_resource.parent
         builder_label 'builder'
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job-balanced.xml.erb'
+        source 'job.xml.erb'
 
         downstream_triggers ["#{new_resource.name}-deploy-staging"]
         downstream_joins []
@@ -150,7 +150,7 @@ class Chef
         parent new_resource.parent
         builder_label 'builder'
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job-balanced.xml.erb'
+        source 'job.xml.erb'
 
         downstream_triggers []
         downstream_joins []
@@ -168,7 +168,7 @@ class Chef
         builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job-balanced.xml.erb'
+        source 'job.xml.erb'
 
         downstream_triggers ["acceptance"]
         downstream_joins ["#{new_resource.name}-deploy-test"]
@@ -186,7 +186,7 @@ class Chef
         builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job-balanced.xml.erb'
+        source 'job.xml.erb'
 
         builder_recipe { mvp_builder }
 
@@ -201,7 +201,7 @@ class Chef
         builder_label 'builder'
         repository new_resource.repository
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job-balanced.xml.erb'
+        source 'job.xml.erb'
 
         builder_recipe { mvp_builder }
 

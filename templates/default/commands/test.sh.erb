@@ -6,7 +6,7 @@ PYENV_HOME=$WORKSPACE/.pyenv/
 source /etc/profile
 
 REBUILD_VIRTUALENV=0
-REQ_FILES="requirements.txt deploy-requirements.txt test-requirements.txt requirements-deploy.txt requirements-test.txt"
+REQ_FILES="requirements.txt test-requirements.txt requirements-test.txt"
 
 for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
     LAST_REQUIREMENTS="$WORKSPACE/../$req"
