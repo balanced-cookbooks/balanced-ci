@@ -32,7 +32,13 @@ rump_ci_pipeline 'rump' do
   mailer ({
       :address => "ci@balancedpayments.com"
   })
-  test_command 'nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=rump --cover-erase'
+  test_command <<-COMMAND
+cd src
+pip install nose==1.3.0
+pip install mock==0.8
+pip install unittest2
+nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=rump --cover-erase
+COMMAND
 end
 
 include_recipe 'balanced-ci'
