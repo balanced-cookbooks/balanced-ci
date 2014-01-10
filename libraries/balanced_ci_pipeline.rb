@@ -93,6 +93,7 @@ class Chef
     end
 
     def create_job(name)
+      raise "Unknown job #{name}" unless default_job(name) || (new_resource.jobs[name] && !new_resource.jobs[name].empty?)
       job = balanced_ci_job "#{new_resource.name}-#{name}" do
         parent new_resource.parent
         repository new_resource.repository
