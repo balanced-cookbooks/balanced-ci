@@ -24,11 +24,12 @@ class Chef
 
     attribute(:project_url, kind_of: String, default: nil)
     attribute(:branch, kind_of: String, default: nil)
-    attribute(:cobertura, kind_of: Hash, default: nil)
-    attribute(:mailer, kind_of: Hash, default: nil)
-    attribute(:junit, kind_of: Hash, default: {})
-    attribute(:violations, kind_of: Hash, default: {})
-    attribute(:clone_workspace, kind_of: Hash, default: {})
+    attribute(:cobertura, kind_of: String, default: nil)
+    attribute(:mailer, kind_of: String, default: nil)
+    attribute(:junit, kind_of: String, default: nil)
+    attribute(:violations, kind_of: String, default: nil)
+    attribute(:clone_workspace, kind_of: String, default: nil)
+    attribute(:inherit, kind_of: String, default: nil)
 
     def default_options
       super.merge(
@@ -41,7 +42,8 @@ class Chef
         violations: violations,
         clone_workspace: clone_workspace,
         downstream_triggers: downstream_triggers,
-        downstream_joins: downstream_joins
+        downstream_joins: downstream_joins,
+        inherit: inherit,
       )
     end
 

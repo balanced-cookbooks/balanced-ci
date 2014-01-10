@@ -44,11 +44,11 @@ class Chef
 
     attribute(:project_url, kind_of: String, default: nil)
     attribute(:branch, kind_of: String, default: nil)
-    attribute(:cobertura, kind_of: Hash, default: nil)
-    attribute(:mailer, kind_of: Hash, default: nil)
-    attribute(:junit, kind_of: Hash, default: {})
-    attribute(:violations, kind_of: Hash, default: {})
-    attribute(:clone_workspace, kind_of: Hash, default: {})
+    attribute(:cobertura, kind_of: String, default: nil)
+    attribute(:mailer, kind_of: String, default: nil)
+    attribute(:junit, kind_of: String, default: nil)
+    attribute(:violations, kind_of: String, default: nil)
+    attribute(:clone_workspace, kind_of: String, default: nil)
 
     attribute(:project_prefix, kind_of: String, default: '')
 
@@ -86,6 +86,10 @@ class Chef
         parent new_resource.parent
         builder_label 'builder'
         repository new_resource.repository
+        branch new_resource.branch
+        clone_workspace 'yes please'
+        junit '**/nosetests.xml'
+
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
 
@@ -133,6 +137,7 @@ class Chef
       balanced_ci_job "#{new_resource.name}-build" do
         parent new_resource.parent
         builder_label 'builder'
+        inherit "#{new_resource.name}-test"
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
 
@@ -150,13 +155,25 @@ class Chef
       balanced_ci_job "#{new_resource.name}-enforce-quality" do
         parent new_resource.parent
         builder_label 'builder'
+        inherit "#{new_resource.name}-test"
+        cobertura '**/coverage.xml'
+        violations 'yes please'
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
 
         downstream_triggers []
         downstream_joins []
 
-        builder_recipe { mvp_builder }
+        builder_recipe do
+          include_recipe 'git'
+          include_recipe 'python'
+          include_recipe 'balanced-python'
+          package 'libxml2-dev'
+          package 'libxslt1-dev'
+          python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
+            action :install
+          end
+      end
 
         command new_resource.quality_template_content
 
@@ -167,7 +184,7 @@ class Chef
       balanced_ci_job "#{new_resource.name}-deploy-staging" do
         parent new_resource.parent
         builder_label 'builder'
-        repository new_resource.repository
+        inherit "#{new_resource.name}-test"
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
 
@@ -185,7 +202,7 @@ class Chef
       balanced_ci_job "#{new_resource.name}-deploy-test" do
         parent new_resource.parent
         builder_label 'builder'
-        repository new_resource.repository
+        inherit "#{new_resource.name}-test"
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
 
@@ -200,7 +217,7 @@ class Chef
       balanced_ci_job "acceptance" do
         parent new_resource.parent
         builder_label 'builder'
-        repository new_resource.repository
+        inherit "#{new_resource.name}-test"
         # https://github.com/balanced-cookbooks/balanced-ci/issues/8
         source 'job.xml.erb'
 

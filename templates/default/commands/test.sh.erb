@@ -26,8 +26,6 @@ fi
 virtualenv $PYENV_HOME
 . $PYENV_HOME/bin/activate
 
-pip install --quiet nosexcover
-
 for req in $REQ_FILES; do
     if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>$req ]; then
         pip install -r $WORKSPACE/<%= @new_resource.project_prefix %>$req
@@ -42,6 +40,9 @@ if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>setup.py ]; then
         pushd $WORKSPACE/<%= @new_resource.project_prefix %> && python setup.py develop && popd;
     fi
 fi
+
+pip install --quiet nosexcover
+pip install coverage==3.5.3
 
 find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
 

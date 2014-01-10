@@ -1,5 +1,5 @@
 <hudson.tasks.Mailer>
-  <recipients><%= @address || 'ci@poundpay.com' %></recipients>
+  <recipients><%= @email || 'ci@poundpay.com' %></recipients>
   <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
   <sendToIndividuals>false</sendToIndividuals>
 </hudson.tasks.Mailer>
