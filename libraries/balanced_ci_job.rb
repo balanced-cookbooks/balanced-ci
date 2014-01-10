@@ -23,8 +23,8 @@ class Chef
         junit: junit,
         violations: violations,
         clone_workspace: clone_workspace,
-          downstream_triggers: downstream_triggers,
-          downstream_joins: downstream_joins
+        downstream_triggers: downstream_triggers,
+        downstream_joins: downstream_joins
       )
     end
 
