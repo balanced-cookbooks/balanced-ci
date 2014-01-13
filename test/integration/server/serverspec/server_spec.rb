@@ -16,15 +16,14 @@
 # limitations under the License.
 #
 
-chef_api :config
-site :opscode
+require 'serverspec'
+include Serverspec::Helper::Exec
+include Serverspec::Helper::DetectOS
 
-metadata
+describe port(80) do
+  it { should be_listening }
+end
 
-cookbook 'ci', path: '../ci'
-cookbook 'jenkins', path: '../jenkins'
-cookbook 'poise', github: 'poise/poise'
-
-group :test do
-  cookbook 'apt'
+describe port(443) do
+  it { should be_listening }
 end

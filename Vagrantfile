@@ -79,7 +79,7 @@ Vagrant.configure("2") do |config|
           },
         }
 
-      chef.run_list = ['recipe[apt]'] + recipes.map{|r| "recipe[#{r}]"}
+      chef.run_list = ['recipe[apt]'] + recipes.map{|r| "recipe[#{r}]" if r.index("_") != 0}
       block.call(chef) if block
     end
   end

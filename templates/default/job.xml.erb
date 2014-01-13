@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>50</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty>
+      <projectUrl><%= @project_url %></projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <jenkins.plugins.hipchat.HipChatNotifier_-HipChatJobProperty>
+      <room></room>
+      <startNotification>false</startNotification>
+    </jenkins.plugins.hipchat.HipChatNotifier_-HipChatJobProperty>
+  </properties>
+  <% if @repository %>
+  <scm class="hudson.plugins.git.GitSCM">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <refspec></refspec>
+        <url><%= @repository %></url>
+        <credentialsId></credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name><%= @branch %></name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <disableSubmodules>false</disableSubmodules>
+    <recursiveSubmodules>false</recursiveSubmodules>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <authorOrCommitter>false</authorOrCommitter>
+    <clean>false</clean>
+    <wipeOutWorkspace>false</wipeOutWorkspace>
+    <pruneBranches>false</pruneBranches>
+    <remotePoll>false</remotePoll>
+    <ignoreNotifyCommit>false</ignoreNotifyCommit>
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+    <gitTool>Default</gitTool>
+    <submoduleCfg class="list"/>
+    <relativeTargetDir></relativeTargetDir>
+    <reference></reference>
+    <excludedRegions></excludedRegions>
+    <excludedUsers></excludedUsers>
+    <gitConfigName></gitConfigName>
+    <gitConfigEmail></gitConfigEmail>
+    <skipTag>false</skipTag>
+    <includedRegions></includedRegions>
+    <scmName></scmName>
+  </scm>
+  <scmCheckoutRetryCount>3</scmCheckoutRetryCount>
+  <% end %>
+
+  <%- if @inherit -%>
+  <scm class="hudson.plugins.cloneworkspace.CloneWorkspaceSCM">
+    <parentJobName><%= @inherit %></parentJobName>
+    <criteria>Any</criteria>
+  </scm>
+  <% end %>
+
+  <%- if @builder_label -%>
+  <assignedNode><%= @builder_label %></assignedNode>
+  <canRoam>false</canRoam>
+  <%- else -%>
+  <canRoam>true</canRoam>
+  <%- end -%>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec></spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -xe
+<%= @command %>
+      </command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <% if @cobertura %><%= render '_publishers/cobertura.erb', :variables => {:report => @cobertura} %><% end %>
+    <% if @junit %><%= render '_publishers/junit.erb', :variables => { :test_results => @junit } %><% end %>
+    <% if @violations %><%= render '_publishers/violations.erb', :variables => {} %><% end %>
+    <% if @clone_workspace %><%= render '_publishers/clone_workspace.erb', :variables => {} %><% end %>
+    <% if @mailer %><%= render '_publishers/mailer.erb', :variables => {:email => @mailer } %><% end %>
+    <% if @downstream_triggers %><%= render '_publishers/build_trigger.erb', :variables => {:triggers => @downstream_triggers } %><% end %>
+    <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
+  </publishers>
+  <buildWrappers/>
+</project>

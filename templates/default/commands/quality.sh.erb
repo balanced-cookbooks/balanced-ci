@@ -1,0 +1,28 @@
+echo Build is: ${PP_BUILD}
+
+PYENV_HOME=$WORKSPACE/.pyenv/
+
+# Consistent environments are more consistent
+source /etc/profile
+
+virtualenv $PYENV_HOME
+. $PYENV_HOME/bin/activate
+
+pip install coverage pep8 pylint --upgrade
+
+# Pylint
+python -c "import sys, pylint.lint; pylint.lint.Run(sys.argv[1:])" --output-format=parseable --reports=n --disable=R0904,R0201,R0903,E1101,C0111,W0232,C0103,W0142,W0201,W0511,E1002,E1103,W0403,R0801 --generated-members= --ignore-iface-methods= --dummy-variables-rgx= <%= @new_resource.project_prefix %><%= @new_resource.package_name %>/ | tee pylint.out
+
+# Pep8
+find <%= @new_resource.project_prefix %><%= @new_resource.package_name %> -name \*.py | xargs pep8 --ignore=E711 | tee pep8.out
+
+# enforce coverage
+COVERAGE_ARGS="<%= @new_resource.package_name %>.models:91 <%= @new_resource.package_name %>.resources:92"
+
+if [ "$STRICT" == "true" ]; then
+    COVERAGE_ARGS="$COVERAGE_ARGS --strict"
+fi
+
+COVERAGE_FILE=<%= @new_resource.project_prefix %>coverage.xml
+
+<%= @new_resource.ensure_quality_command %>

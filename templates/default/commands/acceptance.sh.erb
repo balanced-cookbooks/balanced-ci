@@ -1,0 +1,9 @@
+echo Build is: ${PP_BUILD}
+
+PYENV_HOME=$WORKSPACE/.pyenv/
+
+# Consistent environments are more consistent
+source /etc/profile
+
+virtualenv $PYENV_HOME
+. $PYENV_HOME/bin/activate
