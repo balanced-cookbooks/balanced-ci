@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+default['balanced-ci']['omnibus_repository'] = 'https://github.com/balanced/omnibus-balanced.git'
+
 # Overrides for ci templates
 override['ci']['repository'] = 'https://github.com/balanced/%{name}.git'
 override['ci']['builder_recipe'] = 'balanced-ci::%{name}'

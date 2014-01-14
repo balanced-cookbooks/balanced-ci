@@ -61,5 +61,5 @@ jenkins_plugin 'violations'
 jenkins_plugin 'view-job-filters'
 
 include_recipe 'balanced-ci'
-include_recipe 'balanced-ci::balanced'
+# include_recipe 'balanced-ci::balanced'
 include_recipe 'balanced-ci::rump'

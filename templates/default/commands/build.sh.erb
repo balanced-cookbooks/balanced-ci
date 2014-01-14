@@ -1,13 +1,13 @@
 echo Build is: ${PP_BUILD}
 
-PYENV_HOME=$WORKSPACE/.pyenv/
-
-# Consistent environments are more consistent
-source /etc/profile
-
-virtualenv $PYENV_HOME
-. $PYENV_HOME/bin/activate
-
-pip install bfab
-
+<%- if @new_resource.build_command -%>
 <%= @new_resource.build_command %>
+<%- else -%>
+sudo bash -xe <<BUILD
+eval "$(rbenv init -)"
+bundle install --binstubs --path vendor/bundle
+rm -f pkg/<%= @new_resource.omnibus_package %>*
+export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$PP_BUILD"
+bin/omnibus build project <%= @new_resource.omnibus_package %>
+BUILD
+<%- end -%>

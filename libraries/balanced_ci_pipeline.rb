@@ -29,28 +29,26 @@ class Chef
     actions(:enable)
     attr_reader :jobs
 
-    attribute(:package_name, kind_of: String, required: true)
+    attribute(:python_package, kind_of: String, default: lazy { name })
+    attribute(:omnibus_package, kind_of: String, default: lazy { name })
     attribute(:repository, kind_of: String, default: lazy { node['ci']['repository'] }, required: true)
+    attribute(:omnibus_repository, kind_of: String, default: lazy { node['balanced-ci']['omnibus_repository'] })
+    attribute(:cookbook_repository, kind_of: String, required: true)
     attribute(:pipeline, kind_of: Array, default: %w{test quality build acceptance deploy_staging deploy_test})
 
-    attribute(:test_db_user, kind_of: String, required: true)
-    attribute(:test_db_name, kind_of: String, required: true)
-    attribute(:test_db_host, kind_of: String, default: 'localhost', required: true)
+    attribute(:test_db_user, kind_of: String)
+    attribute(:test_db_name, kind_of: String,)
+    attribute(:test_db_host, kind_of: String, default: 'localhost')
 
-    attribute(:test_command, kind_of: String, default: 'python setup.py test', required: true)
-    attribute(:deploy_test_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
-    attribute(:deploy_staging_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
-    attribute(:ensure_quality_command, kind_of: String, default: 'echo 1', required: true)
-    attribute(:build_command, kind_of: String, default: 'echo 1 || echo 1', required: true)
-    attribute(:source, kind_of: String, required: true, default: 'job.xml.erb')
+    attribute(:test_command, kind_of: String, default: 'python setup.py test')
+    attribute(:quality_command, kind_of: String, default: 'echo 1')
+    attribute(:build_command, kind_of: String) # Default is in template
+    attribute(:deploy_test_command, kind_of: String, default: 'echo 1')
+    attribute(:deploy_staging_command, kind_of: String, default: 'echo 1')
+    attribute(:source, kind_of: String, default: 'job.xml.erb')
 
-    attribute(:project_url, kind_of: String, default: nil)
-    attribute(:branch, kind_of: String, default: nil)
-    attribute(:cobertura, kind_of: String, default: nil)
-    attribute(:mailer, kind_of: String, default: nil)
-    attribute(:junit, kind_of: String, default: nil)
-    attribute(:violations, kind_of: String, default: nil)
-    attribute(:clone_workspace, kind_of: String, default: nil)
+    attribute(:project_url, kind_of: String)
+    attribute(:branch, kind_of: String, default: 'master')
 
     attribute(:project_prefix, kind_of: String, default: '')
 
@@ -84,35 +82,34 @@ class Chef
       end
     end
 
-    private
-
     def self.default_job(name, &block)
       @default_jobs ||= {}
       @default_jobs[name] = block if block
       @default_jobs[name]
     end
 
+    private
+
     def create_job(name)
-      raise "Unknown job #{name}" unless default_job(name) || (new_resource.jobs[name] && !new_resource.jobs[name].empty?)
+      raise "Unknown job #{name}" unless self.class.default_job(name) || (new_resource.jobs[name] && !new_resource.jobs[name].empty?)
       job = balanced_ci_job "#{new_resource.name}-#{name}" do
         parent new_resource.parent
         repository new_resource.repository
         branch new_resource.branch
-        # https://github.com/balanced-cookbooks/balanced-ci/issues/8
-        source 'job.xml.erb'
+        source new_resource.source
         server_api_key citadel['jenkins_builder/hashedToken']
       end
-      job.instance_exec(default_job(name)) if default_job(name)
+      job.instance_exec(new_resource, &self.class.default_job(name)) if self.class.default_job(name)
       if new_resource.jobs[name]
         new_resource.jobs[name].each do |block|
-          job.instance_exec(block)
+          job.instance_exec(new_resource, &block)
         end
       end
       job
     end
 
     # Run unit tests
-    default_job 'test' do
+    default_job 'test' do |new_resource|
       command new_resource.test_template_content
       clone_workspace true
       junit '**/nosetests.xml'
@@ -122,35 +119,35 @@ class Chef
         include_recipe 'git'
         include_recipe 'python'
         include_recipe 'balanced-python'
-        include_recipe 'balanced-rabbitmq'
-        include_recipe 'balanced-elasticsearch'
-        include_recipe 'balanced-postgres'
-        include_recipe 'balanced-mongodb'
+        # include_recipe 'balanced-rabbitmq'
+        # include_recipe 'balanced-elasticsearch'
+        # include_recipe 'balanced-postgres'
+        # include_recipe 'balanced-mongodb'
 
-        package 'libxml2-dev'
-        package 'libxslt1-dev'
+        # package 'libxml2-dev'
+        # package 'libxslt1-dev'
 
-        include_recipe 'postgresql::client'
-        include_recipe 'postgresql::ruby'
+        # include_recipe 'postgresql::client'
+        # include_recipe 'postgresql::ruby'
 
-        postgresql_database_user the_resource.test_db_user do
-          connection host: the_resource.test_db_host
-          password ''
-        end
+        # postgresql_database_user new_resource.test_db_user do
+        #   connection host: new_resource.test_db_host
+        #   password ''
+        # end
 
-        postgresql_database the_resource.test_db_name do
-          connection host: the_resource.test_db_host
-        end
+        # postgresql_database new_resource.test_db_name do
+        #   connection host: new_resource.test_db_host
+        # end
 
-        # YOLO and I don't care right now
-        execute "psql -c 'alter user #{the_resource.test_db_user} with superuser'" do
-          user 'postgres'
-        end
+        # # YOLO and I don't care right now
+        # execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
+        #   user 'postgres'
+        # end
       end
     end
 
     # Run linters and other code quality checks
-    default_job 'quality' do
+    default_job 'quality' do |new_resource|
       inherit "#{new_resource.name}-test"
       command new_resource.quality_template_content
       cobertura '**/coverage.xml'
@@ -169,8 +166,9 @@ class Chef
     end
 
     # Build an omnibus package and push to unstable channel
-    default_job 'build' do
-      inherit "#{new_resource.name}-test"
+    default_job 'build' do |new_resource|
+      repository new_resource.omnibus_repository
+      branch 'master'
       command new_resource.build_template_content
       # Until we know this works well, don't do any deployment
       #downstream_triggers ["#{new_resource.name}-deploy_staging"]
@@ -178,14 +176,14 @@ class Chef
     end
 
     # Run acceptance tests
-    default_job 'acceptance' do
+    default_job 'acceptance' do |new_resource|
       inherit "#{new_resource.name}-test"
       command new_resource.acceptance_template_content
       builder_recipe { mvp_builder }
     end
 
     # Deploy to staging environment
-    default_job 'deploy_staging' do
+    default_job 'deploy_staging' do |new_resource|
       inherit "#{new_resource.name}-test"
       command new_resource.deploy_staging_template_content
       downstream_triggers ["acceptance"]
@@ -194,7 +192,7 @@ class Chef
     end
 
     # Deploy to test environment (which is not where tests are run, FYI)
-    default_job 'deploy_test' do
+    default_job 'deploy_test' do |new_resource|
       inherit "#{new_resource.name}-test"
       command new_resource.deploy_test_template_content
       builder_recipe { mvp_builder }
