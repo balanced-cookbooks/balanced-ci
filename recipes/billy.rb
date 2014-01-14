@@ -22,10 +22,19 @@ balanced_ci_pipeline 'billy' do
   pipeline %w{test quality build}
   project_url 'https://github.com/balanced/billy'
   branch 'master'
+  test_db_user 'billy'
+  test_db_name 'billy_test'
+  test_db_host 'localhost'
   test_command <<-COMMAND
-nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=billy --cover-erase
+export BILLY_TEST_ALEMBIC=1 
+export BILLY_UNIT_TEST_DB=postgresql://billy:@127.0.0.1/billy_test 
+export BILLY_FUNC_TEST_DB=postgresql://billy:@127.0.0.1/billy_test
+pip install psycopg2
+nosetests -v -s --with-id --with-xunit --cover-package=billy --cover-erase
 COMMAND
   quality_command 'coverage.py coverage.xml billy:95'
 end
 
 include_recipe 'balanced-ci'
+# TODO: okay... seems postgresql is not installed, maybe we should 
+# include the recipe here?
