@@ -103,6 +103,7 @@ class Chef
         branch new_resource.branch
         source new_resource.source
         server_api_key citadel['jenkins_builder/hashedToken']
+        builder_label 'builder' if Chef::Config[:solo] # Punting for Vagrant
       end
       job.instance_exec(new_resource, &self.class.default_job(name)) if self.class.default_job(name)
       if new_resource.jobs[name]
@@ -177,7 +178,32 @@ class Chef
       command new_resource.build_template_content
       # Until we know this works well, don't do any deployment
       #downstream_triggers ["#{new_resource.name}-deploy_staging"]
-      builder_recipe { mvp_builder }
+      builder_recipe do
+        include_recipe 'balanced-omnibus'
+        include_recipe 'python'
+        python_pip 'depot'
+        template '/etc/depot.conf' do
+          owner 'root'
+          group 'root'
+          mode '600'
+          source 'depot.conf.erb'
+          variables citadel: citadel
+        end
+        sudo 'jenkins' do
+          user 'jenkins'
+          nopasswd true
+        end
+        file '/root/packages@vandelay.io.pem' do
+          owner 'root'
+          group 'root'
+          mode '600'
+          content citadel['jenkins_builder/packages@vandelay.io']
+        end
+        execute 'gpg --import /root/packages@vandelay.io.pem' do
+          user 'root'
+          not_if 'gpg --list-secret-keys 277E7787'
+        end
+      end
     end
 
     # Run acceptance tests

@@ -17,7 +17,7 @@
 #
 
 name 'balanced-ci'
-version '1.0.11'
+version '1.0.13'
 
 maintainer 'Noah Kantrowitz'
 maintainer_email 'noah@coderanger.net'
@@ -25,18 +25,21 @@ license 'Apache 2.0'
 description 'Installs and configures Balanced CI server and jobs'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-depends 'ci', '~> 1.0.10'
-depends 'balanced-citadel', '~> 1.0.0'
-depends 'postfix', '~> 3.0.4'
+depends 'ci', '>= 1.0.10'
+depends 'balanced-citadel'
+depends 'postfix', '>= 3.0.4'
 depends 'nginx'
+depends 'sudo'
 
 # For build slaves
-depends 'database'
 depends 'python'
 depends 'balanced-python'
-depends 'balanced-rabbitmq'
-depends 'balanced-elasticsearch'
-depends 'balanced-postgres'
-depends 'balanced-mongodb'
+depends 'balanced-omnibus', '~> 1.0.2'
 depends 'poise-ruby'
 
+# Not needed for rump, skipping
+# depends 'database'
+# depends 'balanced-rabbitmq'
+# depends 'balanced-elasticsearch'
+# depends 'balanced-postgres'
+# depends 'balanced-mongodb'

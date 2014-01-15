@@ -30,7 +30,7 @@ pip install unittest2
 cd src
 nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=rump --cover-erase
 COMMAND
-  quality_command 'coverage.py src/coverage.xml rump:90 rump.parser:90 rump.request:90'
+  quality_command 'coverage.py src/coverage.xml rump:50 rump.parser:50 rump.request:50'
 
   cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-proxy.git'
 
@@ -50,7 +50,6 @@ COMMAND
   bundle install --binstubs --path=.
   env KITCHEN_LOCAL_YAML=.kitchen.jenkins.yml bin/kitchen test -d always
   COMMAND
-
 end
 
 include_recipe 'balanced-ci'
