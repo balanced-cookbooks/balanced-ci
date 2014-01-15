@@ -38,3 +38,5 @@ depends 'balanced-rabbitmq'
 depends 'balanced-elasticsearch'
 depends 'balanced-postgres'
 depends 'balanced-mongodb'
+depends 'poise-ruby'
+

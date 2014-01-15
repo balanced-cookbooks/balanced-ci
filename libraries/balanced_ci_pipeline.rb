@@ -21,6 +21,10 @@ def mvp_builder
   include_recipe 'git'
   include_recipe 'python'
   include_recipe 'balanced-python'
+  include_recipe 'poise-ruby::ruby-210'
+  gem_package 'bundler' do
+    gem_binary '/opt/ruby-210/bin/gem'
+  end
 end
 
 class Chef

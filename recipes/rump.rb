@@ -37,15 +37,17 @@ COMMAND
   # Run acceptance tests
   job 'acceptance' do |new_resource|
     repository new_resource.cookbook_repository
-    builder_recipe do
-      include_recipe 'poise-ruby::ruby-210'
-      gem_package 'bundler' do
-        gem_binary '/opt/ruby-210/bin/gem'
-      end
-    end
+    # TODO: this doesn't work so moved into mvp_builder recipe
+    #builder_recipe do
+    #  include_recipe 'poise-ruby::ruby-210'
+    #  gem_package 'bundler' do
+    #    gem_binary '/opt/ruby-210/bin/gem'
+    #  end
+    #end
   end
   acceptance_command <<-COMMAND
-  bundle install --binstubs
+  export PATH="/opt/ruby-210/bin:$PATH"
+  bundle install --binstubs --path=.
   env KITCHEN_LOCAL_YAML=.kitchen.jenkins.yml bin/kitchen test -d always
   COMMAND
 

@@ -10,9 +10,14 @@
       "path": "../jenkins"
     },
     "poise": {
-      "locked_version": "1.0.3",
+      "locked_version": "1.0.5",
       "git": "git://github.com/poise/poise.git",
-      "ref": "c713f8089258801f5d0af0306efb8943288e5e6d"
+      "ref": "787374efd1b5ad743300fc65aed31be09c218949"
+    },
+    "poise-ruby": {
+      "locked_version": "1.0.0",
+      "git": "git://github.com/poise/poise-ruby.git",
+      "ref": "9007ad9ce0c566780ac3b989c1c6355bb2161bbc"
     },
     "apt": {
       "locked_version": "2.3.0"
