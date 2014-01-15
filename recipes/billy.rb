@@ -30,7 +30,8 @@ export BILLY_TEST_ALEMBIC=1
 export BILLY_UNIT_TEST_DB=postgresql://billy:@localhost/billy_test 
 export BILLY_FUNC_TEST_DB=postgresql://billy:@localhost/billy_test
 pip install psycopg2
-nosetests -v -s --with-id --with-xunit --cover-package=billy --cover-erase
+pip install nosexcover
+nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=billy --cover-erase
 COMMAND
   quality_command 'coverage.py coverage.xml billy:95'
 end
