@@ -27,8 +27,8 @@ balanced_ci_pipeline 'billy' do
   test_db_host 'localhost'
   test_command <<-COMMAND
 export BILLY_TEST_ALEMBIC=1 
-export BILLY_UNIT_TEST_DB=postgresql://billy:@127.0.0.1/billy_test 
-export BILLY_FUNC_TEST_DB=postgresql://billy:@127.0.0.1/billy_test
+export BILLY_UNIT_TEST_DB=postgresql://billy:@localhost/billy_test 
+export BILLY_FUNC_TEST_DB=postgresql://billy:@localhost/billy_test
 pip install psycopg2
 nosetests -v -s --with-id --with-xunit --cover-package=billy --cover-erase
 COMMAND
@@ -36,5 +36,19 @@ COMMAND
 end
 
 include_recipe 'balanced-ci'
-# TODO: okay... seems postgresql is not installed, maybe we should 
-# include the recipe here?
+include_recipe 'balanced-postgres'
+include_recipe 'postgresql::client'
+include_recipe 'postgresql::ruby'
+
+postgresql_database_user 'billy' do
+  connection host: 'localhost'
+  password ''
+end
+
+postgresql_database 'billy_test' do
+  connection host: 'localhost'
+end
+
+execute "psql -c 'alter user billy with superuser'" do
+  user 'postgres'
+end
