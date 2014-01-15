@@ -45,6 +45,7 @@ class Chef
     attribute(:build_command, kind_of: String) # Default is in template
     attribute(:deploy_test_command, kind_of: String, default: 'echo 1')
     attribute(:deploy_staging_command, kind_of: String, default: 'echo 1')
+    attribute(:acceptance_command, kind_of: String, default: 'echo 1')
     attribute(:source, kind_of: String, default: 'job.xml.erb')
 
     attribute(:project_url, kind_of: String)
