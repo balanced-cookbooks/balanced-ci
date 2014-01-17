@@ -180,7 +180,12 @@ class Chef
       builder_recipe do
         include_recipe 'balanced-omnibus'
         include_recipe 'python'
-        python_pip 'depot'
+        # https://github.com/apache/libcloud/pull/223
+        execute 'pip install git+https://github.com/coderanger/libcloud.git' do
+          user 'root'
+        end
+        execute 'pip install git+https://github.com/coderanger/depot.git' do
+          user 'root'
         end
         sudo 'jenkins' do
           user 'jenkins'
