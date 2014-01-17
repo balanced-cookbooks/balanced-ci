@@ -35,6 +35,7 @@ depends 'sudo'
 depends 'python'
 depends 'balanced-python'
 depends 'balanced-omnibus', '~> 1.0.2'
+depends 'poise-ruby'
 
 # Not needed for rump, skipping
 # depends 'database'
@@ -42,3 +43,4 @@ depends 'balanced-omnibus', '~> 1.0.2'
 # depends 'balanced-elasticsearch'
 # depends 'balanced-postgres'
 # depends 'balanced-mongodb'
+

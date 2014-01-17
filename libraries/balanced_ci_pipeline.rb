@@ -21,6 +21,10 @@ def mvp_builder
   include_recipe 'git'
   include_recipe 'python'
   include_recipe 'balanced-python'
+  include_recipe 'poise-ruby::ruby-210'
+  gem_package 'bundler' do
+    gem_binary '/opt/ruby-210/bin/gem'
+  end
 end
 
 class Chef
@@ -45,6 +49,7 @@ class Chef
     attribute(:build_command, kind_of: String) # Default is in template
     attribute(:deploy_test_command, kind_of: String, default: 'echo 1')
     attribute(:deploy_staging_command, kind_of: String, default: 'echo 1')
+    attribute(:acceptance_command, kind_of: String, default: 'echo 1')
     attribute(:source, kind_of: String, default: 'job.xml.erb')
 
     attribute(:project_url, kind_of: String)
