@@ -57,12 +57,12 @@ class Chef
 
     attribute(:project_prefix, kind_of: String, default: '')
 
-    attribute(:test_template, template: true, default_source: 'commands/test.sh.erb')
-    attribute(:build_template, template: true, default_source: 'commands/build.sh.erb')
-    attribute(:quality_template, template: true, default_source: 'commands/quality.sh.erb')
-    attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb')
-    attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb')
-    attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb')
+    attribute(:test_template, template: true, default_source: 'commands/test.sh.erb', default_options: lazy { default_command_options })
+    attribute(:build_template, template: true, default_source: 'commands/build.sh.erb', default_options: lazy { default_command_options })
+    attribute(:quality_template, template: true, default_source: 'commands/quality.sh.erb', default_options: lazy { default_command_options })
+    attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb', default_options: lazy { default_command_options })
+    attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb', default_options: lazy { default_command_options })
+    attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb', default_options: lazy { default_command_options })
 
     def initialize(*args)
       super
@@ -71,6 +71,10 @@ class Chef
 
     def job(name, &block)
       (@jobs[name] ||= []) << block
+    end
+
+    def default_command_options
+      {citadel: citadel}
     end
   end
 
@@ -181,13 +185,12 @@ class Chef
       builder_recipe do
         include_recipe 'balanced-omnibus'
         include_recipe 'python'
-        python_pip 'depot'
-        template '/etc/depot.conf' do
-          owner 'root'
-          group 'root'
-          mode '600'
-          source 'depot.conf.erb'
-          variables citadel: citadel
+        # https://github.com/apache/libcloud/pull/223
+        execute 'pip install git+https://github.com/coderanger/libcloud.git' do
+          user 'root'
+        end
+        execute 'pip install git+https://github.com/coderanger/depot.git' do
+          user 'root'
         end
         sudo 'jenkins' do
           user 'jenkins'
@@ -197,7 +200,7 @@ class Chef
           owner 'root'
           group 'root'
           mode '600'
-          content citadel['jenkins_builder/packages@vandelay.io']
+          content citadel['jenkins_builder/packages@vandelay.io.pem']
         end
         execute 'gpg --import /root/packages@vandelay.io.pem' do
           user 'root'
