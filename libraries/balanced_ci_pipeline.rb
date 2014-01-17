@@ -190,7 +190,7 @@ class Chef
           owner 'root'
           group 'root'
           mode '600'
-          content citadel['jenkins_builder/packages@vandelay.io']
+          content citadel['jenkins_builder/packages@vandelay.io.pem']
         end
         execute 'gpg --import /root/packages@vandelay.io.pem' do
           user 'root'
