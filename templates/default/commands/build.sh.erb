@@ -10,7 +10,6 @@ rm -f pkg/<%= @new_resource.omnibus_package %>*
 rm -f /var/cache/omnibus/pkg/<%= @new_resource.omnibus_package %>*
 #export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$PP_BUILD"
 bin/omnibus build project <%= @new_resource.omnibus_package %>
-depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=unstable pkg/<%= @new_resource.omnibus_package %>*.deb
 
 set +x # Redact credentials from log
 echo Setting AWS credentials
@@ -19,5 +18,6 @@ export AWS_SECRET_ACCESS_KEY="<%= @citadel.secret_access_key %>"
 export AWS_TOKEN="<%= @citadel.token %>"
 set -x
 
+depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=unstable --no-public pkg/<%= @new_resource.omnibus_package %>*.deb
 BUILD
 <%- end -%>
