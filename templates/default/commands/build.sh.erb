@@ -4,10 +4,20 @@ echo Build is: ${PP_BUILD}
 <%= @new_resource.build_command %>
 <%- else -%>
 sudo bash -xe <<BUILD
-eval "$(rbenv init -)"
+export PATH="/opt/ruby-210/bin:$PATH"
 bundle install --binstubs --path vendor/bundle
 rm -f pkg/<%= @new_resource.omnibus_package %>*
-export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$PP_BUILD"
+rm -f /var/cache/omnibus/pkg/<%= @new_resource.omnibus_package %>*
+#export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$PP_BUILD"
 bin/omnibus build project <%= @new_resource.omnibus_package %>
+
+set +x # Redact credentials from log
+echo Setting AWS credentials
+export AWS_ACCESS_KEY_ID="<%= @citadel.access_key_id %>"
+export AWS_SECRET_ACCESS_KEY="<%= @citadel.secret_access_key %>"
+export AWS_TOKEN="<%= @citadel.token %>"
+set -x
+
+depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=unstable --no-public pkg/<%= @new_resource.omnibus_package %>*.deb
 BUILD
 <%- end -%>

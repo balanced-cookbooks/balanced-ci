@@ -1,6 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+Vagrant.require_plugin('vagrant-berkshelf')
+Vagrant.require_plugin('vagrant-omnibus')
+
 Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
@@ -95,7 +98,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define 'builder' do |builder|
-    chef_solo_config(builder, 'balanced-ci::balanced') do |chef|
+    chef_solo_config(builder, 'balanced-ci::rump') do |chef|
       chef.json['ci'] = {server_url: 'http://10.2.3.4:8080/'}
     end
     builder.vm.network :private_network, ip: "10.2.3.5"
