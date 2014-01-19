@@ -47,9 +47,9 @@ class Chef
     attribute(:test_command, kind_of: String, default: 'python setup.py test')
     attribute(:quality_command, kind_of: String, default: 'echo 1')
     attribute(:build_command, kind_of: String) # Default is in template
+    attribute(:acceptance_command, kind_of: String) # Default is in template
     attribute(:deploy_test_command, kind_of: String, default: 'echo 1')
     attribute(:deploy_staging_command, kind_of: String, default: 'echo 1')
-    attribute(:acceptance_command, kind_of: String, default: 'echo 1')
     attribute(:source, kind_of: String, default: 'job.xml.erb')
 
     attribute(:project_url, kind_of: String)
@@ -211,9 +211,39 @@ class Chef
 
     # Run acceptance tests
     default_job 'acceptance' do |new_resource|
-      inherit "#{new_resource.name}-test"
+      repository new_resource.cookbook_repository
+      branch 'master'
       command new_resource.acceptance_template_content
-      builder_recipe { mvp_builder }
+      builder_recipe do
+        include_recipe 'poise-ruby::ruby-210'
+        gem_package 'bundler' do
+          gem_binary '/opt/ruby-210/bin/gem'
+        end
+        file '/srv/ci/travis.pem' do
+          owner 'root'
+          group 'root'
+          mode '644'
+          content citadel['travis/us-east-1.pem']
+        end
+        file '/srv/ci/travis_client.pem' do
+          owner 'root'
+          group 'root'
+          mode '644'
+          content citadel['travis/client.pem']
+        end
+        file '/srv/ci/berkshelf.json' do
+          owner 'root'
+          group 'root'
+          mode '644'
+          content({
+            chef: {
+              chef_server_url: Chef::Config[:solo] ? 'https://confucius.balancedpayments.com/' : Chef::Config[:chef_server_url],
+              node_name: 'travis',
+              client_key: '/srv/ci/travis_client.pem',
+            },
+          }.to_json)
+        end
+      end
     end
 
     # Deploy to staging environment
