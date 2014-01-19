@@ -16,15 +16,18 @@
 # limitations under the License.
 #
 
-source 'https://berks.vandelay.io/'
+source 'https://rubygems.org'
 
-metadata
+gem 'test-kitchen', github: 'test-kitchen/test-kitchen'
+gem 'berkshelf', github: 'berkshelf/berkshelf', ref: 'f3e8a718b5867272b2a23cad4d119bec624238d0' # https://github.com/berkshelf/berkshelf/issues/978
+gem 'kitchen-ec2', github: 'test-kitchen/kitchen-ec2'
+gem 'unf'
+gem 'kitchen-vagrant'
+gem 'vagrant-wrapper'
+gem 'foodcritic', '>= 3.0.3'
+gem 's3sync'
 
-cookbook 'ci', path: '../ci'
-cookbook 'jenkins', path: '../jenkins'
-cookbook 'poise', github: 'poise/poise'
-cookbook 'poise-ruby', github: 'poise/poise-ruby'
-
-group :test do
-  cookbook 'apt'
-end
+gem 'vagrant', github: 'mitchellh/vagrant', ref: 'v1.4.3'
+gem 'vagrant-berkshelf', github: 'berkshelf/vagrant-berkshelf'
+gem 'vagrant-omnibus', github: "schisamo/vagrant-omnibus"
+gem 'chef', github: 'opscode/chef'
