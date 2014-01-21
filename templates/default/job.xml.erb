@@ -38,7 +38,8 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers class="vector">
     <hudson.triggers.SCMTrigger>
-      <spec></spec>
+      <spec>*/1 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
@@ -58,5 +59,13 @@
     <% if @downstream_triggers %><%= render '_publishers/build_trigger.erb', :variables => {:triggers => @downstream_triggers } %><% end %>
     <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
   </publishers>
+
+  <%- if @build_wrappers -%>
+  <buildWrappers>
+      <% if @environment_script %><%= render '_build_wrappers/environment_script.erb', :variables => {:command => @environment_script} %><% end %>
+  </buildWrappers>
+  <%- else -%>
   <buildWrappers/>
+  <%- end -%>
+
 </project>

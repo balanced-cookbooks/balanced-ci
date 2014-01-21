@@ -40,6 +40,9 @@ end
 jenkins_plugin 'github'
 jenkins_plugin 'join'
 jenkins_plugin 'parameterized-trigger'
+jenkins_plugin 'run-condition'
+jenkins_plugin 'environment-script'
+jenkins_plugin 'conditional-buildstep'
 
 jenkins_plugin 'clone-workspace-scm'
 jenkins_plugin 'cobertura'
