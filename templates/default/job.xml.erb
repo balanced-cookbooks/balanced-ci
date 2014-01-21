@@ -50,6 +50,9 @@
       </command>
     </hudson.tasks.Shell>
   </builders>
+  <% if @conditional_continue %>
+    <%= render '_conditional.erb', :variables => @conditional_continue %>
+  <% end %>
   <publishers>
     <% if @cobertura %><%= render '_publishers/cobertura.erb', :variables => {:report => @cobertura} %><% end %>
     <% if @junit %><%= render '_publishers/junit.erb', :variables => { :test_results => @junit } %><% end %>

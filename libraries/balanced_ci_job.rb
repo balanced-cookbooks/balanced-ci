@@ -30,6 +30,7 @@ class Chef
     attribute(:violations, equal_to: [true, false])
     attribute(:clone_workspace, equal_to: [true, false])
     attribute(:inherit, kind_of: String, default: nil)
+    attribute(:conditional_continue, kind_of: Hash, default: {})
 
     def default_options
       super.merge(
@@ -44,6 +45,7 @@ class Chef
         downstream_triggers: downstream_triggers,
         downstream_joins: downstream_joins,
         inherit: inherit,
+        conditional_continue: conditional_continue
       )
     end
 

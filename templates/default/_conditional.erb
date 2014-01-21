@@ -1,0 +1,32 @@
+<org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+  <condition class="org.jenkins_ci.plugins.run_condition.core.BooleanCondition">
+    <token>${ENV,var=&quot;HAS_GIT_TAG&quot;}</token>
+  </condition>
+  <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder">
+    <configs>
+      <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+        <configs>
+          <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+            <properties>PP_BUILD=${GIT_COMMIT}
+PP_BRANCH=${GIT_BRANCH}
+GIT_TAG=${GIT_TAG}
+HAS_GIT_TAG=${HAS_GIT_TAG}</properties>
+          </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+        </configs>
+        <projects><%= @job_name %></projects>
+        <condition>ALWAYS</condition>
+        <triggerWithNoParameters>false</triggerWithNoParameters>
+        <block>
+          <unstableThreshold>
+            <name>UNSTABLE</name>
+            <ordinal>1</ordinal>
+            <color>YELLOW</color>
+            <completeBuild>true</completeBuild>
+          </unstableThreshold>
+        </block>
+        <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+      </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+    </configs>
+  </buildStep>
+  <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$DontRun"/>
+</org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
