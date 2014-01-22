@@ -31,6 +31,7 @@ class Chef
     attribute(:violations, equal_to: [true, false])
     attribute(:clone_workspace, equal_to: [true, false])
     attribute(:inherit, kind_of: String, default: nil)
+    attribute(:parameterized, equal_to: [true, false], default: false)
     attribute(:conditional_continue, kind_of: Hash, default: {})
 
     def default_options
@@ -47,7 +48,8 @@ class Chef
         downstream_joins: downstream_joins,
         inherit: inherit,
         conditional_continue: conditional_continue,
-        build_wrappers: build_wrappers
+        build_wrappers: build_wrappers,
+        parameterized: parameterized
       )
     end
 

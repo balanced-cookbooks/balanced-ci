@@ -123,8 +123,12 @@ class Chef
     default_job 'test' do |new_resource|
       command new_resource.test_template_content
       clone_workspace true
+      parameterized false
       junit '**/nosetests.xml'
       downstream_triggers ["#{new_resource.name}-quality"]
+      build_wrappers [
+         ['environment_script', new_resource.populate_env_from_git_template_content]
+       ]
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
@@ -162,6 +166,7 @@ class Chef
       command new_resource.quality_template_content
       cobertura '**/coverage.xml'
       violations true
+      parameterized true
 
       builder_recipe do
         include_recipe 'git'
@@ -180,6 +185,8 @@ class Chef
       repository new_resource.omnibus_repository
       branch 'master'
       command new_resource.build_template_content
+      parameterized true
+
       # Until we know this works well, don't do any deployment
       #downstream_triggers ["#{new_resource.name}-deploy_staging"]
       builder_recipe do
@@ -212,6 +219,7 @@ class Chef
     # Run acceptance tests
     default_job 'acceptance' do |new_resource|
       inherit "#{new_resource.name}-test"
+      parameterized true
       command new_resource.acceptance_template_content
       builder_recipe { mvp_builder }
     end
@@ -219,6 +227,7 @@ class Chef
     # Deploy to staging environment
     default_job 'deploy_staging' do |new_resource|
       inherit "#{new_resource.name}-test"
+      parameterized true
       command new_resource.deploy_staging_template_content
       downstream_triggers ["acceptance"]
       downstream_joins ["#{new_resource.name}-deploy_test"]
@@ -228,6 +237,7 @@ class Chef
     # Deploy to test environment (which is not where tests are run, FYI)
     default_job 'deploy_test' do |new_resource|
       inherit "#{new_resource.name}-test"
+      parameterized true
       command new_resource.deploy_test_template_content
       builder_recipe { mvp_builder }
     end
