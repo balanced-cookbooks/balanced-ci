@@ -4,7 +4,7 @@ MOST_RECENT_GIT_REV=$(git rev-list HEAD | head -1)
 
 GIT_TAG=''
 HAS_GIT_TAG=false
-if [ "${LAST_TAGGED_GIT_REV}" == "${MOST_RECENT_GIT_REV}" ]
+if [ "${LAST_TAGGED_GIT_REV}" = "${MOST_RECENT_GIT_REV}" ]
 then
    GIT_TAG=$LAST_GIT_TAG
    HAS_GIT_TAG=true
