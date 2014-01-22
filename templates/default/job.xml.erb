@@ -58,5 +58,9 @@
     <% if @downstream_triggers %><%= render '_publishers/build_trigger.erb', :variables => {:triggers => @downstream_triggers } %><% end %>
     <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.3.1">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
 </project>
