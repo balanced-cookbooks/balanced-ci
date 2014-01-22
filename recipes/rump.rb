@@ -34,11 +34,15 @@ COMMAND
 
   cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-proxy.git'
 
-  # configure the pipeline job name to have a conditional success
   job 'test' do |new_resource|
-    conditional_continue {
-      :job_name => 'quality'
-    }
+    build_wrappers [
+       ['environment_script', new_resource.populate_env_from_git_template_content]
+     ]
+
+  end
+  # configure the pipeline job name to have a conditional success
+  job 'quality' do |new_resource|
+    conditional_continue job_name: "#{new_resource.name}-build"
   end
 
   # Run acceptance tests

@@ -21,6 +21,7 @@ class Chef
   class Resource::BalancedCiJob < Resource::CiJob
     attribute(:downstream_triggers, kind_of: Array, default: [])
     attribute(:downstream_joins, kind_of: Array, default: [])
+    attribute(:build_wrappers, kind_of: Array, default: [])
 
     attribute(:project_url, kind_of: String, default: nil)
     attribute(:branch, kind_of: String, default: nil)
@@ -45,7 +46,8 @@ class Chef
         downstream_triggers: downstream_triggers,
         downstream_joins: downstream_joins,
         inherit: inherit,
-        conditional_continue: conditional_continue
+        conditional_continue: conditional_continue,
+        build_wrappers: build_wrappers
       )
     end
 

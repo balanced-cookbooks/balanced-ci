@@ -65,8 +65,12 @@
 
   <%- if @build_wrappers -%>
   <buildWrappers>
-      <% if @environment_script %><%= render '_build_wrappers/environment_script.erb', :variables => {:command => @environment_script} %><% end %>
+  <%- @build_wrappers.each do |wrapper| -%>
+      <% if wrapper.first == 'environment_script' %>
+      <%= render '_build_wrappers/environment_script.erb', :variables => {:content => wrapper.last} %>
+      <% end %>
   </buildWrappers>
+  <%- end -%>
   <%- else -%>
   <buildWrappers/>
   <%- end -%>
