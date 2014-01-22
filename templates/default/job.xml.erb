@@ -38,7 +38,7 @@
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers class="vector">
     <hudson.triggers.SCMTrigger>
-      <spec>*/1 * * * *</spec>
+      <spec></spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
@@ -49,10 +49,10 @@
 <%= @command %>
       </command>
     </hudson.tasks.Shell>
+    <% unless @conditional_continue.empty? %>
+      <%= render '_builders/conditional.erb', :variables => @conditional_continue %>
+    <% end %>
   </builders>
-  <% unless @conditional_continue.empty? %>
-    <%= render '_conditional.erb', :variables => @conditional_continue %>
-  <% end %>
   <publishers>
     <% if @cobertura %><%= render '_publishers/cobertura.erb', :variables => {:report => @cobertura} %><% end %>
     <% if @junit %><%= render '_publishers/junit.erb', :variables => { :test_results => @junit } %><% end %>
@@ -63,14 +63,14 @@
     <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
   </publishers>
 
-  <%- if @build_wrappers -%>
-     <buildWrappers>
-  <%- @build_wrappers.each do |wrapper| -%>
-      <% if wrapper.first == 'environment_script' %>
-      <%= render '_build_wrappers/environment_script.erb', :variables => {:content => wrapper.last} %>
-      <% end %>
+  <%- unless @build_wrappers.empty? -%>
+  <buildWrappers>
+      <%- @build_wrappers.each do |wrapper| -%>
+         <% if wrapper.first == 'environment_script' %>
+          <%= render '_build_wrappers/environment_script.erb', :variables => {:content => wrapper.last} %>
+         <% end %>
+      <%- end -%>
   </buildWrappers>
-  <%- end -%>
   <%- else -%>
   <buildWrappers/>
   <%- end -%>
