@@ -50,7 +50,7 @@
       </command>
     </hudson.tasks.Shell>
   </builders>
-  <% if @conditional_continue %>
+  <% unless @conditional_continue.empty? %>
     <%= render '_conditional.erb', :variables => @conditional_continue %>
   <% end %>
   <publishers>
@@ -64,7 +64,7 @@
   </publishers>
 
   <%- if @build_wrappers -%>
-  <buildWrappers>
+     <buildWrappers>
   <%- @build_wrappers.each do |wrapper| -%>
       <% if wrapper.first == 'environment_script' %>
       <%= render '_build_wrappers/environment_script.erb', :variables => {:content => wrapper.last} %>
