@@ -4,8 +4,7 @@
     <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
       <configs>
         <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
-          <properties>PP_BUILD=${GIT_COMMIT}
-PP_BRANCH=${GIT_BRANCH}
+          <properties>GIT_COMMIT=${MOST_RECENT_GIT_REV}
 GIT_TAG=${GIT_TAG}
 HAS_GIT_TAG=${HAS_GIT_TAG}</properties>
         </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
