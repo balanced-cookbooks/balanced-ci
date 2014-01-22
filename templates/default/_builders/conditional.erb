@@ -16,14 +16,6 @@ HAS_GIT_TAG=${HAS_GIT_TAG}</properties>
         <projects><%= @job_name %></projects>
         <condition>ALWAYS</condition>
         <triggerWithNoParameters>false</triggerWithNoParameters>
-        <block>
-          <unstableThreshold>
-            <name>UNSTABLE</name>
-            <ordinal>1</ordinal>
-            <color>YELLOW</color>
-            <completeBuild>true</completeBuild>
-          </unstableThreshold>
-        </block>
         <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
       </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
     </configs>
