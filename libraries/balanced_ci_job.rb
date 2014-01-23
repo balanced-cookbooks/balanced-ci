@@ -33,6 +33,7 @@ class Chef
     attribute(:parameterized, equal_to: [true, false], default: false)
     attribute(:conditional_continue, kind_of: Hash, default: {})
     attribute(:environment_script, kind_of: String)
+    attribute(:scm_trigger, kind_of: String)
 
     def default_options
       super.merge(
@@ -49,7 +50,8 @@ class Chef
         inherit: inherit,
         conditional_continue: conditional_continue,
         environment_script: environment_script,
-        parameterized: parameterized
+        parameterized: parameterized,
+        scm_trigger: scm_trigger,
       )
     end
 

@@ -47,12 +47,14 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <%- if @scm_trigger -%>
   <triggers class="vector">
     <hudson.triggers.SCMTrigger>
-      <spec></spec>
+      <spec><%= @scm_trigger %></spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
+  <%- end -%>
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
