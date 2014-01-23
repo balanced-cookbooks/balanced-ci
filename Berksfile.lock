@@ -64,14 +64,23 @@
     "windows": {
       "locked_version": "1.12.6"
     },
-    "yum": {
-      "locked_version": "3.0.4"
-    },
     "partial_search": {
       "locked_version": "1.0.6"
     },
     "java": {
       "locked_version": "1.13.0"
+    },
+    "poise": {
+      "locked_version": "1.0.4"
+    },
+    "poise-ruby": {
+      "locked_version": "1.0.0"
+    },
+    "citadel": {
+      "locked_version": "1.0.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
     }
   }
 }
