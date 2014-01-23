@@ -63,7 +63,7 @@ class Chef
     attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb', default_options: lazy { default_command_options })
     attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb', default_options: lazy { default_command_options })
     attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb', default_options: lazy { default_command_options })
-    attribute(:populate_env_from_git_template, template: true, default_source: 'commands/populate-env-from-git.sh.erb', default_options: lazy { default_command_options })
+    attribute(:env_template, template: true, default_source: 'commands/env.sh.erb', default_options: lazy { default_command_options })
 
     def initialize(*args)
       super
@@ -126,9 +126,7 @@ class Chef
       parameterized false
       junit '**/nosetests.xml'
       downstream_triggers ["#{new_resource.name}-quality"]
-      build_wrappers [
-         ['environment_script', new_resource.populate_env_from_git_template_content]
-       ]
+      environment_script new_resource.env_template_content
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'

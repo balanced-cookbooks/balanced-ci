@@ -74,16 +74,8 @@
     <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
   </publishers>
 
-  <%- unless @build_wrappers.empty? -%>
   <buildWrappers>
-      <%- @build_wrappers.each do |wrapper| -%>
-         <% if wrapper.first == 'environment_script' %>
-          <%= render '_build_wrappers/environment_script.erb', :variables => {:content => wrapper.last} %>
-         <% end %>
-      <%- end -%>
+    <% if @environment_script %><%= render '_build_wrappers/environment_script.erb', variables: {script: @environment_script} %><% end %>
   </buildWrappers>
-  <%- else -%>
-  <buildWrappers/>
-  <%- end -%>
 
 </project>
