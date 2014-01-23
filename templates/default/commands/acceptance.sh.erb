@@ -1,3 +1,14 @@
 echo Build is: ${PP_BUILD}
 
+<%- if @new_resource.acceptance_command -%>
 <%= @new_resource.acceptance_command %>
+<%- else -%>
+export PATH="/opt/ruby-210/bin:$PATH"
+export KITCHEN_LOCAL_YAML=.kitchen.ci.yml
+export KITCHEN_SSH_KEY=/srv/ci/travis.pem
+export BERKSHELF_CONFIG=/srv/ci/berkshelf.json
+export LANG=en_US.UTF-8
+bundle install --binstubs --deployment --path vendor/bundle
+<%= render 'commands/_aws.erb', variables: {citadel: @citadel} %>
+bin/kitchen test -d always -p
+<%- end -%>

@@ -1,38 +1,26 @@
 {
-  "sources": {
+  "dependencies": {
     "balanced-ci": {
+      "locked_version": "1.0.13",
       "path": "."
     },
+    "apt": {
+      "locked_version": "2.3.4"
+    },
     "ci": {
-      "path": "../ci"
+      "locked_version": "1.0.14"
     },
     "jenkins": {
-      "path": "../jenkins"
-    },
-    "poise": {
-      "locked_version": "1.0.5",
-      "git": "git://github.com/poise/poise.git",
-      "ref": "787374efd1b5ad743300fc65aed31be09c218949"
-    },
-    "poise-ruby": {
-      "locked_version": "1.0.0",
-      "git": "git://github.com/poise/poise-ruby.git",
-      "ref": "9007ad9ce0c566780ac3b989c1c6355bb2161bbc"
-    },
-    "apt": {
-      "locked_version": "2.3.0"
+      "locked_version": "99.1.6"
     },
     "balanced-citadel": {
-      "locked_version": "1.0.0"
-    },
-    "citadel": {
       "locked_version": "1.0.0"
     },
     "postfix": {
       "locked_version": "3.0.4"
     },
     "nginx": {
-      "locked_version": "2.0.4"
+      "locked_version": "2.2.0"
     },
     "bluepill": {
       "locked_version": "2.3.1"
@@ -76,8 +64,8 @@
     "windows": {
       "locked_version": "1.12.6"
     },
-    "chef_handler": {
-      "locked_version": "1.1.4"
+    "yum": {
+      "locked_version": "3.0.4"
     },
     "partial_search": {
       "locked_version": "1.0.6"

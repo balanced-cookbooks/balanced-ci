@@ -25,7 +25,8 @@ license 'Apache 2.0'
 description 'Installs and configures Balanced CI server and jobs'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-depends 'ci', '>= 1.0.10'
+depends 'poise', '~> 1.0.4'
+depends 'ci', '~> 1.0.14'
 depends 'balanced-citadel'
 depends 'postfix', '>= 3.0.4'
 depends 'nginx'
@@ -43,4 +44,3 @@ depends 'poise-ruby'
 # depends 'balanced-elasticsearch'
 # depends 'balanced-postgres'
 # depends 'balanced-mongodb'
-
