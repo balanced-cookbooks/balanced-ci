@@ -121,7 +121,7 @@ class Chef
 
     # Run unit tests
     default_job 'test' do |new_resource|
-      scm_trigger ''
+      scm_trigger '* * * * *'
       command new_resource.test_template_content
       clone_workspace true
       parameterized false
