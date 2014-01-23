@@ -20,11 +20,6 @@ source 'https://berks.vandelay.io/'
 
 metadata
 
-cookbook 'ci', path: '../ci'
-cookbook 'jenkins', path: '../jenkins'
-cookbook 'poise', github: 'poise/poise'
-cookbook 'poise-ruby', github: 'poise/poise-ruby'
-
 group :test do
   cookbook 'apt'
 end
