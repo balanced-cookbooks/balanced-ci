@@ -63,6 +63,7 @@ class Chef
     attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb', default_options: lazy { default_command_options })
     attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb', default_options: lazy { default_command_options })
     attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb', default_options: lazy { default_command_options })
+    attribute(:env_template, template: true, default_source: 'commands/env.sh.erb', default_options: lazy { default_command_options })
 
     def initialize(*args)
       super
@@ -107,7 +108,7 @@ class Chef
         branch new_resource.branch
         source new_resource.source
         server_api_key citadel['jenkins_builder/hashedToken']
-        builder_label 'builder' if Chef::Config[:solo] # Punting for Vagrant
+        builder_label new_resource.name
       end
       job.instance_exec(new_resource, &self.class.default_job(name)) if self.class.default_job(name)
       if new_resource.jobs[name]
@@ -122,9 +123,10 @@ class Chef
     default_job 'test' do |new_resource|
       command new_resource.test_template_content
       clone_workspace true
+      parameterized false
       junit '**/nosetests.xml'
       downstream_triggers ["#{new_resource.name}-quality"]
-      downstream_joins ["#{new_resource.name}-build"]
+      environment_script new_resource.env_template_content
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
@@ -162,6 +164,8 @@ class Chef
       command new_resource.quality_template_content
       cobertura '**/coverage.xml'
       violations true
+      parameterized true
+      conditional_continue job_name: "#{new_resource.name}-build"
 
       builder_recipe do
         include_recipe 'git'
@@ -180,6 +184,8 @@ class Chef
       repository new_resource.omnibus_repository
       branch 'master'
       command new_resource.build_template_content
+      parameterized true
+
       # Until we know this works well, don't do any deployment
       #downstream_triggers ["#{new_resource.name}-deploy_staging"]
       builder_recipe do
@@ -212,6 +218,7 @@ class Chef
     # Run acceptance tests
     default_job 'acceptance' do |new_resource|
       inherit "#{new_resource.name}-test"
+      parameterized true
       command new_resource.acceptance_template_content
       builder_recipe { mvp_builder }
     end
@@ -219,6 +226,7 @@ class Chef
     # Deploy to staging environment
     default_job 'deploy_staging' do |new_resource|
       inherit "#{new_resource.name}-test"
+      parameterized true
       command new_resource.deploy_staging_template_content
       downstream_triggers ["acceptance"]
       downstream_joins ["#{new_resource.name}-deploy_test"]
@@ -228,6 +236,7 @@ class Chef
     # Deploy to test environment (which is not where tests are run, FYI)
     default_job 'deploy_test' do |new_resource|
       inherit "#{new_resource.name}-test"
+      parameterized true
       command new_resource.deploy_test_template_content
       builder_recipe { mvp_builder }
     end

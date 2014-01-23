@@ -17,6 +17,17 @@
       <room></room>
       <startNotification>false</startNotification>
     </jenkins.plugins.hipchat.HipChatNotifier_-HipChatJobProperty>
+    <%- if @parameterized -%>
+      <hudson.model.ParametersDefinitionProperty>
+        <parameterDefinitions>
+          <hudson.model.StringParameterDefinition>
+            <name>GIT_TAG</name>
+            <description>The git tag to build</description>
+            <defaultValue></defaultValue>
+          </hudson.model.StringParameterDefinition>
+        </parameterDefinitions>
+      </hudson.model.ParametersDefinitionProperty>
+    <%- end -%>
   </properties>
   <% if @repository %><%= render '_git.erb', variables: {repository: @repository, branch: @branch} %><% end %>
 
@@ -39,6 +50,7 @@
   <triggers class="vector">
     <hudson.triggers.SCMTrigger>
       <spec></spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
@@ -48,6 +60,9 @@
 <%= @command %>
       </command>
     </hudson.tasks.Shell>
+    <% unless @conditional_continue.empty? %>
+      <%= render '_builders/conditional.erb', :variables => @conditional_continue %>
+    <% end %>
   </builders>
   <publishers>
     <% if @cobertura %><%= render '_publishers/cobertura.erb', :variables => {:report => @cobertura} %><% end %>
@@ -58,5 +73,9 @@
     <% if @downstream_triggers %><%= render '_publishers/build_trigger.erb', :variables => {:triggers => @downstream_triggers } %><% end %>
     <% if @downstream_joins %><%= render '_publishers/join_trigger.erb', :variables => {:triggers => @downstream_joins } %><% end %>
   </publishers>
-  <buildWrappers/>
+
+  <buildWrappers>
+    <% if @environment_script %><%= render '_build_wrappers/environment_script.erb', variables: {script: @environment_script} %><% end %>
+  </buildWrappers>
+
 </project>
