@@ -21,7 +21,6 @@ class Chef
   class Resource::BalancedCiJob < Resource::CiJob
     attribute(:downstream_triggers, kind_of: Array, default: [])
     attribute(:downstream_joins, kind_of: Array, default: [])
-    attribute(:build_wrappers, kind_of: Array, default: [])
 
     attribute(:project_url, kind_of: String, default: nil)
     attribute(:branch, kind_of: String, default: nil)
@@ -33,6 +32,7 @@ class Chef
     attribute(:inherit, kind_of: String, default: nil)
     attribute(:parameterized, equal_to: [true, false], default: false)
     attribute(:conditional_continue, kind_of: Hash, default: {})
+    attribute(:environment_script, kind_of: String)
 
     def default_options
       super.merge(
@@ -48,7 +48,7 @@ class Chef
         downstream_joins: downstream_joins,
         inherit: inherit,
         conditional_continue: conditional_continue,
-        build_wrappers: build_wrappers,
+        environment_script: environment_script,
         parameterized: parameterized
       )
     end
