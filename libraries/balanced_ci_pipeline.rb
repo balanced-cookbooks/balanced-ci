@@ -165,6 +165,7 @@ class Chef
       cobertura '**/coverage.xml'
       violations true
       parameterized true
+      conditional_continue job_name: "#{new_resource.name}-build"
 
       builder_recipe do
         include_recipe 'git'
