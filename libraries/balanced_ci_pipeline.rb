@@ -207,6 +207,7 @@ class Chef
         execute 'gpg --import /root/packages@vandelay.io.pem' do
           user 'root'
           not_if 'gpg --list-secret-keys 277E7787'
+          environment 'HOME' => Dir.home('root') # Because GPG uses $HOME instead of real home
         end
       end
     end
