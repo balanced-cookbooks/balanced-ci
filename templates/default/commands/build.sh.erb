@@ -1,14 +1,14 @@
-echo Build is: ${PP_BUILD}
+echo Build is: ${GIT_TAG}
 
 <%- if @new_resource.build_command -%>
 <%= @new_resource.build_command %>
 <%- else -%>
 sudo bash -xe <<BUILD
 export PATH="/opt/ruby-210/bin:$PATH"
+export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
 bundle install --binstubs --path vendor/bundle
 rm -f pkg/<%= @new_resource.omnibus_package %>*
 rm -f /var/cache/omnibus/pkg/<%= @new_resource.omnibus_package %>*
-#export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$PP_BUILD"
 bin/omnibus build project <%= @new_resource.omnibus_package %>
 <%= render 'commands/_aws.erb', variables: {citadel: @citadel} %>
 depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=unstable --no-public pkg/<%= @new_resource.omnibus_package %>*.deb
