@@ -108,7 +108,7 @@ class Chef
         branch new_resource.branch
         source new_resource.source
         server_api_key citadel['jenkins_builder/hashedToken']
-        builder_label 'builder' if Chef::Config[:solo] # Punting for Vagrant
+        builder_label new_resource.name
       end
       job.instance_exec(new_resource, &self.class.default_job(name)) if self.class.default_job(name)
       if new_resource.jobs[name]
