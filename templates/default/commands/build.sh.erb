@@ -3,7 +3,8 @@ echo Build is: ${GIT_TAG}
 <%- if @new_resource.build_command -%>
 <%= @new_resource.build_command %>
 <%- else -%>
-sudo -i bash -xe <<BUILD
+sudo bash -xe <<BUILD
+export HOME=/root
 export PATH="/opt/ruby-210/bin:$PATH"
 export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
 bundle install --binstubs --path vendor/bundle
