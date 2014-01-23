@@ -185,9 +185,8 @@ class Chef
       branch 'master'
       command new_resource.build_template_content
       parameterized true
+      downstream_triggers ["#{new_resource.name}-acceptance"]
 
-      # Until we know this works well, don't do any deployment
-      #downstream_triggers ["#{new_resource.name}-deploy_staging"]
       builder_recipe do
         include_recipe 'balanced-omnibus'
         include_recipe 'python'
