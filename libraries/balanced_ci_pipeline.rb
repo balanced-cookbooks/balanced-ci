@@ -75,7 +75,17 @@ class Chef
     end
 
     def default_command_options
-      {citadel: citadel}
+      {
+        aws: {
+          access_key_id: citadel.access_key_id,
+          secret_access_key: citadel.secret_access_key,
+          token: citadel.token,
+        },
+        aws_travis: {
+          access_key_id: citadel['travis/aws_access_key_id'],
+          secret_access_key: citadel['travis/aws_secret_access_key'],
+        },
+      }
     end
   end
 
