@@ -121,7 +121,8 @@ class Chef
 
     # Run unit tests
     default_job 'test' do |new_resource|
-      scm_trigger '* * * * *'
+      # For solo (dev mode) don't poll
+      scm_trigger Chef::Config[:solo] ? '' : '* * * * *'
       command new_resource.test_template_content
       clone_workspace true
       parameterized false
