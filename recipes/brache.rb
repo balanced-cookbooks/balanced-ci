@@ -1,7 +1,8 @@
 balanced_ci_pipeline 'brache' do
+
   repository 'git@github.com:balanced/brache.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-auth.git'
-  pipeline %w{test quality build}
+  pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/brache'
   branch 'master'
 
@@ -31,6 +32,11 @@ balanced_ci_pipeline 'brache' do
   COMMAND
   
   quality_command 'coverage.py coverage.xml brache:50'
+  
+  job 'acceptance' do
+    branch 'berks3'
+  end
+
 end
 
 include_recipe 'balanced-ci'
