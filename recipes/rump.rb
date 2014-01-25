@@ -16,7 +16,6 @@
 # limitations under the License.
 #
 
-
 balanced_ci_pipeline 'rump' do
   repository 'git@github.com:balanced/rump.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-proxy.git'
