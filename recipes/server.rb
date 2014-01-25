@@ -65,5 +65,5 @@ jenkins_plugin 'view-job-filters'
 jenkins_plugin 'ansicolor'
 
 include_recipe 'balanced-ci'
-# include_recipe 'balanced-ci::balanced'
+include_recipe 'balanced-ci::balanced'
 include_recipe 'balanced-ci::rump'
