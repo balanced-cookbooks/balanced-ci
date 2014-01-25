@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "balanced-ci": {
-      "locked_version": "1.0.21",
+      "locked_version": "1.0.22",
       "path": "."
     },
     "apt": {
