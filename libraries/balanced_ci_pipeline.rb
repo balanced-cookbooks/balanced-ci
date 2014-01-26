@@ -75,7 +75,17 @@ class Chef
     end
 
     def default_command_options
-      {citadel: citadel}
+      {
+        aws: {
+          access_key_id: citadel.access_key_id,
+          secret_access_key: citadel.secret_access_key,
+          token: citadel.token,
+        },
+        aws_travis: {
+          access_key_id: citadel['travis/aws_access_key_id'],
+          secret_access_key: citadel['travis/aws_secret_access_key'],
+        },
+      }
     end
   end
 
@@ -207,7 +217,7 @@ class Chef
         end
         execute 'gpg --import /root/packages@vandelay.io.pem' do
           user 'root'
-          not_if 'gpg --list-secret-keys 277E7787'
+          not_if 'env HOME=/root gpg --list-secret-keys 277E7787'
           environment 'HOME' => Dir.home('root') # Because GPG uses $HOME instead of real home
         end
       end
