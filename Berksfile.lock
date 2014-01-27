@@ -11,10 +11,10 @@
       "locked_version": "2.3.4"
     },
     "ci": {
-      "locked_version": "1.0.14"
+      "locked_version": "1.0.15"
     },
     "jenkins": {
-      "locked_version": "99.1.6"
+      "locked_version": "99.1.7"
     },
     "balanced-citadel": {
       "locked_version": "1.0.0"
