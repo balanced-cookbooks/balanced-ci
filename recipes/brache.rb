@@ -40,7 +40,7 @@ balanced_ci_pipeline 'brache' do
 
   test_command <<-COMMAND.gsub(/^ {4}/, '')
     python setup.py develop easy_install brache[user,test,router]
-    nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=brache--cover-erase
+    nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=brache --cover-erase
   COMMAND
 
   quality_command 'coverage.py coverage.xml brache:50'
