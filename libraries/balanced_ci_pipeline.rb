@@ -132,7 +132,6 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
-        include_recipe 'balanced-python'
         # include_recipe 'balanced-rabbitmq'
         # include_recipe 'balanced-elasticsearch'
         # include_recipe 'balanced-postgres'
@@ -171,7 +170,6 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
-        include_recipe 'balanced-python'
         package 'libxml2-dev'
         package 'libxslt1-dev'
         python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
