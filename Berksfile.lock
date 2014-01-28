@@ -81,6 +81,9 @@
     },
     "postgresql": {
       "locked_version": "3.3.4"
+    },
+    "openssl": {
+      "locked_version": "1.1.0"
     }
   }
 }
