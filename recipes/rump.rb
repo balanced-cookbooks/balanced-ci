@@ -21,7 +21,7 @@ balanced_ci_pipeline 'rump' do
   cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-proxy.git'
   pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/rump'
-  branch 'ohaul'
+  branch 'master'
   project_prefix 'src/'
   test_command <<-COMMAND.gsub(/^ {4}/, '')
     pip install nose==1.3.0
