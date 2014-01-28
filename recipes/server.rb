@@ -66,4 +66,5 @@ jenkins_plugin 'ansicolor'
 
 include_recipe 'balanced-ci'
 include_recipe 'balanced-ci::balanced'
+include_recipe 'balanced-ci::brache'
 include_recipe 'balanced-ci::rump'
