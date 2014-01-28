@@ -30,7 +30,7 @@ balanced_ci_pipeline 'brache' do
       directory "#{node['ci']['path']}/.pip" do
         owner node['jenkins']['node']['user']
         group node['jenkins']['node']['group']
-        mode '600'
+        mode '700'
       end
 
       file "#{node['ci']['path']}/.pip/pip.conf" do
