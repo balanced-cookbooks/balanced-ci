@@ -17,16 +17,6 @@
 # limitations under the License.
 #
 
-def mvp_builder
-  include_recipe 'git'
-  include_recipe 'python'
-  include_recipe 'balanced-python'
-  include_recipe 'poise-ruby::ruby-210'
-  gem_package 'bundler' do
-    gem_binary '/opt/ruby-210/bin/gem'
-  end
-end
-
 class Chef
   class Resource::BalancedCiPipeline < Resource
     include Poise(parent: CiServer, parent_optional: true)
@@ -268,7 +258,6 @@ class Chef
       command new_resource.deploy_staging_template_content
       downstream_triggers ["acceptance"]
       downstream_joins ["#{new_resource.name}-deploy_test"]
-      builder_recipe { mvp_builder }
     end
 
     # Deploy to test environment (which is not where tests are run, FYI)
@@ -276,7 +265,6 @@ class Chef
       inherit "#{new_resource.name}-test"
       parameterized true
       command new_resource.deploy_test_template_content
-      builder_recipe { mvp_builder }
     end
 
   end
