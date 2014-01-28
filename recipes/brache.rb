@@ -27,19 +27,23 @@ balanced_ci_pipeline 'brache' do
         group node['jenkins']['node']['group']
       end
 
-      template "#{node['ci']['path']}/.pydistutils.cfg" do
-        cookbook 'balanced-devpi'
+      directory "#{node['ci']['path']}/.pip" do
         owner node['jenkins']['node']['user']
         group node['jenkins']['node']['group']
         mode '600'
-        source 'pydistutils.cfg.erb'
-        variables password: citadel['omnibus/devpi_password'].strip
+      end
+
+      file "#{node['ci']['path']}/.pip/pip.conf" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '600'
+        content "[global]\nindex-url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
       end
     end
   end
 
   test_command <<-COMMAND.gsub(/^ {4}/, '')
-    python setup.py develop easy_install brache[user,test,router]
+    pip install -e .[user,test,router]
     nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=brache --cover-erase
   COMMAND
 
