@@ -37,6 +37,7 @@ depends 'python'
 depends 'balanced-python'
 depends 'balanced-omnibus', '~> 1.0.2'
 depends 'poise-ruby'
+depends 'postgresql'
 
 # Not needed for rump, skipping
 # depends 'database'
