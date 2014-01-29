@@ -30,6 +30,7 @@ balanced_ci_pipeline 'balanced-docs' do
     command ''
     environment_script new_resource.env_template_content
     conditional_continue job_name: "#{new_resource.name}-build"
+    builder_recipe { }
   end
 end
 
