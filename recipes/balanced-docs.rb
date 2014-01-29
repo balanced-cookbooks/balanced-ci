@@ -25,7 +25,7 @@ balanced_ci_pipeline 'balanced-docs' do
 
   # The docs have no tests per se, so just make a blank task to dispach to the build job.
   # TODO: This shouldn't be needed.
-  default_job 'gate' do |new_resource|
+  job 'gate' do |new_resource|
     scm_trigger Chef::Config[:solo] ? '' : '* * * * *'
     command ''
     environment_script new_resource.env_template_content
