@@ -21,7 +21,7 @@ balanced_ci_pipeline 'balanced-docs' do
   cookbook_repository 'git@github.com:balanced-cookbooks/balanced-docs.git'
   pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/balanced-docs'
-  branch 'master'
+  branch 'multi-rev'
   test_command 'true'
   quality_command 'true'
 end
