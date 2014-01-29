@@ -19,11 +19,18 @@
 balanced_ci_pipeline 'balanced-docs' do
   repository 'git@github.com:balanced/balanced-docs.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/balanced-docs.git'
-  pipeline %w{test quality build acceptance}
+  pipeline %w{gate build acceptance}
   project_url 'https://github.com/balanced/balanced-docs'
   branch 'multi-rev'
-  test_command 'true'
-  quality_command 'true'
+
+  # The docs have no tests per se, so just make a blank task to dispach to the build job.
+  # TODO: This shouldn't be needed.
+  default_job 'gate' do |new_resource|
+    scm_trigger Chef::Config[:solo] ? '' : '* * * * *'
+    command ''
+    environment_script new_resource.env_template_content
+    conditional_continue job_name: "#{new_resource.name}-build"
+  end
 end
 
 include_recipe 'balanced-ci'
