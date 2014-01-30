@@ -11,7 +11,7 @@ bundle install --binstubs --path vendor/bundle
 rm -f pkg/<%= @new_resource.omnibus_package %>*
 rm -f /var/cache/omnibus/pkg/<%= @new_resource.omnibus_package %>*
 bin/omnibus build project <%= @new_resource.omnibus_package %>
-<%= render 'commands/_aws.erb', variables: @aws %>
+<%= render 'commands/_aws.erb', variables: @aws_depot %>
 depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=unstable --no-public pkg/<%= @new_resource.omnibus_package %>*.deb
 BUILD
 <%- end -%>
