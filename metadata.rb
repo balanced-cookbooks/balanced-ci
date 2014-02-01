@@ -33,14 +33,13 @@ depends 'nginx'
 depends 'sudo'
 
 # For build slaves
-depends 'python'
+depends 'balanced-elasticsearch'
+depends 'balanced-mongodb'
 depends 'balanced-omnibus', '~> 1.0.2'
+depends 'balanced-postgres'
+depends 'balanced-rabbitmq'
+depends 'database'
 depends 'poise-ruby'
 depends 'postgresql'
-
-# Not needed for rump, skipping
-# depends 'database'
-# depends 'balanced-rabbitmq'
-# depends 'balanced-elasticsearch'
-# depends 'balanced-postgres'
-# depends 'balanced-mongodb'
+depends 'python'
+depends 'redisio'
