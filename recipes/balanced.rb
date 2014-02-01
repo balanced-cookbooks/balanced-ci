@@ -18,12 +18,48 @@
 
 balanced_ci_pipeline 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
+  branch 'netaddr'
   pipeline %w{test quality build}
   project_url 'https://github.com/PoundPay/balanced'
   python_package 'balanced_service'
   test_db_user 'balanced'
   test_db_name 'balanced_test'
   test_db_host 'localhost'
+
+  test_command 'nosetests --processes=8'
+
+  job 'test' do |new_resource|
+    builder_recipe do
+      include_recipe 'git'
+      include_recipe 'python'
+      include_recipe 'balanced-rabbitmq'
+      include_recipe 'balanced-elasticsearch'
+      include_recipe 'balanced-postgres'
+      include_recipe 'balanced-mongodb'
+      include_recipe 'redisio::install'
+      include_recipe 'redisio::enable'
+
+      package 'libxml2-dev'
+      package 'libxslt1-dev'
+
+      include_recipe 'postgresql::client'
+      include_recipe 'postgresql::ruby'
+
+      postgresql_database_user new_resource.test_db_user do
+        connection host: new_resource.test_db_host
+        password ''
+      end
+
+      postgresql_database new_resource.test_db_name do
+        connection host: new_resource.test_db_host
+      end
+
+      # YOLO and I don't care right now
+      execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
+        user 'postgres'
+      end
+    end
+  end
 
   job 'build' do
     downstream_triggers [] # No acceptance for now
