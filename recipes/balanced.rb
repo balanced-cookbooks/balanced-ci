@@ -18,7 +18,6 @@
 
 balanced_ci_pipeline 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
-  branch 'netaddr'
   pipeline %w{test quality build}
   project_url 'https://github.com/PoundPay/balanced'
   python_package 'balanced_service'
