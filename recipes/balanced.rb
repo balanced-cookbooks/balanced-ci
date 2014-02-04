@@ -71,6 +71,13 @@ balanced_ci_pipeline 'balanced' do
         content "[global]\nindex-url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
       end
 
+      file "#{node['ci']['path']}/.pydistutils.cfg" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '600'
+        content "[easy_install]\nindex_url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
+      end
+
     end
 
   end
