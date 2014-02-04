@@ -24,7 +24,7 @@ balanced_ci_pipeline 'balanced' do
   test_db_user 'balanced'
   test_db_name 'balanced_test'
   test_db_host 'localhost'
-
+  branch 'omnibussed'
 
   test_command 'nosetests --processes=8'
 
