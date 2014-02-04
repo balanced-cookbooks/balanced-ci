@@ -33,6 +33,7 @@ balanced_ci_pipeline 'balanced' do
     clone_workspace false
     downstream_triggers []
     conditional_continue job_name: "#{new_resource.name}-build"
+
     builder_recipe do
       include_recipe 'git'
       include_recipe 'python'
@@ -62,7 +63,16 @@ balanced_ci_pipeline 'balanced' do
       execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
         user 'postgres'
       end
+
+      file "#{node['ci']['path']}/.pip/pip.conf" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '600'
+        content "[global]\nindex-url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
+      end
+
     end
+
   end
 
   job 'build' do
