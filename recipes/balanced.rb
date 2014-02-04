@@ -64,6 +64,17 @@ balanced_ci_pipeline 'balanced' do
         user 'postgres'
       end
 
+      directory node['ci']['path'] do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+      end
+
+      directory "#{node['ci']['path']}/.pip" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '700'
+      end
+
       file "#{node['ci']['path']}/.pip/pip.conf" do
         owner node['jenkins']['node']['user']
         group node['jenkins']['node']['group']
