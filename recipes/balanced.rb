@@ -18,16 +18,20 @@
 
 balanced_ci_pipeline 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
-  pipeline %w{test quality build}
+  pipeline %w{test build}
   project_url 'https://github.com/PoundPay/balanced'
   python_package 'balanced_service'
   test_db_user 'balanced'
   test_db_name 'balanced_test'
   test_db_host 'localhost'
 
+
   test_command 'nosetests --processes=8'
 
   job 'test' do |new_resource|
+    junit false
+    downstream_triggers []
+    conditional_continue job_name: "#{new_resource.name}-build"
     builder_recipe do
       include_recipe 'git'
       include_recipe 'python'

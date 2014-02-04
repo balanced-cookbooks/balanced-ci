@@ -26,7 +26,7 @@ class Chef
     attribute(:branch, kind_of: String, default: nil)
     attribute(:cobertura, kind_of: String, default: nil)
     attribute(:mailer, kind_of: String, default: nil)
-    attribute(:junit, kind_of: String, default: nil)
+    attribute(:junit, kind_of: [String, FalseClass])
     attribute(:violations, equal_to: [true, false])
     attribute(:clone_workspace, equal_to: [true, false])
     attribute(:inherit, kind_of: String, default: nil)
