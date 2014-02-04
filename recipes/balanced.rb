@@ -30,6 +30,7 @@ balanced_ci_pipeline 'balanced' do
 
   job 'test' do |new_resource|
     junit false
+    clone_workspace false
     downstream_triggers []
     conditional_continue job_name: "#{new_resource.name}-build"
     builder_recipe do
