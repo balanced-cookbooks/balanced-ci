@@ -26,7 +26,7 @@ balanced_ci_pipeline 'balanced' do
   test_db_host 'localhost'
   branch 'omnibussed'
 
-  test_command 'pip install -e .[tests] && nosetests --processes=8'
+  test_command 'pip install -e .[tests] && nosetests --processes=8 -sv'
 
   job 'test' do |new_resource|
     junit false
