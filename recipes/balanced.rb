@@ -29,7 +29,6 @@ balanced_ci_pipeline 'balanced' do
   test_command 'pip install -e .[tests] && nosetests --processes=8 -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report xml --cov-report term-missing'
 
   job 'test' do |new_resource|
-    junit false
     clone_workspace false
     downstream_triggers []
     conditional_continue job_name: "#{new_resource.name}-build"
