@@ -44,6 +44,8 @@ fi
 
 pip install --quiet nosexcover
 pip install coverage==3.5.3
+pip install nose-cov
+pip install nose_xunitmp
 
 find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
 
@@ -58,3 +60,5 @@ done
 
 <%= @new_resource.test_command %>
 
+coverage combine
+coverage report

@@ -26,7 +26,7 @@ balanced_ci_pipeline 'balanced' do
   test_db_host 'localhost'
   branch 'omnibussed'
 
-  test_command 'pip install -e .[tests] && nosetests --processes=8 -sv'
+  test_command 'pip install -e .[tests] && nosetests --processes=8 -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report xml --cov-report term-missing'
 
   job 'test' do |new_resource|
     junit false
