@@ -18,7 +18,7 @@
 
 balanced_ci_pipeline 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
-  pipeline %w{test build}
+  pipeline %w{test quality build}
   project_url 'https://github.com/PoundPay/balanced'
   python_package 'balanced_service'
   test_db_user 'balanced'
@@ -27,6 +27,7 @@ balanced_ci_pipeline 'balanced' do
   branch 'omnibussed'
 
   test_command 'pip install -e .[tests] && nosetests --processes=8 -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report xml --cov-report term-missing'
+  quality_command 'coverage.py coverage.xml balanced_service.models:91 balanced_service.resources:92'
 
   job 'test' do |new_resource|
     clone_workspace false
