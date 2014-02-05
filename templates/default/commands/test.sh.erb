@@ -36,9 +36,9 @@ done
 if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>setup.py ]; then
     if [ -z "<%= @new_resource.project_prefix %>" ]
     then
-        python $WORKSPACE/setup.py develop
+        pushd $WORKSPACE && pip install . && popd;
     else
-        pushd $WORKSPACE/<%= @new_resource.project_prefix %> && python setup.py develop && popd;
+        pushd $WORKSPACE/<%= @new_resource.project_prefix %> && pip install . && popd;
     fi
 fi
 
