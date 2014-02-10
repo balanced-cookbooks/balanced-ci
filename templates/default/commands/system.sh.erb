@@ -1,0 +1,51 @@
+ssh -t balanced-ci-01 "sudo /etc/init.d/iptables stop"
+
+trap "ssh -t balanced-ci-01 'sudo /etc/init.d/iptables restart'" EXIT
+
+# 5000 - balanced
+# 6006 - precog
+# 7007 - knox
+# 3030 - midlr
+ssh -L 5000:127.0.0.1:5000 \
+    -R 5001:127.0.0.1:5000 \
+    -L 6006:127.0.0.1:6006 \
+    -R 6007:127.0.0.1:6006 \
+    -L 7007:127.0.0.1:7007 \
+    -R 7008:127.0.0.1:7007 \
+    -L 3030:127.0.0.1:3030 \
+    -R 3031:127.0.0.1:3030 \
+    -Nv 10.3.10.10 \
+    -o ProxyCommand="ssh pooper@50.18.199.26 nc %h %p" \
+    -o StrictHostKeyChecking=no &
+
+SSH_PID=$!
+
+trap "kill -9 $SSH_PID" EXIT
+
+# === connections set, let's actually test === #
+
+# Consistent environments are more consistent
+source /etc/profile
+
+PYENV_HOME=$WORKSPACE/.pyenv/
+
+virtualenv $PYENV_HOME
+. $PYENV_HOME/bin/activate
+
+REQ_FILES="requirements.txt"
+
+for req in $REQ_FILES; do
+  if [ -e $req ]; then
+    pip install -r $req
+  fi
+done
+
+pushd $WORKSPACE && pip install . && popd;
+
+pip install nosexcover
+pip install nose_xunitmp
+
+# Clear out stale .pyc files
+find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
+
+nosetests -sv --with-xunitmp --processes=3 --process-timeout=120 --process-restartworker

@@ -40,6 +40,7 @@ class Chef
     attribute(:acceptance_command, kind_of: String) # Default is in template
     attribute(:deploy_test_command, kind_of: String, default: 'echo 1')
     attribute(:deploy_staging_command, kind_of: String, default: 'echo 1')
+    attribute(:system_test_command, kind_of: String, default: 'echo 1')
     attribute(:source, kind_of: String, default: 'job.xml.erb')
 
     attribute(:project_url, kind_of: String)
@@ -54,6 +55,7 @@ class Chef
     attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb', default_options: lazy { default_command_options })
     attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb', default_options: lazy { default_command_options })
     attribute(:env_template, template: true, default_source: 'commands/env.sh.erb', default_options: lazy { default_command_options })
+    attribute(:system_test_template, template: true, default_source: 'commands/system.sh.erb', default_options: lazy { default_command_options })
 
     def initialize(*args)
       super
@@ -131,30 +133,6 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
-        # include_recipe 'balanced-rabbitmq'
-        # include_recipe 'balanced-elasticsearch'
-        # include_recipe 'balanced-postgres'
-        # include_recipe 'balanced-mongodb'
-
-        # package 'libxml2-dev'
-        # package 'libxslt1-dev'
-
-        # include_recipe 'postgresql::client'
-        # include_recipe 'postgresql::ruby'
-
-        # postgresql_database_user new_resource.test_db_user do
-        #   connection host: new_resource.test_db_host
-        #   password ''
-        # end
-
-        # postgresql_database new_resource.test_db_name do
-        #   connection host: new_resource.test_db_host
-        # end
-
-        # # YOLO and I don't care right now
-        # execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
-        #   user 'postgres'
-        # end
       end
     end
 
@@ -171,14 +149,9 @@ class Chef
         include_recipe 'python'
         package 'libxml2-dev'
         package 'libxslt1-dev'
-
-        cookbook_file '/usr/local/bin/coverage.py' do
-          source 'coverage.py'
-          mode '0755'
-          owner 'root'
-          group 'root'
+        python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
+          action :install
         end
-
       end
     end
 
@@ -269,5 +242,23 @@ class Chef
       command new_resource.deploy_test_template_content
     end
 
+    default_job 'system' do |new_resource|
+      inherit "#{new_resource.name}-acceptance"
+      parameterized true
+      command new_resource.system_test_command
+      downstream_triggers ["#{new_resource.name}-deploy_test"]
+
+      builder_recipe do
+        include_recipe 'python'
+        sudo 'jenkins' do
+          user 'jenkins'
+          nopasswd true
+        end
+
+      end
+
+    end
+
   end
+
 end
