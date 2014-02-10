@@ -28,6 +28,7 @@ class Chef
     attribute(:repository, kind_of: String, default: lazy { node['ci']['repository'] }, required: true)
     attribute(:omnibus_repository, kind_of: String, default: lazy { node['balanced-ci']['omnibus_repository'] })
     attribute(:cookbook_repository, kind_of: String, required: true)
+    attribute(:system_repository, kind_of: String, default: 'git@github.com:balanced/acceptance.git')
     attribute(:pipeline, kind_of: Array, default: %w{test quality build acceptance deploy_staging deploy_test})
 
     attribute(:test_db_user, kind_of: String)
@@ -149,8 +150,11 @@ class Chef
         include_recipe 'python'
         package 'libxml2-dev'
         package 'libxslt1-dev'
-        python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
-          action :install
+        cookbook_file '/usr/local/bin/coverage.py' do
+          source 'coverage.py'
+          mode '0755'
+          owner 'root'
+          group 'root'
         end
       end
     end
@@ -244,15 +248,44 @@ class Chef
 
     default_job 'system' do |new_resource|
       inherit "#{new_resource.name}-acceptance"
-      parameterized true
-      command new_resource.system_test_command
+      command new_resource.system_test_template_content
       downstream_triggers ["#{new_resource.name}-deploy_test"]
+      junit '**/nosetests.xml'
+      repository new_resource.system_repository
+      clone_workspace false
+      parameterized false
+      builder_label 'system-acceptance'
 
       builder_recipe do
+        include_recipe 'git'
         include_recipe 'python'
-        sudo 'jenkins' do
-          user 'jenkins'
-          nopasswd true
+        user node['jenkins']['node']['user'] do
+          home node['ci']['path']
+        end
+
+        directory node['ci']['path'] do
+          owner node['jenkins']['node']['user']
+          group node['jenkins']['node']['group']
+        end
+
+        directory "#{node['ci']['path']}/.pip" do
+          owner node['jenkins']['node']['user']
+          group node['jenkins']['node']['group']
+          mode '700'
+        end
+
+        file "#{node['ci']['path']}/.pip/pip.conf" do
+          owner node['jenkins']['node']['user']
+          group node['jenkins']['node']['group']
+          mode '600'
+          content "[global]\nindex-url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
+        end
+
+        file "#{node['ci']['path']}/.pydistutils.cfg" do
+          owner node['jenkins']['node']['user']
+          group node['jenkins']['node']['group']
+          mode '600'
+          content "[easy_install]\nindex_url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
         end
 
       end

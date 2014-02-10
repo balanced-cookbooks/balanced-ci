@@ -6,6 +6,11 @@ trap "ssh -t balanced-ci-01 'sudo /etc/init.d/iptables restart'" EXIT
 # 6006 - precog
 # 7007 - knox
 # 3030 - midlr
+#
+# 9200 - es
+# 5432 - postgres
+# 5672 - rabbitmq
+# 6379 - redis
 ssh -L 5000:127.0.0.1:5000 \
     -R 5001:127.0.0.1:5000 \
     -L 6006:127.0.0.1:6006 \
@@ -14,6 +19,10 @@ ssh -L 5000:127.0.0.1:5000 \
     -R 7008:127.0.0.1:7007 \
     -L 3030:127.0.0.1:3030 \
     -R 3031:127.0.0.1:3030 \
+    -L 9200:127.0.0.1:9200 \
+    -L 5432:127.0.0.1:5432 \
+    -L 5672:127.0.0.1:5672 \
+    -D 6379 \
     -Nv 10.3.10.10 \
     -o ProxyCommand="ssh pooper@50.18.199.26 nc %h %p" \
     -o StrictHostKeyChecking=no &
