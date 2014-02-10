@@ -171,9 +171,14 @@ class Chef
         include_recipe 'python'
         package 'libxml2-dev'
         package 'libxslt1-dev'
-        python_pip "git+https://github.com/msherry/coverage.py.git#egg=coverage.py" do
-          action :install
+
+        cookbook_file '/usr/local/bin/coverage.py' do
+          source 'coverage.py'
+          mode '0755'
+          owner 'root'
+          group 'root'
         end
+
       end
     end
 
