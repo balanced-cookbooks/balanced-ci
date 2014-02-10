@@ -259,9 +259,6 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
-        user node['jenkins']['node']['user'] do
-          home node['ci']['path']
-        end
 
         directory node['ci']['path'] do
           owner node['jenkins']['node']['user']

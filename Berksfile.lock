@@ -5,13 +5,13 @@
       "path": "."
     },
     "apt": {
-      "locked_version": "2.3.4"
+      "locked_version": "2.3.6"
+    },
+    "ci": {
+      "locked_version": "1.0.17"
     },
     "balanced-postgres": {
       "locked_version": "0.1.2"
-    },
-    "ci": {
-      "locked_version": "1.0.14"
     },
     "jenkins": {
       "locked_version": "99.1.6"
