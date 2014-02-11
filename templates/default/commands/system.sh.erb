@@ -1,6 +1,16 @@
-ssh -t balanced-ci-01 "sudo /etc/init.d/iptables stop"
+BALANCED_CI_01=10.3.10.10
+BALANCED_NAT_01=50.18.199.26
 
-trap "ssh -t balanced-ci-01 'sudo /etc/init.d/iptables restart'" EXIT
+ssh -t -t \
+    -o ProxyCommand="ssh -o StrictHostKeyChecking=no pooper@$BALANCED_NAT_01 nc %h %p" \
+    -o StrictHostKeyChecking=no \
+    $BALANCED_CI_01 \
+    "sudo /etc/init.d/iptables stop"
+
+trap "ssh -t -t $BALANCED_CI_01 \
+        -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no pooper@$BALANCED_NAT_01 nc %h %p\" \
+        -o StrictHostKeyChecking=no \
+        'sudo /etc/init.d/iptables restart'" EXIT
 
 # 5000 - balanced
 # 6006 - precog
@@ -23,9 +33,8 @@ ssh -L 5000:127.0.0.1:5000 \
     -L 5432:127.0.0.1:5432 \
     -L 5672:127.0.0.1:5672 \
     -D 6379 \
-    -Nv 10.3.10.10 \
-    -o ProxyCommand="ssh pooper@50.18.199.26 nc %h %p" \
-    -o StrictHostKeyChecking=no &
+    -N $BALANCED_CI_01 \
+    -o ProxyCommand="ssh -o StrictHostKeyChecking=no pooper@$BALANCED_NAT_01 nc %h %p" -o StrictHostKeyChecking=no &
 
 SSH_PID=$!
 
@@ -49,7 +58,7 @@ for req in $REQ_FILES; do
   fi
 done
 
-pushd $WORKSPACE && pip install . && popd;
+pushd $WORKSPACE && python setup.py develop && popd;
 
 pip install nosexcover
 pip install nose_xunitmp

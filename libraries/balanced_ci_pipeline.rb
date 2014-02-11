@@ -247,11 +247,10 @@ class Chef
     end
 
     default_job 'system' do |new_resource|
-      inherit "#{new_resource.name}-acceptance"
-      command new_resource.system_test_template_content
-      downstream_triggers ["#{new_resource.name}-deploy_test"]
-      junit '**/nosetests.xml'
       repository new_resource.system_repository
+      branch 'master'
+      command new_resource.system_test_template_content
+      junit '**/nosetests.xml'
       clone_workspace false
       parameterized false
       builder_label 'system-acceptance'
