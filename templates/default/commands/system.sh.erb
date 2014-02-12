@@ -1,0 +1,69 @@
+BALANCED_CI_01=10.3.10.10
+BALANCED_NAT_01=50.18.199.26
+
+ssh -t -t \
+    -o ProxyCommand="ssh -o StrictHostKeyChecking=no pooper@$BALANCED_NAT_01 nc %h %p" \
+    -o StrictHostKeyChecking=no \
+    $BALANCED_CI_01 \
+    "sudo /etc/init.d/iptables stop"
+
+trap "ssh -t -t $BALANCED_CI_01 \
+        -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no pooper@$BALANCED_NAT_01 nc %h %p\" \
+        -o StrictHostKeyChecking=no \
+        'sudo /etc/init.d/iptables restart'" EXIT
+
+# 5000 - balanced
+# 6006 - precog
+# 7007 - knox
+# 3030 - midlr
+#
+# 9200 - es
+# 5432 - postgres
+# 5672 - rabbitmq
+# 6379 - redis
+ssh -L 5000:127.0.0.1:5000 \
+    -R 5001:127.0.0.1:5000 \
+    -L 6006:127.0.0.1:6006 \
+    -R 6007:127.0.0.1:6006 \
+    -L 7007:127.0.0.1:7007 \
+    -R 7008:127.0.0.1:7007 \
+    -L 3030:127.0.0.1:3030 \
+    -R 3031:127.0.0.1:3030 \
+    -L 9200:127.0.0.1:9200 \
+    -L 5432:127.0.0.1:5432 \
+    -L 5672:127.0.0.1:5672 \
+    -D 6379 \
+    -N $BALANCED_CI_01 \
+    -o ProxyCommand="ssh -o StrictHostKeyChecking=no pooper@$BALANCED_NAT_01 nc %h %p" -o StrictHostKeyChecking=no &
+
+SSH_PID=$!
+
+trap "kill -9 $SSH_PID" EXIT
+
+# === connections set, let's actually test === #
+
+# Consistent environments are more consistent
+source /etc/profile
+
+PYENV_HOME=$WORKSPACE/.pyenv/
+
+virtualenv $PYENV_HOME
+. $PYENV_HOME/bin/activate
+
+REQ_FILES="requirements.txt"
+
+for req in $REQ_FILES; do
+  if [ -e $req ]; then
+    pip install -r $req
+  fi
+done
+
+pushd $WORKSPACE && python setup.py develop && popd;
+
+pip install nosexcover
+pip install nose_xunitmp
+
+# Clear out stale .pyc files
+find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
+
+nosetests -sv --with-xunitmp --processes=3 --process-timeout=120 --process-restartworker
