@@ -34,22 +34,53 @@ pip install nosexcover
 nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=billy --cover-erase
 COMMAND
   quality_command 'coverage.py coverage.xml billy:95'
-end
 
-include_recipe 'balanced-ci'
-include_recipe 'balanced-postgres'
-include_recipe 'postgresql::client'
-include_recipe 'postgresql::ruby'
+  job 'test' do |new_resource|
+    builder_recipe do
+      include_recipe 'git'
+      include_recipe 'python'
+      include_recipe 'balanced-ci'
+      include_recipe 'balanced-postgres'
+      include_recipe 'postgresql::client'
+      include_recipe 'postgresql::ruby'
 
-postgresql_database_user 'billy' do
-  connection host: 'localhost'
-  password ''
-end
+      postgresql_database_user new_resource.test_db_user do
+        connection host: new_resource.test_db_host
+        password ''
+      end
 
-postgresql_database 'billy_test' do
-  connection host: 'localhost'
-end
+      postgresql_database new_resource.test_db_name do
+        connection host: new_resource.test_db_host
+      end
 
-execute "psql -c 'alter user billy with superuser'" do
-  user 'postgres'
+      execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
+        user 'postgres'
+      end
+
+      directory node['ci']['path'] do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+      end
+
+      directory "#{node['ci']['path']}/.pip" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '700'
+      end
+
+      file "#{node['ci']['path']}/.pip/pip.conf" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '600'
+        content "[global]\nindex-url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
+      end
+
+      file "#{node['ci']['path']}/.pydistutils.cfg" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '600'
+        content "[easy_install]\nindex_url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
+      end
+    end
+  end
 end
