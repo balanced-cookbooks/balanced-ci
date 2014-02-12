@@ -42,8 +42,13 @@ if [ -e $WORKSPACE/<%= @new_resource.project_prefix %>setup.py ]; then
     fi
 fi
 
-pip install --quiet nosexcover
+# coverage needs to be FIRST before all the other plugins
+# because we only need this ONE coverage version pinned
+# all the other plugins after the coverage plugin require
+# basically coverage>=3.4
 pip install coverage==3.5.3
+# TODO: we should probably pin these plugins (see above)
+pip install --quiet nosexcover
 pip install nose-cov
 pip install nose_xunitmp
 
