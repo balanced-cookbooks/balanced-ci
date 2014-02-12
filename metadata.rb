@@ -17,7 +17,7 @@
 #
 
 name 'balanced-ci'
-version '1.0.70'
+version '1.0.72'
 
 maintainer 'Noah Kantrowitz'
 maintainer_email 'noah@coderanger.net'
