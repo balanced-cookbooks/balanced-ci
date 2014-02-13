@@ -19,6 +19,7 @@
 
 balanced_ci_pipeline 'billy' do
   repository 'git@github.com:balanced/billy.git'
+  cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-billy.git'
   pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/billy'
   branch 'master'
