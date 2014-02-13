@@ -19,7 +19,7 @@
 
 balanced_ci_pipeline 'billy' do
   repository 'git@github.com:balanced/billy.git'
-  pipeline %w{test quality build}
+  pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/billy'
   branch 'master'
   test_db_user 'billy'
