@@ -52,7 +52,7 @@ export HOME=/root
 $DEPOT_BIN -s s3://apt.vandelay.io -k 277E7787 -c precise --component main --no-public --force $TARGET_URL
 
 DEPOT
-# ------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 COMMAND
 
