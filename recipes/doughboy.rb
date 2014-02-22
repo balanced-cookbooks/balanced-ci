@@ -24,3 +24,5 @@ balanced_ci_pipeline 'doughboy' do
   project_url 'https://github.com/balanced/doughboy'
   branch 'master'
 end
+
+include_recipe 'balanced-ci'
