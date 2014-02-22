@@ -21,6 +21,6 @@ balanced_ci_pipeline 'doughboy' do
   repository 'git@github.com:balanced/doughboy.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/role-doughboy.git'
   pipeline %w{build acceptance}
-  project_url 'https://github.com/balanced/invoice_feeder'
+  project_url 'https://github.com/balanced/doughboy'
   branch 'master'
 end
