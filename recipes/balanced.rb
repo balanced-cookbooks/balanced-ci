@@ -35,6 +35,7 @@ balanced_ci_pipeline 'balanced' do
     builder_recipe do
       include_recipe 'git'
       include_recipe 'python'
+      include_recipe 'rsyslog'
       include_recipe 'balanced-rabbitmq'
       include_recipe 'balanced-elasticsearch'
       include_recipe 'balanced-postgres'

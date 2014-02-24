@@ -27,7 +27,6 @@ gem 'vagrant-wrapper'
 gem 'foodcritic', '>= 3.0.3'
 gem 's3sync'
 
-gem 'vagrant', github: 'mitchellh/vagrant', ref: 'v1.4.3'
 gem 'vagrant-berkshelf', github: 'berkshelf/vagrant-berkshelf'
 gem 'vagrant-omnibus', github: "schisamo/vagrant-omnibus"
 gem 'chef', github: 'opscode/chef'

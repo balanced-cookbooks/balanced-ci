@@ -26,7 +26,7 @@ description 'Installs and configures Balanced CI server and jobs'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
 depends 'poise', '~> 1.0.4'
-depends 'ci', '~> 1.0.19'
+depends 'ci', '~> 1.0.18'
 depends 'balanced-citadel'
 depends 'postfix', '>= 3.0.4'
 depends 'nginx'
@@ -43,3 +43,4 @@ depends 'poise-ruby'
 depends 'postgresql'
 depends 'python'
 depends 'redisio'
+depends 'newrelic-sysmond'

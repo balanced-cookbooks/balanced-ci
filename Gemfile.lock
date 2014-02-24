@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/berkshelf/berkshelf.git
-  revision: 276335a609ea2713e4ffcc8fb60f22444b483749
+  revision: f7cc7761351ad4f9f3957d834f2cdb62dc90679b
   specs:
-    berkshelf (3.0.0.beta5)
+    berkshelf (3.0.0.beta7)
       addressable (~> 2.3.4)
       berkshelf-api-client (~> 1.1)
       buff-config (~> 0.2)
@@ -22,19 +22,6 @@ GIT
   specs:
     vagrant-berkshelf (1.4.0.dev1)
       berkshelf (>= 3.0.0.beta3)
-
-GIT
-  remote: git://github.com/mitchellh/vagrant.git
-  revision: 4f0eb9504cc786d5a57a43814427e8eb35407a4c
-  ref: v1.4.3
-  specs:
-    vagrant (1.4.3)
-      childprocess (~> 0.3.7)
-      erubis (~> 2.7.0)
-      i18n (~> 0.6.0)
-      log4r (~> 1.1.9)
-      net-scp (~> 1.1.0)
-      net-ssh (>= 2.6.6, < 2.8.0)
 
 GIT
   remote: git://github.com/opscode/chef.git
@@ -115,8 +102,6 @@ GEM
       mixlib-log (~> 1.3)
       moneta (< 0.7.0)
       rack
-    childprocess (0.3.9)
-      ffi (~> 1.0, >= 1.0.11)
     cmdparse (2.0.5)
     coderay (1.1.0)
     diff-lcs (1.2.5)
@@ -124,7 +109,6 @@ GEM
     excon (0.31.0)
     faraday (0.8.9)
       multipart-post (~> 1.2.0)
-    ffi (1.9.3)
     fog (1.19.0)
       builder
       excon (~> 0.31.0)
@@ -147,12 +131,10 @@ GEM
       multi_json (~> 1.3)
     hashie (2.0.5)
     highline (1.6.20)
-    i18n (0.6.9)
     ipaddress (0.8.0)
     json (1.8.1)
     kitchen-vagrant (0.14.0)
       test-kitchen (~> 1.0)
-    log4r (1.1.10)
     method_source (0.8.2)
     mime-types (1.25.1)
     minitar (0.5.4)
@@ -165,7 +147,7 @@ GEM
     moneta (0.6.0)
     multi_json (1.8.4)
     multipart-post (1.2.0)
-    net-http-persistent (2.9.1)
+    net-http-persistent (2.9.4)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.7.0)
@@ -197,8 +179,8 @@ GEM
     rake (10.1.1)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    retryable (1.3.4)
-    ridley (2.4.2)
+    retryable (1.3.5)
+    ridley (2.5.1)
       addressable
       buff-config (~> 0.2)
       buff-extensions (~> 0.3)
@@ -253,7 +235,6 @@ DEPENDENCIES
   s3sync
   test-kitchen!
   unf
-  vagrant!
   vagrant-berkshelf!
   vagrant-omnibus!
   vagrant-wrapper
