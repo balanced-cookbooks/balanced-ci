@@ -28,10 +28,10 @@
         </parameterDefinitions>
       </hudson.model.ParametersDefinitionProperty>
     <%- end -%>
-    <%- if @promoted -%>
+    <%- if @promotion -%>
     <hudson.plugins.promoted__builds.JobPropertyImpl>
       <activeProcessNames>
-        <string><%- @job_name -%>-promotion</string>
+        <string><%= @job_name %></string>
       </activeProcessNames>
     </hudson.plugins.promoted__builds.JobPropertyImpl>
     <%- end -%>

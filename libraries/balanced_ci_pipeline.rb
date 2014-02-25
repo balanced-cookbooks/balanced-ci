@@ -196,7 +196,6 @@ class Chef
       repository new_resource.cookbook_repository
       branch 'master'
       parameterized true
-      promoted true
       command new_resource.acceptance_template_content
       builder_recipe do
         include_recipe 'poise-ruby::ruby-210'

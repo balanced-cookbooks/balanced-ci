@@ -34,7 +34,7 @@ class Chef
     attribute(:conditional_continue, kind_of: Hash, default: {})
     attribute(:environment_script, kind_of: String)
     attribute(:scm_trigger, kind_of: String)
-    attribute(:promoted, equal_to: [true, false], default: false)
+    attribute(:promotion, equal_to: [true, false], default: false)
     attribute(:promotion_source, template: true, default_source: 'promote.xml.erb')
 
     def default_options
@@ -54,7 +54,7 @@ class Chef
         environment_script: environment_script,
         parameterized: parameterized,
         scm_trigger: scm_trigger,
-        promoted: promoted,
+        promotion: promotion,
         job_name: job_name,
       )
     end
@@ -65,7 +65,7 @@ class Chef
 
     def action_enable
       super
-      if new_resource.parent
+      if new_resource.parent and new_resource.promotion
         converge_by("create jenkins promotion for job #{new_resource.job_name}") do
           notifying_block do
             create_promotion
@@ -83,12 +83,12 @@ class Chef
 
     def promotion_directory_path
       # this will be something looks like 
-      # /var/lib/jenkins/jobs/billy-acceptance/promotions/billy-acceptance-promotion/
+      # /var/lib/jenkins/jobs/billy-acceptance/promotions/billy-acceptance/
       ::File.join(
         new_resource.parent.jobs_path, 
         new_resource.job_name, 
         'promotions', 
-        "#{ new_resource.job_name }-promotion",
+        "#{ new_resource.job_name }",
       )
     end 
 
