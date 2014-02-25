@@ -53,6 +53,7 @@ class Chef
     attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb', default_options: lazy { default_command_options })
     attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb', default_options: lazy { default_command_options })
     attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb', default_options: lazy { default_command_options })
+    attribute(:promote_template, template: true, default_source: 'commands/promote.sh.erb', default_options: lazy { default_command_options })
     attribute(:env_template, template: true, default_source: 'commands/env.sh.erb', default_options: lazy { default_command_options })
 
     def initialize(*args)
@@ -197,6 +198,7 @@ class Chef
       branch 'master'
       parameterized true
       command new_resource.acceptance_template_content
+      promotion_command new_resource.promote_template_content
       builder_recipe do
         include_recipe 'poise-ruby::ruby-210'
         gem_package 'bundler' do

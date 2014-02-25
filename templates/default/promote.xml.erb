@@ -22,7 +22,9 @@
   <icon>star-gold</icon>
   <buildSteps>
     <hudson.tasks.Shell>
-      <command>echo hi</command>
+      <command>#!/bin/bash -xe
+<%= @promotion_command %>
+      </command>
     </hudson.tasks.Shell>
   </buildSteps>
 </hudson.plugins.promoted__builds.PromotionProcess>
