@@ -28,6 +28,13 @@
         </parameterDefinitions>
       </hudson.model.ParametersDefinitionProperty>
     <%- end -%>
+    <%- if @promoted -%>
+    <hudson.plugins.promoted__builds.JobPropertyImpl>
+      <activeProcessNames>
+        <string><%- @job_name -%>-promotion</string>
+      </activeProcessNames>
+    </hudson.plugins.promoted__builds.JobPropertyImpl>
+    <%- end -%>
   </properties>
   <% if @repository %><%= render '_git.erb', variables: {repository: @repository, branch: @branch} %><% end %>
 

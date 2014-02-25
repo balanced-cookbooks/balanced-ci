@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.promoted__builds.PromotionProcess>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <%- if @new_resource.builder_label -%>
+  <assignedLabel><%= @new_resource.builder_label %></assignedLabel>
+  <canRoam>false</canRoam>
+  <%- else -%>
+  <canRoam>true</canRoam>
+  <%- end -%>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <conditions>
+    <hudson.plugins.promoted__builds.conditions.SelfPromotionCondition>
+      <evenIfUnstable>false</evenIfUnstable>
+    </hudson.plugins.promoted__builds.conditions.SelfPromotionCondition>
+  </conditions>
+  <icon>star-gold</icon>
+  <buildSteps>
+    <hudson.tasks.Shell>
+      <command>echo hi</command>
+    </hudson.tasks.Shell>
+  </buildSteps>
+</hudson.plugins.promoted__builds.PromotionProcess>

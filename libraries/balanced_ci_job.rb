@@ -34,6 +34,8 @@ class Chef
     attribute(:conditional_continue, kind_of: Hash, default: {})
     attribute(:environment_script, kind_of: String)
     attribute(:scm_trigger, kind_of: String)
+    attribute(:promoted, equal_to: [true, false], default: false)
+    attribute(:promotion_source, template: true, default_source: 'promote.xml.erb')
 
     def default_options
       super.merge(
@@ -52,12 +54,67 @@ class Chef
         environment_script: environment_script,
         parameterized: parameterized,
         scm_trigger: scm_trigger,
+        promoted: promoted,
+        job_name: job_name,
       )
     end
 
   end
 
-  class Provider::BalancedCiJob < Provider::CiJob; end
+  class Provider::BalancedCiJob < Provider::CiJob; 
+
+    def action_enable
+      super
+      if new_resource.parent
+        converge_by("create jenkins promotion for job #{new_resource.job_name}") do
+          notifying_block do
+            create_promotion
+          end
+        end
+      end
+    end
+
+    private
+
+    def create_promotion
+      create_promotion_directory
+      write_promotion_config
+    end
+
+    def promotion_directory_path
+      # this will be something looks like 
+      # /var/lib/jenkins/jobs/billy-acceptance/promotions/billy-acceptance-promotion/
+      ::File.join(
+        new_resource.parent.jobs_path, 
+        new_resource.job_name, 
+        'promotions', 
+        "#{ new_resource.job_name }-promotion",
+      )
+    end 
+
+    def promtion_config_path
+      ::File.join(promotion_directory_path, 'config.xml')
+    end
+
+    def create_promotion_directory
+      directory promotion_directory_path do
+        owner new_resource.parent.user
+        group new_resource.parent.group
+        mode new_resource.parent.dir_permissions
+        recursive true
+      end
+    end
+
+    def write_promotion_config
+      file promtion_config_path do
+        content new_resource.promotion_source_content
+        owner new_resource.parent.user
+        group new_resource.parent.group
+        mode '600'
+      end
+    end
+
+  end
 
 end
 
