@@ -1,5 +1,5 @@
 export PACKAGE=<%= @new_resource.omnibus_package %>
-export ITERATIOn="1"
+export ITERATION="1"
 export NUMBERS=`echo $GIT_TAG | sed -re 's/v(.*)/\1/'`  # get v1.0.3 to 1.0.3
 export VERSION="$NUMBERS-$ITERATION"
 
