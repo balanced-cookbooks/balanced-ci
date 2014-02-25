@@ -70,7 +70,6 @@ class Chef
     def action_enable
       super
       if new_resource.parent and new_resource.promotion
-        #require 'debugger'; debugger
         converge_by("create jenkins promotion for job #{new_resource.job_name}") do
           notifying_block do
             create_promotion
