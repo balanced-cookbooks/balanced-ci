@@ -21,11 +21,7 @@ export TARGET_URL="s3://apt.vandelay.io/pool/${PACKAGE}_${VERSION}_amd64.deb"
 sudo bash -xe <<DEPOT
 
 # expose AWS keys
-set +x # Redact credentials from log
-echo Setting AWS credentials
-export AWS_ACCESS_KEY_ID="#{ citadel['depot/aws_access_key_id'].strip }"
-export AWS_SECRET_ACCESS_KEY="#{ citadel['depot/aws_secret_access_key'].strip }"
-set -x
+<%= render 'commands/_aws.erb', variables: @aws_depot %>
 
 # submit package
 export HOME=/root
