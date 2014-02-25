@@ -63,6 +63,14 @@ class Chef
       )
     end
 
+    def after_created
+      super
+      if self.parent and self.promotion
+        # this ensure the promotion configuration will be reloaded after creating
+        notifies(:restart, self.parent)
+      end
+    end
+
   end
 
   class Provider::BalancedCiJob < Provider::CiJob; 
@@ -73,9 +81,6 @@ class Chef
         converge_by("create jenkins promotion for job #{new_resource.job_name}") do
           notifying_block do
             create_promotion
-            # XXX: is it okay to do it here?
-            # this ensure the promotion configuration will be loaded
-            notifies(:restart, self.parent)
           end
         end
       end
