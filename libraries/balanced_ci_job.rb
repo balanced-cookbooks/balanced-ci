@@ -37,7 +37,7 @@ class Chef
     attribute(:environment_script, kind_of: String)
     attribute(:scm_trigger, kind_of: String)
     attribute(:promotion, equal_to: [true, false], default: false)
-    attribute(:promotion_source, template: true, default_source: 'promote.xml.erb')
+    attribute(:promotion_source, template: true, default_source: 'promote.xml.erb', default_options: lazy { default_options })
     attribute(:promotion_command, kind_of: String, default: 'echo 1')
 
     def default_options
@@ -63,14 +63,6 @@ class Chef
       )
     end
 
-    def after_created
-      super
-      if self.parent and self.promotion
-        # this ensure the promotion configuration will be reloaded after creating
-        notifies(:restart, self.parent)
-      end
-    end
-
   end
 
   class Provider::BalancedCiJob < Provider::CiJob; 
@@ -78,10 +70,13 @@ class Chef
     def action_enable
       super
       if new_resource.parent and new_resource.promotion
+        #require 'debugger'; debugger
         converge_by("create jenkins promotion for job #{new_resource.job_name}") do
           notifying_block do
             create_promotion
           end
+          # this ensure the promotion configuration will be reloaded after creating
+          new_resource.notifies(:restart, new_resource.parent)
         end
       end
     end

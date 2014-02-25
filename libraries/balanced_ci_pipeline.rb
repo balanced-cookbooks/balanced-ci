@@ -228,6 +228,30 @@ class Chef
             },
           }.to_json)
         end
+        # below are for running promote
+        include_recipe 'python'
+        python_pip 'virtualenvwrapper' do
+            action :install
+            version '4.2'
+        end
+        package 'libxml2-dev'
+        package 'libxslt1-dev'
+        # add jenkins to sudoers so that it can access packages@vandelay.io.pem
+        sudo 'jenkins' do
+          user 'jenkins'
+          nopasswd true
+        end
+        file '/root/packages@vandelay.io.pem' do
+          owner 'root'
+          group 'root'
+          mode '600'
+          content citadel['jenkins_builder/packages@vandelay.io.pem']
+        end
+        execute 'gpg --import /root/packages@vandelay.io.pem' do
+          user 'root'
+          not_if 'env HOME=/root gpg --list-secret-keys 277E7787'
+          environment 'HOME' => Dir.home('root') # Because GPG uses $HOME instead of real home
+        end
       end
     end
 
