@@ -89,12 +89,12 @@ class Chef
 
     def promotion_directory_path
       # this will be something looks like 
-      # /var/lib/jenkins/jobs/billy-acceptance/promotions/billy-acceptance/
+      # /var/lib/jenkins/jobs/billy-acceptance/promotions/promote-to-stable/
       ::File.join(
         new_resource.parent.jobs_path, 
         new_resource.job_name, 
         'promotions', 
-        "#{ new_resource.job_name }",
+        'promote-to-stable',
       )
     end 
 

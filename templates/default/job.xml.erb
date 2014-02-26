@@ -31,7 +31,7 @@
     <%- if @promotion -%>
     <hudson.plugins.promoted__builds.JobPropertyImpl>
       <activeProcessNames>
-        <string><%= @job_name %></string>
+        <string>promote-to-stable</string>
       </activeProcessNames>
     </hudson.plugins.promoted__builds.JobPropertyImpl>
     <%- end -%>

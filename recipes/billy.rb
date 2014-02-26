@@ -36,7 +36,7 @@ nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=billy --
 COMMAND
   quality_command 'coverage.py coverage.xml billy:95'
 
-  job 'acceptance' do |new_resource|
+  job 'build' do |new_resource|
     promotion true
   end
 

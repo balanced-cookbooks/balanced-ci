@@ -15,9 +15,10 @@
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <conditions>
-    <hudson.plugins.promoted__builds.conditions.SelfPromotionCondition>
+    <hudson.plugins.promoted__builds.conditions.DownstreamPassCondition>
+      <jobs><%= new_resource.name %>-acceptance</jobs>
       <evenIfUnstable>false</evenIfUnstable>
-    </hudson.plugins.promoted__builds.conditions.SelfPromotionCondition>
+    </hudson.plugins.promoted__builds.conditions.DownstreamPassCondition>
   </conditions>
   <icon>star-gold</icon>
   <buildSteps>
