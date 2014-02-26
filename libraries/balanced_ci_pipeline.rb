@@ -166,6 +166,8 @@ class Chef
       command new_resource.build_template_content
       parameterized true
       downstream_triggers ["#{new_resource.name}-acceptance"]
+      promotion_downstream_triggers ["#{new_resource.name}-acceptance"]
+      promotion_command new_resource.promote_template_content
 
       builder_recipe do
         include_recipe 'balanced-omnibus'
@@ -198,7 +200,6 @@ class Chef
       branch 'master'
       parameterized true
       command new_resource.acceptance_template_content
-      promotion_command new_resource.promote_template_content
       builder_recipe do
         include_recipe 'poise-ruby::ruby-210'
         gem_package 'bundler' do

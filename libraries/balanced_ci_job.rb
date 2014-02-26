@@ -39,6 +39,7 @@ class Chef
     attribute(:promotion, equal_to: [true, false], default: false)
     attribute(:promotion_source, template: true, default_source: 'promote.xml.erb', default_options: lazy { default_options })
     attribute(:promotion_command, kind_of: String, default: 'echo 1')
+    attribute(:promotion_downstream_triggers, kind_of: Array, default: [])
 
     def default_options
       super.merge(
@@ -60,6 +61,7 @@ class Chef
         promotion: promotion,
         job_name: job_name,
         promotion_command: REXML::Text.normalize(promotion_command),
+        promotion_downstream_triggers: promotion_downstream_triggers,
       )
     end
 
