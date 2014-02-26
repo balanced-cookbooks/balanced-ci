@@ -16,7 +16,7 @@
   <concurrentBuild>false</concurrentBuild>
   <conditions>
     <hudson.plugins.promoted__builds.conditions.DownstreamPassCondition>
-      <jobs><%= new_resource.name %>-acceptance</jobs>
+      <jobs><%= @new_resource.parent.name %>-acceptance</jobs>
       <evenIfUnstable>false</evenIfUnstable>
     </hudson.plugins.promoted__builds.conditions.DownstreamPassCondition>
   </conditions>

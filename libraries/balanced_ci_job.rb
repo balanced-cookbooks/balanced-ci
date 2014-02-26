@@ -83,6 +83,12 @@ class Chef
     private
 
     def create_promotion
+      # TODO: maybe we should make promotion job be a reusable resource like
+      # 
+      # promotion_job 'promote-to-stable' do
+      #   source 'foobar.xml.erb'
+      #   downstream 'foobar-acceptance'
+      # end
       create_promotion_directory
       write_promotion_config
     end
