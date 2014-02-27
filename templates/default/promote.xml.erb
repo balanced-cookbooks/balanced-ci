@@ -15,6 +15,10 @@
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <conditions>
+    <hudson.plugins.promoted__builds.conditions.ManualCondition>
+      <users></users>
+      <parameterDefinitions/>
+    </hudson.plugins.promoted__builds.conditions.ManualCondition>
     <hudson.plugins.promoted__builds.conditions.DownstreamPassCondition>
       <jobs><%= @promotion_downstream_triggers.join(', ') %></jobs>
       <evenIfUnstable>false</evenIfUnstable>
