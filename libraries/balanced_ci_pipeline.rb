@@ -131,30 +131,6 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
-        # include_recipe 'balanced-rabbitmq'
-        # include_recipe 'balanced-elasticsearch'
-        # include_recipe 'balanced-postgres'
-        # include_recipe 'balanced-mongodb'
-
-        # package 'libxml2-dev'
-        # package 'libxslt1-dev'
-
-        # include_recipe 'postgresql::client'
-        # include_recipe 'postgresql::ruby'
-
-        # postgresql_database_user new_resource.test_db_user do
-        #   connection host: new_resource.test_db_host
-        #   password ''
-        # end
-
-        # postgresql_database new_resource.test_db_name do
-        #   connection host: new_resource.test_db_host
-        # end
-
-        # # YOLO and I don't care right now
-        # execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
-        #   user 'postgres'
-        # end
       end
     end
 
