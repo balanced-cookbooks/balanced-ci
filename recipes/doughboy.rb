@@ -20,9 +20,16 @@
 balanced_ci_pipeline 'doughboy' do
   repository 'git@github.com:balanced/doughboy.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/role-doughboy.git'
-  pipeline %w{build acceptance}
+  pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/doughboy'
   branch 'master'
+  test_command <<-COMMAND
+nosetests -sv --with-id --with-xunit --with-xcoverage --cover-package=doughboy --cover-erase
+COMMAND
+
+  job 'build' do |new_resource|
+    promotion true
+  end
 end
 
 include_recipe 'balanced-ci'
