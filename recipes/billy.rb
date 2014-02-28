@@ -27,8 +27,8 @@ balanced_ci_pipeline 'billy' do
   test_db_name 'billy_test'
   test_db_host 'localhost'
   test_command <<-COMMAND
-export BILLY_TEST_ALEMBIC=1 
-export BILLY_UNIT_TEST_DB=postgresql://billy:@localhost/billy_test 
+export BILLY_TEST_ALEMBIC=1
+export BILLY_UNIT_TEST_DB=postgresql://billy:@localhost/billy_test
 export BILLY_FUNC_TEST_DB=postgresql://billy:@localhost/billy_test
 pip install psycopg2
 pip install nosexcover
@@ -85,3 +85,5 @@ COMMAND
     end
   end
 end
+
+include_recipe 'balanced-ci'
