@@ -18,7 +18,8 @@
 
 balanced_ci_pipeline 'balanced' do
   repository 'git@github.com:PoundPay/balanced.git'
-  pipeline %w{test quality build}
+  cookbook_repository 'git@github.com:balanced-cookbooks/acceptance.git'
+  pipeline %w{test quality build acceptance}
   project_url 'https://github.com/PoundPay/balanced'
   python_package 'balanced_service'
   test_db_user 'balanced'
@@ -92,9 +93,6 @@ balanced_ci_pipeline 'balanced' do
 
   end
 
-  job 'build' do
-    downstream_triggers [] # No acceptance for now
-  end
 end
 
 include_recipe 'balanced-ci'
