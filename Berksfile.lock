@@ -6,7 +6,7 @@ DEPENDENCIES
 
 GRAPH
   acceptance (0.1.10)
-    balanced (~> 0.2.0)
+    balanced (>= 0.0.0)
     balanced-devpi (>= 0.0.0)
     balanced-elasticsearch (>= 0.0.0)
     balanced-mongodb (>= 0.0.0)
@@ -17,7 +17,7 @@ GRAPH
     balanced-user (>= 0.0.0)
     git (>= 0.0.0)
     python (>= 0.0.0)
-    supervisor (~> 0.4.10)
+    supervisor (>= 0.0.0)
     ulimit (>= 0.0.0)
   apt (2.3.8)
   ark (0.6.0)
@@ -32,8 +32,7 @@ GRAPH
     apt (>= 0.0.0)
     balanced-citadel (>= 0.0.0)
     poise (>= 0.0.0)
-  balanced-ci (1.0.76)
-    acceptance (~> 0.1.10)
+  balanced-ci (1.0.80)
     balanced-citadel (>= 0.0.0)
     balanced-elasticsearch (>= 0.0.0)
     balanced-mongodb (>= 0.0.0)
