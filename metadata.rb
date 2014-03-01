@@ -17,7 +17,7 @@
 #
 
 name 'balanced-ci'
-version '1.0.76'
+version '1.0.78'
 
 maintainer 'Noah Kantrowitz'
 maintainer_email 'noah@coderanger.net'
@@ -44,4 +44,3 @@ depends 'postgresql'
 depends 'python'
 depends 'redisio'
 depends 'newrelic-sysmond'
-depends 'acceptance', '~> 0.1.10'
