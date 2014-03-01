@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+require 'rexml/text' # For #normalize
+
 class Chef
 
   class Resource::BalancedCiJob < Resource::CiJob
@@ -34,6 +36,10 @@ class Chef
     attribute(:conditional_continue, kind_of: Hash, default: {})
     attribute(:environment_script, kind_of: String)
     attribute(:scm_trigger, kind_of: String)
+    attribute(:promotion, equal_to: [true, false], default: false)
+    attribute(:promotion_source, template: true, default_source: 'promote.xml.erb', default_options: lazy { default_options })
+    attribute(:promotion_command, kind_of: String, default: 'echo 1')
+    attribute(:promotion_downstream_triggers, kind_of: Array, default: [])
 
     def default_options
       super.merge(
@@ -52,12 +58,77 @@ class Chef
         environment_script: environment_script,
         parameterized: parameterized,
         scm_trigger: scm_trigger,
+        promotion: promotion,
+        job_name: job_name,
+        promotion_command: REXML::Text.normalize(promotion_command),
+        promotion_downstream_triggers: promotion_downstream_triggers,
       )
     end
 
   end
 
-  class Provider::BalancedCiJob < Provider::CiJob; end
+  class Provider::BalancedCiJob < Provider::CiJob; 
+
+    def action_enable
+      super
+      if new_resource.parent and new_resource.promotion
+        converge_by("create jenkins promotion for job #{new_resource.job_name}") do
+          notifying_block do
+            create_promotion
+          end
+          # this ensure the promotion configuration will be reloaded after creating
+          new_resource.notifies(:restart, new_resource.parent)
+        end
+      end
+    end
+
+    private
+
+    def create_promotion
+      # TODO: maybe we should make promotion job be a reusable resource like
+      # 
+      # promotion_job 'promote-to-stable' do
+      #   source 'foobar.xml.erb'
+      #   downstream 'foobar-acceptance'
+      # end
+      create_promotion_directory
+      write_promotion_config
+    end
+
+    def promotion_directory_path
+      # this will be something looks like 
+      # /var/lib/jenkins/jobs/billy-acceptance/promotions/promote-to-stable/
+      ::File.join(
+        new_resource.parent.jobs_path, 
+        new_resource.job_name, 
+        'promotions', 
+        'promote-to-stable',
+      )
+    end 
+
+    def promtion_config_path
+      ::File.join(promotion_directory_path, 'config.xml')
+    end
+
+    def create_promotion_directory
+      directory promotion_directory_path do
+        owner new_resource.parent.user
+        group new_resource.parent.group
+        mode new_resource.parent.dir_permissions
+        recursive true
+      end
+    end
+
+    def write_promotion_config
+      file promtion_config_path do
+        content new_resource.promotion_source_content
+        owner new_resource.parent.user
+        group new_resource.parent.group
+        mode '600'
+      end
+    end
+
+  end
 
 end
 

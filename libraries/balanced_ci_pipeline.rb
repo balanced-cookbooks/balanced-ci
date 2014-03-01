@@ -53,6 +53,7 @@ class Chef
     attribute(:deploy_test_template, template: true, default_source: 'commands/deploy-test.sh.erb', default_options: lazy { default_command_options })
     attribute(:deploy_staging_template, template: true, default_source: 'commands/deploy-staging.sh.erb', default_options: lazy { default_command_options })
     attribute(:acceptance_template, template: true, default_source: 'commands/acceptance.sh.erb', default_options: lazy { default_command_options })
+    attribute(:promote_template, template: true, default_source: 'commands/promote.sh.erb', default_options: lazy { default_command_options })
     attribute(:env_template, template: true, default_source: 'commands/env.sh.erb', default_options: lazy { default_command_options })
 
     def initialize(*args)
@@ -165,6 +166,8 @@ class Chef
       command new_resource.build_template_content
       parameterized true
       downstream_triggers ["#{new_resource.name}-acceptance"]
+      promotion_downstream_triggers ["#{new_resource.name}-acceptance"]
+      promotion_command new_resource.promote_template_content
 
       builder_recipe do
         include_recipe 'balanced-omnibus'

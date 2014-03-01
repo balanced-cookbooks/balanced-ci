@@ -1,0 +1,31 @@
+export PACKAGE=<%= @new_resource.omnibus_package %>
+export ITERATION="1"
+export NUMBERS=`echo $GIT_TAG | sed -re 's/v(.*)/\1/'`  # get v1.0.3 to 1.0.3
+export VERSION="$NUMBERS-$ITERATION"
+
+echo "Promoting package ${PACKAGE} @ ${VERSION} ..."
+
+# ensure the virtualenv is created
+if [ ! -d ".pyenv" ]; then
+  virtualenv .pyenv
+fi
+# activate the environment
+source .pyenv/bin/activate
+
+pip install --upgrade depot==0.0.12
+
+# run depot as root (need to get the key for signing package)
+export DEPOT_BIN=`which depot`
+export TARGET_URL="s3://apt.vandelay.io/pool/${PACKAGE}_${VERSION}_amd64.deb"
+# ------------------------------------------------------------------------------
+sudo bash -xe <<DEPOT
+
+# expose AWS keys
+<%= render 'commands/_aws.erb', variables: @aws_depot %>
+
+# submit package
+export HOME=/root
+$DEPOT_BIN -s s3://apt.vandelay.io -k 277E7787 -c precise --component main --no-public --force $TARGET_URL
+
+DEPOT
+# ------------------------------------------------------------------------------
