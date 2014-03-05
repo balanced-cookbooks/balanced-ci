@@ -21,7 +21,6 @@ balanced_ci_pipeline 'balanced-docs' do
   cookbook_repository 'git@github.com:balanced-cookbooks/balanced-docs.git'
   pipeline %w{gate build acceptance}
   project_url 'https://github.com/balanced/balanced-docs'
-  branch 'multi-rev'
 
   # The docs have no tests per se, so just make a blank task to dispach to the build job.
   # TODO: This shouldn't be needed.
