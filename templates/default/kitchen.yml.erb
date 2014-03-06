@@ -2,7 +2,7 @@
 driver:
   name: ec2
   aws_ssh_key_id: travis
-  ssh_key: travis.pem
+  ssh_key: <%%= ENV['KITCHEN_SSH_KEY'] || 'travis.pem' %>
 
 platforms:
 - name: ubuntu-12.04
