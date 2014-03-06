@@ -8,7 +8,9 @@ export KITCHEN_LOCAL_YAML=.kitchen.ci.yml
 export KITCHEN_SSH_KEY=/srv/ci/travis.pem
 export BERKSHELF_CONFIG=/srv/ci/berkshelf.json
 export LANG=en_US.UTF-8
-export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
+if [ -n "$GIT_TAG" ]; then
+  export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
+fi
 bundle install --binstubs --deployment --path vendor/bundle
 <%= render 'commands/_aws.erb', variables: @aws_travis %>
 bin/kitchen test -d always -p

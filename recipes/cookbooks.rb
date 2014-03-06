@@ -17,19 +17,23 @@
 #
 
 chef_gem 'octokit'
-
+require 'octokit'
 github = Octokit::Client.new(access_token: citadel['github/token'])
 github.org_repos('balanced-cookbooks').each do |repo|
   files = github.contents("balanced-cookbooks/#{repo.name}").map {|f| f.path}
   next unless files.include?('.kitchen.yml') # No tests, not interested
 
-  balanced_ci_job "cookbook-#{repo.name}" do
-    repository "git@github.com:balanced-cookbooks/#{repo.name}.git"
-    branch 'master'
-    server_api_key citadel['jenkins_builder/hashedToken']
-    builder_label 'cookbooks'
-    command 'echo Yay'
+  balanced_ci_pipeline repo.name do
+    cookbook_repository "git@github.com:balanced-cookbooks/#{repo.name}.git"
+    pipeline %w{acceptance}
+    job 'acceptance' do |new_resource|
+      job_name "cookbook-#{repo.name}"
+      scm_trigger Chef::Config[:solo] ? '' : '* * * * *'
+      builder_label 'cookbooks'
+      parameterized false
+    end
   end
+
 end
 
 include_recipe 'balanced-ci'
