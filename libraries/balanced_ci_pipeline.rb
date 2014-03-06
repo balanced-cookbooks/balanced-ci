@@ -229,6 +229,12 @@ class Chef
             },
           }.to_json)
         end
+        template '/srv/ci/kitchen.yml' do
+          owner 'root'
+          group 'root'
+          mode '644'
+          source 'kitchen.yml.erb'
+        end
       end
     end
 

@@ -1,0 +1,10 @@
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: travis
+  ssh_key: travis.pem
+
+platforms:
+- name: ubuntu-12.04
+  driver_config:
+    image_id: ami-4df9cf24

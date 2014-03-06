@@ -4,7 +4,11 @@ echo Build is: ${GIT_TAG}
 <%= @new_resource.acceptance_command %>
 <%- else -%>
 export PATH="/opt/ruby-210/bin:$PATH"
-export KITCHEN_LOCAL_YAML=.kitchen.ci.yml
+if [ -f .kitchen.ci.yml ]; then
+  export KITCHEN_LOCAL_YAML=.kitchen.ci.yml
+else
+  export KITCHEN_LOCAL_YAML=/srv/ci/kitchen.yml
+fi
 export KITCHEN_SSH_KEY=/srv/ci/travis.pem
 export BERKSHELF_CONFIG=/srv/ci/berkshelf.json
 export LANG=en_US.UTF-8
