@@ -20,10 +20,22 @@ require 'serverspec'
 include Serverspec::Helper::Exec
 include Serverspec::Helper::DetectOS
 
-describe port(80) do
-  it { should be_listening }
+describe 'Basics' do
+  describe port(80) do
+    it { should be_listening }
+  end
+
+  describe port(443) do
+    it { should be_listening }
+  end
 end
 
-describe port(443) do
-  it { should be_listening }
+describe 'Cookbook tests' do
+  describe file('/var/lib/jenkins/jobs/cookbook-balanced-ci/config.xml') do
+    it { should be_a_file }
+  end
+
+  describe file('/var/lib/jenkins/config.xml') do
+    its(:content) { should include('<string>cookbook-balanced-ci</string>') }
+  end
 end

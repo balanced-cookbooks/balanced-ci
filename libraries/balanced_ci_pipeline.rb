@@ -89,7 +89,7 @@ class Chef
           new_resource.pipeline.each do |name|
             create_job(name)
           end
-          create_view if new_resource.view
+          create_view if new_resource.view && new_resource.parent
         end
       end
     end
