@@ -153,7 +153,6 @@ class Chef
       conditional_continue job_name: "#{new_resource.name}-build"
 
       builder_recipe do
-        include_recipe 'git'
         include_recipe 'python'
         package 'libxml2-dev'
         package 'libxslt1-dev'

@@ -71,6 +71,7 @@ class Chef
 
     def action_enable
       super
+      include_recipe 'git' # We just always need this
       if new_resource.parent and new_resource.promotion
         converge_by("create jenkins promotion for job #{new_resource.job_name}") do
           notifying_block do
