@@ -67,7 +67,7 @@ class Chef
 
   end
 
-  class Provider::BalancedCiJob < Provider::CiJob; 
+  class Provider::BalancedCiJob < Provider::CiJob;
 
     def action_enable
       super
@@ -87,7 +87,7 @@ class Chef
 
     def create_promotion
       # TODO: maybe we should make promotion job be a reusable resource like
-      # 
+      #
       # promotion_job 'promote-to-stable' do
       #   source 'foobar.xml.erb'
       #   downstream 'foobar-acceptance'
@@ -97,15 +97,15 @@ class Chef
     end
 
     def promotion_directory_path
-      # this will be something looks like 
+      # this will be something looks like
       # /var/lib/jenkins/jobs/billy-acceptance/promotions/promote-to-stable/
       ::File.join(
-        new_resource.parent.jobs_path, 
-        new_resource.job_name, 
-        'promotions', 
+        new_resource.parent.jobs_path,
+        new_resource.job_name,
+        'promotions',
         'promote-to-stable',
       )
-    end 
+    end
 
     def promtion_config_path
       ::File.join(promotion_directory_path, 'config.xml')
