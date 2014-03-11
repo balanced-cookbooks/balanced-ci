@@ -29,6 +29,7 @@ class Chef
     attribute(:omnibus_repository, kind_of: String, default: lazy { node['balanced-ci']['omnibus_repository'] })
     attribute(:cookbook_repository, kind_of: String, required: true)
     attribute(:pipeline, kind_of: Array, default: %w{test quality build acceptance deploy_staging deploy_test})
+    attribute(:view, equal_to: [true, false], default: true)
 
     attribute(:test_db_user, kind_of: String)
     attribute(:test_db_name, kind_of: String,)
@@ -88,6 +89,7 @@ class Chef
           new_resource.pipeline.each do |name|
             create_job(name)
           end
+          create_view if new_resource.view && new_resource.parent
         end
       end
     end
@@ -99,6 +101,13 @@ class Chef
     end
 
     private
+
+    def create_view
+      jenkins_view new_resource.name do
+        parent new_resource.parent
+        jobs new_resource.pipeline.map {|name| "#{new_resource.name}-#{name}" }
+      end
+    end
 
     def create_job(name)
       raise "Unknown job #{name}" unless self.class.default_job(name) || (new_resource.jobs[name] && !new_resource.jobs[name].empty?)

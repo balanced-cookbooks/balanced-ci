@@ -1,7 +1,7 @@
 #
 # Author:: Noah Kantrowitz <noah@coderanger.net>
 #
-# Copyright 2013-2014, Balanced, Inc.
+# Copyright 2014, Balanced, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-source 'https://berks.vandelay.io/'
+class Chef
+  class Resource::BalancedCiView < Resource::JenkinsView
+    include Poise(parent: CiServer, parent_optional: true)
+  end
 
-metadata
-
-group :test do
-  cookbook 'apt'
+  class Provider::BalancedCiView < Provider::JenkinsView; end
 end

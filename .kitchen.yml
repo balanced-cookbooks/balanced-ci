@@ -3,16 +3,18 @@ driver:
   name: vagrant
   require_chef_omnibus: true
 
-attributes:
-  citadel:
-    access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
-    secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+provisioner:
+  attributes:
+    citadel:
+      access_key_id: <%= ENV['BALANCED_AWS_ACCESS_KEY_ID'] || ENV['AWS_ACCESS_KEY_ID'] %>
+      secret_access_key: <%= ENV['BALANCED_AWS_SECRET_ACCESS_KEY'] || ENV['AWS_SECRET_ACCESS_KEY'] %>
 
 platforms:
 - name: ubuntu-12.04
+  run_list:
+  - recipe[apt]
 
 suites:
 - name: server
   run_list:
-  - recipe[apt]
   - recipe[balanced-ci::server]
