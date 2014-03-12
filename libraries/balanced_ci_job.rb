@@ -40,6 +40,7 @@ class Chef
     attribute(:promotion_source, template: true, default_source: 'promote.xml.erb', default_options: lazy { default_options })
     attribute(:promotion_command, kind_of: String, default: 'echo 1')
     attribute(:promotion_downstream_triggers, kind_of: Array, default: [])
+    attribute(:executors, kind_of: Integer)
 
     def default_options
       super.merge(
@@ -127,6 +128,12 @@ class Chef
         group new_resource.parent.group
         mode '600'
       end
+    end
+
+    def create_node
+      r = super
+      r.executors = new_resource.executors if new_resource.executors
+      r
     end
 
   end
