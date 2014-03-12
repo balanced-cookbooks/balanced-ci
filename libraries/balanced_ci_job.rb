@@ -67,7 +67,7 @@ class Chef
 
   end
 
-  class Provider::BalancedCiJob < Provider::CiJob;
+  class Provider::BalancedCiJob < Provider::CiJob
 
     def action_enable
       super
