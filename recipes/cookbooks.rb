@@ -37,6 +37,7 @@ repos.each do |repo|
       scm_trigger Chef::Config[:solo] ? '' : '* * * * *'
       builder_label 'cookbooks'
       parameterized false
+      executors 4
     end
   end
 end
