@@ -132,7 +132,7 @@ class Chef
 
     def create_node
       r = super
-      r.executors = new_resource.executors if new_resource.executors
+      r.executors(new_resource.executors) if new_resource.executors
       r
     end
 
