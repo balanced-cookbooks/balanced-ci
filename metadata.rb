@@ -17,7 +17,7 @@
 #
 
 name 'balanced-ci'
-version '1.0.88'
+version '1.0.90'
 
 maintainer 'Noah Kantrowitz'
 maintainer_email 'noah@coderanger.net'
@@ -25,8 +25,9 @@ license 'Apache 2.0'
 description 'Installs and configures Balanced CI server and jobs'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-depends 'poise', '~> 1.0.4'
-depends 'ci', '~> 1.0.18'
+# No way to apply two constraints in either Chef or Berkshelf that I can find :-(
+depends 'poise', '~> 1.0'#, '>= 1.0.10'
+depends 'ci', '~> 1.0'#, '>= 1.0.20'
 depends 'balanced-citadel'
 depends 'postfix', '>= 3.0.4'
 depends 'nginx'
