@@ -93,6 +93,16 @@ Vagrant.configure("2") do |config|
     end
     chef_solo_config(master, 'balanced-ci::server') do |chef|
       chef.json['ci'] = {server_hostname: 'ci.dev'}
+      chef.json['jenkins'] = {
+        server: {
+          nodes: {
+            'balanced-ci-berkshelf' => {
+              labels: 'cookbooks',
+              path: '/srv/ci',
+            }
+          }
+        }
+      }
     end
     master.vm.network :private_network, ip: "10.2.3.4"
   end

@@ -21,5 +21,9 @@ class Chef
     include Poise(parent: CiServer, parent_optional: true)
   end
 
-  class Provider::BalancedCiView < Provider::JenkinsView; end
+  class Provider::BalancedCiView < Provider::JenkinsView
+    def action_enable
+      super if new_resource.parent
+    end
+  end
 end
