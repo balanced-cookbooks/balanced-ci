@@ -18,7 +18,7 @@
 
 chef_gem 'octokit'
 require 'octokit'
-github = Octokit::Client.new(access_token: citadel['github/token'])
+github = Octokit::Client.new(access_token: citadel['github/token'], auto_paginate: true)
 repos = []
 github.org_repos('balanced-cookbooks').each do |repo|
   files = github.contents("balanced-cookbooks/#{repo.name}").map {|f| f.path}
