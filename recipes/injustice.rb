@@ -25,6 +25,7 @@ balanced_ci_pipeline 'injustice' do
   test_command <<-COMMAND.gsub(/^ {4}/, '')
     pip install mock==0.8
     pip install unittest2
+    pip install jsonschema==1.1.0
     ./manage.py test --with-id --with-xunit --with-xcoverage --cover-package=injustice --cover-erase
   COMMAND
   quality_command 'coverage.py coverage.xml injustice_service.apps:80 injustice_service.lib:80'
