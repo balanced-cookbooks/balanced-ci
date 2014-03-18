@@ -8,7 +8,7 @@ GRAPH
   apt (2.3.8)
   ark (0.6.0)
   aws (2.1.0)
-  balanced-ci (1.0.98)
+  balanced-ci (1.0.100)
     balanced-citadel (>= 0.0.0)
     balanced-elasticsearch (>= 0.0.0)
     balanced-mongodb (>= 0.0.0)
