@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-balanced_ci_pipeline 'rump' do
+balanced_ci_pipeline 'injustice' do
   repository 'git@github.com:balanced/injustice.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/role-balanced-dashboard-auth.git'
   pipeline %w{test quality build acceptance}
