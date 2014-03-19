@@ -64,6 +64,7 @@ jenkins_plugin 'violations'
 jenkins_plugin 'view-job-filters'
 jenkins_plugin 'ansicolor'
 jenkins_plugin 'promoted-builds'
+jenkins_plugin 'ghprb'
 
 include_recipe 'balanced-ci'
 include_recipe 'balanced-ci::balanced'
