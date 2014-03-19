@@ -22,7 +22,7 @@ balanced_ci_pipeline 'injustice' do
   pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/injustice'
   test_db_user 'injustice'
-  test_db_name 'injustice_test'
+  test_db_name 'injustice'
   test_db_host 'localhost'
   branch 'omnibussed'
 
