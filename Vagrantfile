@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
         server: {
           nodes: {
             'balanced-ci-berkshelf' => {
-              labels: 'cookbooks',
+              labels: %w(cookbooks balanced rump brache billy balanced-docs),
               path: '/srv/ci',
             }
           }
