@@ -2,6 +2,7 @@
 
 Configure all aspects of the Balanced CI environment and pipeline system.
 
+
 ## Development
 
 1. `bundle install`.
@@ -9,6 +10,22 @@ Configure all aspects of the Balanced CI environment and pipeline system.
 1. `vagrant up builder`. This should only be done after the server is provisioned.
 
 UI lives at http://10.2.3.4:8080/ once it's running.
+
+### IF YOU ADD A NEW RECIPE
+
+Modify the `Vagrantfile` to add it in the `labels` section. Here:
+
+```ruby
+      chef.json['jenkins'] = {
+        server: {
+          nodes: {
+            'balanced-ci-berkshelf' => {
+              labels: %w(cookbooks balanced rump brache billy balanced-docs),   <-- append your project name here
+              path: '/srv/ci',
+            }
+          }
+        }
+```
 
 ## Deploying a new builder
 
