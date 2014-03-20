@@ -30,7 +30,7 @@ balanced_ci_pipeline 'injustice' do
     pip install mock==0.8
     pip install unittest2
     pip install jsonschema==1.1.0
-    ./manage.py test --with-id --with-xunit --with-xcoverage --cover-package=injustice --cover-erase
+    INJUSTICE_SETTINGS=default ./manage.py test --with-id --with-xunit --with-xcoverage --cover-package=injustice --cover-erase
   COMMAND
 
 
