@@ -35,6 +35,18 @@ ci_server 'balanced-ci' do
     certificate citadel['jenkins_server/ssl.pem']
     key citadel['jenkins_server/ssl.key']
   end
+  component 'ghprb' do
+    access_token citadel['jenkins_server/github_access_token']
+    admin_list %w(
+      mahmoudimus
+      coderanger
+      mjallday
+      cieplak
+      msherry
+      remear
+      victorlin
+    )
+  end
 end
 
 jenkins_plugin 'github'
