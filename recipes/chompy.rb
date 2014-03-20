@@ -89,7 +89,7 @@ balanced_ci_pipeline 'chompy' do
 
   end
 
-  quality_command 'coverage.py coverage.xml chompy.chompy:87'
+  #quality_command 'coverage.py coverage.xml chompy.chompy:87'
 end
 
 include_recipe 'balanced-ci'
