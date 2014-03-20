@@ -37,15 +37,7 @@ ci_server 'balanced-ci' do
   end
   component 'ghprb' do
     access_token citadel['jenkins_server/github_access_token']
-    admin_list %w(
-      mahmoudimus
-      coderanger
-      mjallday
-      cieplak
-      msherry
-      remear
-      victorlin
-    )
+    admin_list node['balanced-ci']['ghprb']['admin_list']
   end
 end
 
