@@ -42,6 +42,12 @@ class Chef
     attribute(:promotion_downstream_triggers, kind_of: Array, default: [])
     attribute(:executors, kind_of: Integer)
 
+    attribute(:ghprb_enable, equal_to: [true, false], default: false)
+    attribute(:ghprb_cron, kind_of: String, default: '*/5 * * * *')
+    # TODO: maybe we should use org list instead?
+    attribute(:ghprb_admin_list, kind_of: Array, default: [])
+    attribute(:ghprb_github_hooker, equal_to: [true, false], default: false)
+
     def default_options
       super.merge(
         project_url: project_url,
@@ -63,6 +69,10 @@ class Chef
         job_name: job_name,
         promotion_command: REXML::Text.normalize(promotion_command),
         promotion_downstream_triggers: promotion_downstream_triggers,
+        ghprb_enable: ghprb_enable,
+        ghprb_cron: ghprb_cron,
+        ghprb_admin_list: ghprb_admin_list,
+        ghprb_github_hooker: ghprb_github_hooker,
       )
     end
 

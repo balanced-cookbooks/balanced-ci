@@ -3,14 +3,22 @@
 <userRemoteConfigs>
   <hudson.plugins.git.UserRemoteConfig>
     <name>origin</name>
+    <%- if @ghprb_enable -%>
+    <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
+    <% else %>
     <refspec></refspec>
+    <%- end -%>
     <url><%= @repository %></url>
     <credentialsId></credentialsId>
   </hudson.plugins.git.UserRemoteConfig>
 </userRemoteConfigs>
 <branches>
   <hudson.plugins.git.BranchSpec>
+    <%- if @ghprb_enable -%>
+    <name>${sha1}</name>
+    <% else %>
     <name><%= @branch %></name>
+    <%- end -%>
   </hudson.plugins.git.BranchSpec>
 </branches>
 <disableSubmodules>false</disableSubmodules>

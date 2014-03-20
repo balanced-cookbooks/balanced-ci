@@ -17,6 +17,15 @@
 #
 
 default['balanced-ci']['omnibus_repository'] = 'https://github.com/balanced/omnibus-balanced.git'
+default['balanced-ci']['ghprb']['admin_list'] = %w(
+    mahmoudimus
+    coderanger
+    mjallday
+    cieplak
+    msherry
+    remear
+    victorlin
+)
 
 # Overrides for ci templates
 override['ci']['repository'] = 'https://github.com/balanced/%{name}.git'

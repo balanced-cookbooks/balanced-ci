@@ -138,6 +138,7 @@ class Chef
       junit '**/nosetests.xml'
       downstream_triggers ["#{new_resource.name}-quality"]
       environment_script new_resource.env_template_content
+      ghprb_admin_list node['balanced-ci']['ghprb']['admin_list']
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'

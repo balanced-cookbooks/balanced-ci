@@ -36,7 +36,9 @@
     </hudson.plugins.promoted__builds.JobPropertyImpl>
     <%- end -%>
   </properties>
-  <% if @repository %><%= render '_git.erb', variables: {repository: @repository, branch: @branch} %><% end %>
+  <% if @repository %>
+    <%= render '_git.erb', variables: {repository: @repository, branch: @branch, ghprb_enable: @ghprb_enable} %>
+  <% end %>
 
   <%- if @inherit -%>
   <scm class="hudson.plugins.cloneworkspace.CloneWorkspaceSCM">
@@ -54,14 +56,34 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <%- if @scm_trigger -%>
   <triggers class="vector">
+    <%- if @ghprb_enable -%>
+    <org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.11.2">
+      <spec><%= @ghprb_cron %></spec>
+      <adminlist><%= @ghprb_admin_list.join("\n") %></adminlist>
+      <whitelist></whitelist>
+      <orgslist></orgslist>
+      <cron><%= @ghprb_cron %></cron>
+      <triggerPhrase></triggerPhrase>
+      <onlyTriggerPhrase>false</onlyTriggerPhrase>
+      <useGitHubHooks><%= @ghprb_github_hooker %></useGitHubHooks>
+      <permitAll>false</permitAll>
+      <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
+      <whiteListTargetBranches>
+        <org.jenkinsci.plugins.ghprb.GhprbBranch>
+          <branch></branch>
+        </org.jenkinsci.plugins.ghprb.GhprbBranch>
+      </whiteListTargetBranches>
+    </org.jenkinsci.plugins.ghprb.GhprbTrigger>
+    <%- end -%>
+
+    <%- if @scm_trigger -%>
     <hudson.triggers.SCMTrigger>
       <spec><%= @scm_trigger %></spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
+    <%- end -%>
   </triggers>
-  <%- end -%>
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
