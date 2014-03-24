@@ -67,6 +67,7 @@ jenkins_plugin 'promoted-builds'
 
 include_recipe 'balanced-ci'
 include_recipe 'balanced-ci::balanced'
+include_recipe 'balanced-ci::precog'
 include_recipe 'balanced-ci::balanced-docs'
 include_recipe 'balanced-ci::brache'
 include_recipe 'balanced-ci::cookbooks'
