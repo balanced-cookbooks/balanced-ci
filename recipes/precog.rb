@@ -31,6 +31,10 @@ balanced_ci_pipeline 'precog' do
   test_command 'pip install -e .[tests] && nosetests --processes=8 -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
   quality_command 'coverage.py coverage.xml precog_service.models:91 precog_service.resources:92'
 
+  job 'build' do |new_resource|
+    promotion true
+  end
+
   job 'test' do |new_resource|
     conditional_continue job_name: "#{new_resource.name}-build"
 
