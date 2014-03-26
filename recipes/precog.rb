@@ -49,6 +49,7 @@ balanced_ci_pipeline 'precog' do
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
 
+      python_pip 'awscli'
       package 'libxml2-dev'
       package 'libxslt1-dev'
 
