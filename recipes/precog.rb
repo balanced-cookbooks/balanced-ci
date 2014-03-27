@@ -26,10 +26,10 @@ balanced_ci_pipeline 'precog' do
   test_db_user 'precog'
   test_db_name 'precog_test'
   test_db_host 'localhost'
-  branch 'omnibussed'
+  branch 'omnibussed-mfl'
 
-  test_command 'pip install -e .[tests] && nosetests --processes=8 -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
-  quality_command 'coverage.py coverage.xml precog_service.models:91 precog_service.resources:92'
+  test_command 'pip install -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
+  quality_command 'coverage.py coverage.xml precog_service.models:91 precog_service.resources:85'
 
   job 'build' do |new_resource|
     promotion true
@@ -49,9 +49,9 @@ balanced_ci_pipeline 'precog' do
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
 
-      python_pip 'awscli'
-      package 'libxml2-dev'
-      package 'libxslt1-dev'
+      %w(libatlas-dev libatlas-base-dev liblapack-dev gfortran libxml2-dev libxslt1-dev).each do |name|
+        package name
+      end
 
       include_recipe 'postgresql::client'
       include_recipe 'postgresql::ruby'

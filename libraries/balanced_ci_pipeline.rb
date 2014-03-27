@@ -141,6 +141,7 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
+        include_recipe 'awscli'
       end
     end
 
