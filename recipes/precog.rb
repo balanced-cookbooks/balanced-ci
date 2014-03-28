@@ -26,10 +26,10 @@ balanced_ci_pipeline 'precog' do
   test_db_user 'precog'
   test_db_name 'precog_test'
   test_db_host 'localhost'
-  branch 'omnibussed-mfl'
+  branch 'omnibussed'
 
   test_command 'pip install -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
-  quality_command 'coverage.py coverage.xml precog_service.models:91 precog_service.resources:85'
+  quality_command 'coverage.py coverage.xml precog_service.models:92 precog_service.resources:92'
 
   job 'build' do |new_resource|
     promotion true
