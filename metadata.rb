@@ -32,7 +32,7 @@ depends 'balanced-citadel'
 depends 'postfix', '>= 3.0.4'
 depends 'nginx'
 depends 'sudo'
-depends 'awscli'
+depends 'awscli', '~> 1.0.0'
 
 # For build slaves
 depends 'balanced-elasticsearch'

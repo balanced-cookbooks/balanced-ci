@@ -44,7 +44,7 @@ balanced_ci_pipeline 'precog' do
       include_recipe 'rsyslog'
       include_recipe 'balanced-rabbitmq'
       include_recipe 'balanced-elasticsearch'
-      include_recipe 'balanced-postgres'
+      include_recipe 'balanced-postgresql'
       include_recipe 'balanced-mongodb'
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
