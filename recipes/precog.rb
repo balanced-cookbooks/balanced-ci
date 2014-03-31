@@ -49,7 +49,7 @@ balanced_ci_pipeline 'precog' do
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
 
-      %w(libatlas-dev libatlas-base-dev liblapack-dev gfortran libxml2-dev libxslt1-dev).each do |name|
+      %w(libatlas-dev libatlas-base-dev liblapack-dev gfortran libxml2-dev libxslt1-dev libatlas3gf-base).each do |name|
         package name
       end
 
