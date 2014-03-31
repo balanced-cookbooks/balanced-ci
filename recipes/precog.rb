@@ -28,7 +28,7 @@ balanced_ci_pipeline 'precog' do
   test_db_host 'localhost'
   branch 'omnibussed'
 
-  test_command 'pip install -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
+  test_command 'pip install --no-use-wheel -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
   quality_command 'coverage.py coverage.xml precog_service.models:92 precog_service.resources:92'
 
   job 'build' do |new_resource|
