@@ -141,6 +141,7 @@ class Chef
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
+        include_recipe 'awscli'
       end
     end
 
@@ -180,6 +181,7 @@ class Chef
       builder_recipe do
         include_recipe 'balanced-omnibus'
         include_recipe 'python'
+        include_recipe 'awscli'
         python_pip 'depot' do
           action :upgrade
           user 'root'

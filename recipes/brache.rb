@@ -42,7 +42,7 @@ balanced_ci_pipeline 'brache' do
   end
 
   test_command <<-COMMAND.gsub(/^ {4}/, '')
-    pip install -e .[user,test,router]
+    pip install --no-use-wheel -e .[user,test,router]
     nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=brache --cover-erase
   COMMAND
 

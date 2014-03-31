@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
         server: {
           nodes: {
             'balanced-ci-berkshelf' => {
-              labels: %w(cookbooks balanced rump brache billy balanced-docs),
+              labels: %w(cookbooks balanced rump brache billy balanced-docs precog),
               path: '/srv/ci',
             }
           }
@@ -111,7 +111,7 @@ Vagrant.configure("2") do |config|
     builder.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", 2]
     end
-    chef_solo_config(builder, 'balanced-ci::balanced') do |chef|
+    chef_solo_config(builder, 'balanced-ci::precog') do |chef|
       chef.json['ci'] = {server_url: 'http://10.2.3.4:8080/'}
     end
     builder.vm.network :private_network, ip: "10.2.3.5"
