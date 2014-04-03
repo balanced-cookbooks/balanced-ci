@@ -17,7 +17,8 @@ if [ -n "$GIT_TAG" ]; then
 fi
 bundle install --binstubs --deployment --path vendor/bundle
 <%= render 'commands/_aws.erb', variables: @aws_travis %>
-bin/kitchen test -d never -p
+bin/kitchen converge
+bin/kitchen verify
 if [ $? -eq 0 ]; then
    bin/kitchen destroy
 fi
