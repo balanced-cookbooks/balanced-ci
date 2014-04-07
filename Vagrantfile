@@ -89,7 +89,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define 'server' do |master|
     master.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--memory", "2048"]
     end
     chef_solo_config(master, 'balanced-ci::server') do |chef|
       chef.json['ci'] = {server_hostname: 'ci.dev'}
