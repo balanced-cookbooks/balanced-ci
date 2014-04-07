@@ -11,7 +11,8 @@ balanced_ci_pipeline 'brache' do
     builder_recipe do
       include_recipe 'git'
       include_recipe 'python'
-      include_recipe 'postgresql::client'
+      include_recipe 'balanced-postgresql'
+      include_recipe 'balanced-postgresql::client'
 
       group node['jenkins']['node']['group']
 

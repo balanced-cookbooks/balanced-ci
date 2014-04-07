@@ -38,9 +38,11 @@ balanced_ci_pipeline 'balanced' do
       include_recipe 'git'
       include_recipe 'python'
       include_recipe 'rsyslog'
+      include_recipe 'balanced-postgresql'
+      include_recipe 'balanced-postgresql::server'
+      include_recipe 'balanced-postgresql::client'
       include_recipe 'balanced-rabbitmq'
       include_recipe 'balanced-elasticsearch'
-      include_recipe 'balanced-postgres'
       include_recipe 'balanced-mongodb'
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
@@ -48,21 +50,17 @@ balanced_ci_pipeline 'balanced' do
       package 'libxml2-dev'
       package 'libxslt1-dev'
 
-      include_recipe 'postgresql::client'
-      include_recipe 'postgresql::ruby'
-
-      postgresql_database_user new_resource.test_db_user do
-        connection host: new_resource.test_db_host
+      pg_user new_resource.test_db_user do
+        privileges superuser: true, createdb: true, login: true
         password ''
       end
 
-      postgresql_database new_resource.test_db_name do
-        connection host: new_resource.test_db_host
+      pg_database new_resource.test_db_name do
+        owner new_resource.test_db_user
       end
 
-      # YOLO and I don't care right now
-      execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
-        user 'postgres'
+      pg_database_extensions new_resource.test_db_name do
+        extensions ['hstore']
       end
 
       directory node['ci']['path'] do

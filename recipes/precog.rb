@@ -42,11 +42,11 @@ balanced_ci_pipeline 'precog' do
       include_recipe 'git'
       include_recipe 'python'
       include_recipe 'rsyslog'
-      include_recipe 'balanced-rabbitmq'
-      include_recipe 'balanced-elasticsearch'
       include_recipe 'balanced-postgresql'
       include_recipe 'balanced-postgresql::server'
       include_recipe 'balanced-postgresql::client'
+      include_recipe 'balanced-rabbitmq'
+      include_recipe 'balanced-elasticsearch'
       include_recipe 'balanced-mongodb'
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
@@ -54,9 +54,6 @@ balanced_ci_pipeline 'precog' do
       %w(libatlas-dev libatlas-base-dev liblapack-dev gfortran libxml2-dev libxslt1-dev libatlas3gf-base).each do |name|
         package name
       end
-
-      include_recipe 'postgresql::client'
-      include_recipe 'postgresql::ruby'
 
       pg_user new_resource.test_db_user do
         privileges superuser: true, createdb: true, login: true
