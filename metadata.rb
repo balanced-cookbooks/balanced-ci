@@ -17,7 +17,7 @@
 #
 
 name 'balanced-ci'
-version '1.0.116'
+version '1.0.118'
 
 maintainer 'Noah Kantrowitz'
 maintainer_email 'noah@coderanger.net'
@@ -38,11 +38,9 @@ depends 'awscli', '~> 1.0.0'
 depends 'balanced-elasticsearch'
 depends 'balanced-mongodb'
 depends 'balanced-omnibus', '~> 1.0.2'
-depends 'balanced-postgres'
+depends 'balanced-postgresql'
 depends 'balanced-rabbitmq'
-depends 'database'
 depends 'poise-ruby'
-depends 'postgresql'
 depends 'python'
 depends 'redisio'
 depends 'newrelic-sysmond'
