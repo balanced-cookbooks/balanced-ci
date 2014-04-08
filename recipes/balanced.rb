@@ -52,7 +52,7 @@ balanced_ci_pipeline 'balanced' do
 
       pg_user new_resource.test_db_user do
         privileges superuser: true, createdb: true, login: true
-        password ''
+        password new_resource.test_db_user
       end
 
       pg_database new_resource.test_db_name do

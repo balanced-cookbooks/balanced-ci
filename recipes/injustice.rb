@@ -51,16 +51,16 @@ balanced_ci_pipeline 'injustice' do
       package 'libxslt1-dev'
 
       pg_user new_resource.test_db_user do
-          privileges superuser: true, createdb: true, login: true
-          password ''
+        privileges superuser: true, createdb: true, login: true
+        password new_resource.test_db_user
       end
 
       pg_database new_resource.test_db_name do
-          owner new_resource.test_db_user
+        owner new_resource.test_db_user
       end
 
       pg_database_extensions new_resource.test_db_name do
-          extensions ['hstore']
+        extensions ['hstore']
       end
 
       directory node['ci']['path'] do
