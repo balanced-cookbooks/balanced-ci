@@ -116,6 +116,7 @@ class Chef
         repository new_resource.repository
         branch new_resource.branch
         source new_resource.source
+        project_url new_resource.project_url
         server_api_key citadel['jenkins_builder/hashedToken']
         builder_label new_resource.name
       end

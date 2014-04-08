@@ -42,8 +42,6 @@ COMMAND
 
   job 'test' do |new_resource|
     ghprb_enable true
-    # Notice: looks like ghprb needs github project url to work?
-    project_url 'https://github.com/balanced/billy'
 
     builder_recipe do
       include_recipe 'git'
