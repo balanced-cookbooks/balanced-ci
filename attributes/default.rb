@@ -39,4 +39,9 @@ override['jenkins']['node']['home'] = '/var/lib/jenkins'
 
 # I don't even
 override['postgresql']['enable_pgdg_apt'] = true
-
+default['postgresql']['pg_hba'] << {
+  'type' => 'local',
+  'db' => 'all',
+  'user' => 'all',
+  'method' => 'trust'
+}
