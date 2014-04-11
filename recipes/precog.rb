@@ -36,7 +36,6 @@ balanced_ci_pipeline 'precog' do
   end
 
   job 'test' do |new_resource|
-    conditional_continue job_name: "#{new_resource.name}-build"
 
     builder_recipe do
       include_recipe 'git'

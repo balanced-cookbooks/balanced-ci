@@ -32,7 +32,6 @@ balanced_ci_pipeline 'balanced' do
   quality_command 'coverage.py coverage.xml balanced_service.models:91 balanced_service.resources:92'
 
   job 'test' do |new_resource|
-    conditional_continue job_name: "#{new_resource.name}-build"
 
     builder_recipe do
       include_recipe 'git'
