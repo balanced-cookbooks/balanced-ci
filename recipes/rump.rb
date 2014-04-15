@@ -32,9 +32,6 @@ balanced_ci_pipeline 'rump' do
   COMMAND
   quality_command 'coverage.py src/coverage.xml rump:50 rump.parser:50 rump.request:50'
 
-  job 'acceptance' do
-    branch 'berks3'
-  end
 end
 
 include_recipe 'balanced-ci'
