@@ -15,7 +15,7 @@ GRAPH
     apt (~> 2.3)
     balanced-citadel (~> 1.0)
     poise (~> 1.0)
-  balanced-ci (1.0.118)
+  balanced-ci (1.0.126)
     awscli (~> 1.0.0)
     balanced-citadel (>= 0.0.0)
     balanced-elasticsearch (>= 0.0.0)

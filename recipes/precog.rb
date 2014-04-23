@@ -41,6 +41,7 @@ balanced_ci_pipeline 'precog' do
       include_recipe 'git'
       include_recipe 'python'
       include_recipe 'rsyslog'
+      include_recipe 'awscli'
       include_recipe 'balanced-postgresql'
       include_recipe 'balanced-postgresql::server'
       include_recipe 'balanced-postgresql::client'
