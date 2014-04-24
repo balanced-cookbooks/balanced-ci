@@ -37,7 +37,7 @@ override['jenkins']['node']['user'] = 'jenkins'
 override['jenkins']['node']['group'] = 'jenkins'
 override['jenkins']['node']['home'] = '/var/lib/jenkins'
 
-override['awscli']['users'] = ['root', 'jenkins']
+default['awscli']['users'] = ['root', 'jenkins']
 
 # I don't even
 override['postgresql']['enable_pgdg_apt'] = true
