@@ -1,22 +1,5 @@
-echo Build is: ${PP_BUILD}
-
-PYENV_HOME=$WORKSPACE/.pyenv/
-
 # Consistent environments are more consistent
 source /etc/profile
-
-virtualenv $PYENV_HOME
-source $PYENV_HOME/bin/activate
-
-$PYENV_HOME/bin/pip install coverage==3.5.3
-$PYENV_HOME/bin/pip install pep8 pylint --upgrade
-$PYENV_HOME/bin/pip install lxml
-
-# Pylint
-$PYENV_HOME/bin/python -c "import sys, pylint.lint; pylint.lint.Run(sys.argv[1:])" --output-format=parseable --reports=n --disable=R0904,R0201,R0903,E1101,C0111,W0232,C0103,W0142,W0201,W0511,E1002,E1103,W0403,R0801 --generated-members= --ignore-iface-methods= --dummy-variables-rgx= <%= @new_resource.project_prefix %><%= @new_resource.python_package %>/ | tee pylint.out
-
-# Pep8
-find <%= @new_resource.project_prefix %><%= @new_resource.python_package %> -name \*.py | xargs $PYENV_HOME/bin/pep8 --ignore=E711 | tee pep8.out
 
 # enforce coverage
 COVERAGE_ARGS="<%= @new_resource.python_package %>.models:91 <%= @new_resource.python_package %>.resources:92"
