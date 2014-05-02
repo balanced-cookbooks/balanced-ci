@@ -1,7 +1,6 @@
 ---
 driver:
   name: vagrant
-  require_chef_omnibus: true
 
 provisioner:
   attributes:
@@ -18,3 +17,25 @@ suites:
 - name: server
   run_list:
   - recipe[balanced-ci::server]
+  driver:
+    customize:
+      memory: 2048
+      cpus: 2
+    network:
+    - [private_network, {ip: 10.2.3.4}]
+  attributes:
+    jenkins:
+      server:
+        nodes:
+          builder-ubuntu-1204:
+            labels: [cookbooks, balanced, rump, brache, billy, balanced-docs, precog]
+            path: /srv/ci
+
+- name: builder
+  run_list:
+  - recipe[balanced-ci::cookbooks]
+  driver:
+    vm_hostname: builder
+  attributes:
+    ci:
+      server_url: http://10.2.3.4:8080/
