@@ -39,6 +39,9 @@ repos.each do |repo|
       parameterized false
       executors 4
     end
+    acceptance_template_options do
+      bundle_path '/srv/ci/.bundle' # Should this just be the default for all jobs?
+    end
   end
 end
 
