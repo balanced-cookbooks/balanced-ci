@@ -53,6 +53,9 @@ pip install nose-cov
 pip install nose_xunitmp
 pip install pep8 pylint --upgrade
 pip install lxml
+# https://github.com/schlamar/cov-core recently messed up their code
+# this is an old version but it's known to work.
+pip install cov-core==1.0.8
 
 find $WORKSPACE -path $PYENV_HOME -prune -o -name "*.pyc" -print0 | xargs -0 rm
 
