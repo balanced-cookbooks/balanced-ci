@@ -28,7 +28,7 @@ github.org_repos('balanced-cookbooks').each do |repo|
 end
 
 repos.each do |repo|
-  balanced_ci_pipeline repo do
+  balanced_ci_pipeline "cookbook-#{repo}" do
     cookbook_repository "git@github.com:balanced-cookbooks/#{repo}.git"
     pipeline %w{acceptance}
     view false
