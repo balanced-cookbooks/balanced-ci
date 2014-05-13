@@ -213,6 +213,7 @@ class Chef
       builder_recipe do
         include_recipe 'poise-ruby::ruby-210'
         package 'libxml2-dev'
+        package 'libxslt1-dev'
         gem_package 'bundler' do
           gem_binary '/opt/ruby-210/bin/gem'
         end
