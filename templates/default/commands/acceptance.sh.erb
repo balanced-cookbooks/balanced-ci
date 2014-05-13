@@ -1,3 +1,8 @@
+export PACKAGE=<%= @new_resource.omnibus_package %>
+export ITERATION="1"
+export NUMBERS=`echo $GIT_TAG | sed -re 's/v(.*)/\1/'`  # get v1.0.3 to 1.0.3
+export VERSION="$NUMBERS-$ITERATION"
+
 echo Build is: ${GIT_TAG}
 
 <%- if @new_resource.acceptance_command -%>
@@ -23,6 +28,8 @@ if [ -n "$GIT_TAG" ]; then
   export HOME=/root
   <%= render 'commands/_aws.erb', variables: @aws_depot %>
   
-  depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=accepted --no-public --force "s3://apt.vandelay.io/pool/<%= @new_resource.omnibus_package %>_${GIT_TAG}-1_amd64.deb"
+  echo "Promoting package ${PACKAGE} @ ${VERSION} ..."
+  
+  depot -s s3://apt.vandelay.io -c precise -k 277E7787 --component=accepted --no-public --force "s3://apt.vandelay.io/pool/${PACKAGE}_${VERSION}_amd64.deb"
 fi
 <%- end -%>
