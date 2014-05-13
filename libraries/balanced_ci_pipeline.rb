@@ -212,6 +212,7 @@ class Chef
       command new_resource.acceptance_template_content
       builder_recipe do
         include_recipe 'poise-ruby::ruby-210'
+        include_recipe 'python'
         package 'libxml2-dev'
         package 'libxslt1-dev'
         gem_package 'bundler' do
@@ -246,6 +247,25 @@ class Chef
           group 'root'
           mode '644'
           source 'kitchen.yml.erb'
+        end
+        python_pip 'depot' do
+          action :upgrade
+          user 'root'
+        end
+        sudo 'jenkins' do
+          user 'jenkins'
+          nopasswd true
+        end
+        file '/root/packages@vandelay.io.pem' do
+          owner 'root'
+          group 'root'
+          mode '600'
+          content citadel['jenkins_builder/packages@vandelay.io.pem']
+        end
+        execute 'gpg --import /root/packages@vandelay.io.pem' do
+          user 'root'
+          not_if 'env HOME=/root gpg --list-secret-keys 277E7787'
+          environment 'HOME' => Dir.home('root') # Because GPG uses $HOME instead of real home
         end
       end
     end
