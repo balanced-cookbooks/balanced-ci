@@ -72,6 +72,10 @@ class Chef
           access_key_id: citadel['depot/aws_access_key_id'].strip,
           secret_access_key: citadel['depot/aws_secret_access_key'].strip,
         },
+        aws_travis: {
+          access_key_id: citadel['travis/aws_access_key_id'].strip,
+          secret_access_key: citadel['travis/aws_secret_access_key'].strip,
+        },
       }
     end
   end

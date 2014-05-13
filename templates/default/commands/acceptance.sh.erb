@@ -16,7 +16,7 @@ if [ -n "$GIT_TAG" ]; then
   export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
 fi
 bundle install --binstubs --deployment --path <%= @bundle_path || 'vendor/bundle' %>
-<%= render 'commands/_aws.erb', variables: @aws_depot %>
+<%= render 'commands/_aws.erb', variables: @aws_travis %>
 bin/kitchen test -d always -p
 if [ -n "$GIT_TAG" ]; then
   # we need this otherwise GPG cannot find the private key for signing package
