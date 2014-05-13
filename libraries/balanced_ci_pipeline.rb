@@ -212,6 +212,7 @@ class Chef
       command new_resource.acceptance_template_content
       builder_recipe do
         include_recipe 'poise-ruby::ruby-210'
+        package 'libxml2-dev'
         gem_package 'bundler' do
           gem_binary '/opt/ruby-210/bin/gem'
         end
