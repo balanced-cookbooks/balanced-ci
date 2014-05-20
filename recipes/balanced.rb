@@ -28,7 +28,7 @@ balanced_ci_pipeline 'balanced' do
   test_db_host 'localhost'
   branch 'omnibussed'
 
-  test_command 'pip install --no-use-wheel -e .[tests] && nosetests --processes=8 -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report term-missing'
+  test_command "pip install --no-use-wheel -e .[tests] && nosetests --processes=#{node[:cpu][:total]} -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report term-missing"
   quality_command 'coverage.py coverage.xml balanced_service.models:91 balanced_service.resources:92'
 
   job 'test' do |new_resource|
