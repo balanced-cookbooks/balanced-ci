@@ -47,3 +47,5 @@ default['postgresql']['pg_hba'] << {
   'user' => 'all',
   'method' => 'trust'
 }
+
+default['ci']['balanced']['parallelisms'] = 2
