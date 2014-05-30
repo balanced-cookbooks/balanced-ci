@@ -24,7 +24,7 @@ balanced_ci_pipeline 'balanced' do
   project_url 'https://github.com/PoundPay/balanced'
   python_package 'balanced_service'
   test_db_user 'balanced'
-  test_db_name 'balanced_test'
+  test_db_name 'balanced'
   test_db_host 'localhost'
   branch 'omnibussed'
 
