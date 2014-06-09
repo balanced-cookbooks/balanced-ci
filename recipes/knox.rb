@@ -18,15 +18,15 @@ balanced_ci_pipeline 'knox' do
   repository 'git@github.com:balanced/knox.git'
   # this should really be called the "acceptance cookbook"
   cookbook_repository 'git@github.com:balanced-cookbooks/acceptance.git'
-  pipeline %w{test quality}
+  pipeline %w{test quality acceptance}
   project_url 'https://github.com/balanced/knox'
   python_package 'knox_service'
   test_db_user 'knox'
   test_db_name 'knox_test'
   test_db_host 'localhost'
-  branch 'release'
+  branch 'setuppy'
 
-  test_command 'pip install --no-use-wheel -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
+  test_command 'pip install -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
   quality_command 'coverage.py coverage.xml knox_service.models:92 knox_service.resources:92'
 
   job 'test' do |new_resource|
@@ -43,7 +43,7 @@ balanced_ci_pipeline 'knox' do
       include_recipe 'redisio::install'
       include_recipe 'redisio::enable'
 
-      %w(libatlas-dev libatlas-base-dev liblapack-dev gfortran libxml2-dev libxslt1-dev libatlas3gf-base).each do |name|
+      %w(libatlas-dev libatlas-base-dev liblapack-dev gfortran libxml2-dev libxslt1-dev libatlas3gf-base python-lxml).each do |name|
         package name
       end
 

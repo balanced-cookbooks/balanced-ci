@@ -38,6 +38,9 @@ suites:
   run_list:
   - recipe[balanced-ci::cookbooks]
   driver:
+    customize:
+      memory: 2048
+      cpus: 2
     vm_hostname: builder
   attributes:
     ci:
