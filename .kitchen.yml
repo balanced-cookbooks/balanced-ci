@@ -23,18 +23,24 @@ suites:
       cpus: 2
     network:
     - [private_network, {ip: 10.2.3.4}]
+    - ["forwarded_port", {guest: 80, host: 9480}]
+    - ["forwarded_port", {guest: 443, host: 9443}]
+
   attributes:
     jenkins:
       server:
         nodes:
           builder-ubuntu-1204:
-            labels: [cookbooks, balanced, rump, brache, billy, balanced-docs, precog]
+            labels: [cookbooks, balanced, rump, brache, billy, balanced-docs, precog, knox]
             path: /srv/ci
 
 - name: builder
   run_list:
   - recipe[balanced-ci::cookbooks]
   driver:
+    customize:
+      memory: 2048
+      cpus: 2
     vm_hostname: builder
   attributes:
     ci:
