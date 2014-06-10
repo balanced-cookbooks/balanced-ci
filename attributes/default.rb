@@ -49,3 +49,8 @@ default['postgresql']['pg_hba'] << {
 }
 
 default['ci']['balanced']['parallelisms'] = 2
+
+# This controls the number of concurrent builds that Jenkins can perform. So
+# the value affects the overall system load Jenkins may incur. A good value to
+# start with would be the number of processors on your system.
+default['jenkins']['node']['executors'] = node[:cpu][:total]
