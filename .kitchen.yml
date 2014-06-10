@@ -36,6 +36,7 @@ suites:
 
 - name: builder
   run_list:
+  - recipe[balanced-ci::knox]
   - recipe[balanced-ci::cookbooks]
   driver:
     customize:
