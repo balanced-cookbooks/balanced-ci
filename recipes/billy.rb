@@ -48,8 +48,6 @@ COMMAND
       include_recipe 'balanced-postgresql'
       include_recipe 'balanced-postgresql::server'
       include_recipe 'balanced-postgresql::client'
-      include_recipe 'postgresql::client'
-      include_recipe 'postgresql::ruby'
 
       postgresql_database_user new_resource.test_db_user do
         connection host: new_resource.test_db_host
