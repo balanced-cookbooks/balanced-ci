@@ -45,7 +45,9 @@ COMMAND
       include_recipe 'git'
       include_recipe 'python'
       include_recipe 'balanced-ci'
-      include_recipe 'balanced-postgres'
+      include_recipe 'balanced-postgresql'
+      include_recipe 'balanced-postgresql::server'
+      include_recipe 'balanced-postgresql::client'
       include_recipe 'postgresql::client'
       include_recipe 'postgresql::ruby'
 
