@@ -49,13 +49,13 @@ COMMAND
       include_recipe 'balanced-postgresql::server'
       include_recipe 'balanced-postgresql::client'
 
-      postgresql_database_user new_resource.test_db_user do
-        connection host: new_resource.test_db_host
+      pg_user new_resource.test_db_user do
+        privileges superuser: true, createdb: true, login: true
         password ''
       end
 
-      postgresql_database new_resource.test_db_name do
-        connection host: new_resource.test_db_host
+      pg_database new_resource.test_db_name do
+        owner new_resource.test_db_user
       end
 
       execute "psql -c 'alter user #{new_resource.test_db_user} with superuser'" do
