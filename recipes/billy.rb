@@ -28,8 +28,8 @@ balanced_ci_pipeline 'billy' do
   test_db_host 'localhost'
   test_command <<-COMMAND
 export BILLY_TEST_ALEMBIC=1
-export BILLY_UNIT_TEST_DB=postgresql://billy:@localhost/billy_test
-export BILLY_FUNC_TEST_DB=postgresql://billy:@localhost/billy_test
+export BILLY_UNIT_TEST_DB=postgresql://billy:billy@localhost/billy_test
+export BILLY_FUNC_TEST_DB=postgresql://billy:billy@localhost/billy_test
 pip install --no-use-wheel psycopg2
 pip install --no-use-wheel nosexcover
 nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=billy --cover-erase
@@ -51,7 +51,7 @@ COMMAND
 
       pg_user new_resource.test_db_user do
         privileges superuser: true, createdb: true, login: true
-        password ''
+        password 'billy'
       end
 
       pg_database new_resource.test_db_name do
