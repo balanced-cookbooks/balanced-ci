@@ -8,7 +8,7 @@ REBUILD_VIRTUALENV=0
 REQ_FILES="requirements.txt test-requirements.txt requirements-test.txt"
 
 for req in $REQ_FILES setup.py; do    # Don't execute setup.py, but track it
-    LAST_REQUIREMENTS="$WORKSPACE/../$req"
+    LAST_REQUIREMENTS="$WORKSPACE/../<%= @new_resource.job_name %>-$req"
     REQS="$WORKSPACE/<%= @new_resource.project_prefix %>$req"
     if [ -e $REQS ]; then
         if [ ! -e $LAST_REQUIREMENTS ] || ! diff -aq $LAST_REQUIREMENTS $REQS; then
