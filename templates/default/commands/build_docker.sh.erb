@@ -1,0 +1,15 @@
+echo Build is: ${GIT_TAG}
+
+<%- if @new_resource.build_command -%>
+<%= @new_resource.build_command %>
+<%- else -%>
+sudo bash -xe <<BUILD
+export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
+
+virtualenv --no-site-packages .env
+source .env/bin/activate
+pip install -e .
+crane wrl.<%= @new_resource.name %>
+# TODO: upload to index here
+BUILD
+<%- end -%>
