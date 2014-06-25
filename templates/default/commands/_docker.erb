@@ -2,7 +2,7 @@ set +x # Redact credentials from log
 echo Setting docker credentials
 
 cat << EOF > ~/.dockercfg
-@<%= @docker_credentials.to_json %>
+<%= @docker_credentials.to_json %>
 EOF
 
 set -x
