@@ -79,7 +79,7 @@ class Chef
         docker_credentials: {
           node['balanced-docker']['repo_url'] => {
             auth: Base64::encode64(
-              "#{ node['balanced-docker']['password_file'] }:#{ citadel[node['balanced-docker']['password_file']].strip }"
+              "#{ node['balanced-docker']['username'] }:#{ citadel[node['balanced-docker']['password_file']].strip }"
             ).chomp,
             email: node['balanced-docker']['email'],
           },
