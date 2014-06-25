@@ -39,21 +39,6 @@ balanced_ci_pipeline 'justitia' do
       # it sets up github keys for us, so that we can pull repos
       include_recipe 'balanced-omnibus'
 
-      # this allows us to upload the docker image
-      file '/srv/ci/.dockercfg' do
-        owner 'root'
-        group 'root'
-        mode '644'
-        content({
-          node['balanced-docker']['repo_url'] => {
-            auth: Base64::encode64(
-              "#{ node['balanced-docker']['password_file'] }:#{ citadel[node['balanced-docker']['password_file']].chomp }"
-            ).chomp,
-            email: node['balanced-docker']['email'],
-          },
-        }.to_json)
-      end
-
       directory "#{node['ci']['path']}/.pip" do
         owner node['jenkins']['node']['user']
         group node['jenkins']['node']['group']

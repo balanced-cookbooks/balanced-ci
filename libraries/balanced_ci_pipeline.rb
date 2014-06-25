@@ -76,6 +76,14 @@ class Chef
           access_key_id: citadel['travis/aws_access_key_id'].strip,
           secret_access_key: citadel['travis/aws_secret_access_key'].strip,
         },
+        docker_credentials: {
+          node['balanced-docker']['repo_url'] => {
+            auth: Base64::encode64(
+              "#{ node['balanced-docker']['password_file'] }:#{ citadel[node['balanced-docker']['password_file']].strip }"
+            ).chomp,
+            email: node['balanced-docker']['email'],
+          },
+        }
       }
     end
   end

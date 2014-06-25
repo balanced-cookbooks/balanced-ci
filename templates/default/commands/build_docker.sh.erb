@@ -18,6 +18,7 @@ docker tag balanced/<%= @new_resource.name %>:$GIT_TAG balanceddeploy/<%= @new_r
 docker tag balanced/<%= @new_resource.name %>:latest balanceddeploy/<%= @new_resource.name %>:latest
 
 # upload the image
+<%= render 'commands/_docker.erb', variables: {docker_credentials: @docker_credentials } %>
 docker push balanceddeploy/<%= @new_resource.name %>:$GIT_TAG
 docker push balanceddeploy/<%= @new_resource.name %>:latest
 

@@ -37,6 +37,12 @@ override['jenkins']['node']['user'] = 'jenkins'
 override['jenkins']['node']['group'] = 'jenkins'
 override['jenkins']['node']['home'] = '/var/lib/jenkins'
 
+# FIXME: just for temporary development only, we may should register a proper
+# account later
+default['balanced-docker']['email'] = 'victorlin+docker.balanceddeploy@balancedpayments.com'
+default['balanced-docker']['username'] = 'balanceddeploy'
+default['balanced-docker']['password_file'] = 'docker/balanceddeploy_password'
+
 default['awscli']['users'] = ['root', 'jenkins']
 
 # I don't even
