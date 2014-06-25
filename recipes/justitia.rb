@@ -58,7 +58,6 @@ balanced_ci_pipeline 'justitia' do
         content "[easy_install]\nindex_url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
       end
 
-      pip_
     end
   end
 
