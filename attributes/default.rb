@@ -42,7 +42,7 @@ override['jenkins']['node']['home'] = '/var/lib/jenkins'
 default['balanced-docker']['repo_url'] = 'https://index.docker.io/v1/'
 default['balanced-docker']['email'] = 'victorlin+docker.balanceddeploy@balancedpayments.com'
 default['balanced-docker']['username'] = 'balanceddeploy'
-default['balanced-docker']['password_file'] = 'docker/balanceddeploy_password'
+default['balanced-docker']['password_file'] = 'travis/balanceddeploy_password'
 
 default['awscli']['users'] = ['root', 'jenkins']
 
