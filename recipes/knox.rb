@@ -24,7 +24,7 @@ balanced_ci_pipeline 'knox' do
   test_db_user 'knox'
   test_db_name 'knox_test'
   test_db_host 'localhost'
-  branch 'setuppy'
+  branch 'release'
 
   test_command 'pip install -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
   quality_command 'coverage.py coverage.xml knox_service.models:92 knox_service.resources:92'
