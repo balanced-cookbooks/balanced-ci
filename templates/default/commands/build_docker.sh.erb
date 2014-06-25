@@ -4,12 +4,22 @@ echo Build is: ${GIT_TAG}
 <%= @new_resource.build_command %>
 <%- else -%>
 sudo bash -xe <<BUILD
-export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
+export VERSION_NUMBER="$(echo $GIT_TAG | sed -r 's/^v//')"
+export <%= @new_resource.name.upcase.gsub(/-/, '_') %>_VERSION=\$VERSION_NUMBER
 
 virtualenv --no-site-packages .env
 source .env/bin/activate
 pip install -e .
 crane wrl.<%= @new_resource.name %>
-# TODO: upload to index here
+
+# tag for `balanceddeploy` owner account, for testing only now
+# we can revisit this later
+docker tag balanced/<%= @new_resource.name %>:$GIT_TAG balanceddeploy/<%= @new_resource.name %>:$GIT_TAG
+docker tag balanced/<%= @new_resource.name %>:latest balanceddeploy/<%= @new_resource.name %>:latest
+
+# upload the image
+docker push balanceddeploy/<%= @new_resource.name %>:$GIT_TAG
+docker push balanceddeploy/<%= @new_resource.name %>:latest
+
 BUILD
 <%- end -%>
