@@ -27,6 +27,12 @@ balanced_ci_pipeline 'justitia' do
   project_url 'https://github.com/balanced/justitia'
   branch 'master'
   build_template_source 'commands/build_docker.sh.erb'
+  test_command <<-COMMAND
+easy_install -U setuptools
+pip install -e .[tests]
+nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=justitia --cover-erase
+COMMAND
+  quality_command 'coverage.py coverage.xml justitia:90'
 
   job 'build' do |new_resource|
     #promotion true
