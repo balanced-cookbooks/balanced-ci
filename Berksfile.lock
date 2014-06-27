@@ -22,7 +22,7 @@ GRAPH
     apt (~> 2.3)
     balanced-citadel (~> 1.0)
     poise (~> 1.0)
-  balanced-ci (1.0.180)
+  balanced-ci (1.0.182)
     awscli (~> 1.0.0)
     balanced-citadel (>= 0.0.0)
     balanced-docker (>= 0.0.0)
