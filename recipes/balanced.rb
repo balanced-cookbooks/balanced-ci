@@ -17,11 +17,11 @@
 #
 
 balanced_ci_pipeline 'balanced' do
-  repository 'git@github.com:PoundPay/balanced.git'
+  repository 'git@github.com:balanced/balanced.git'
   # this should really be called the "acceptance cookbook"
   cookbook_repository 'git@github.com:balanced-cookbooks/acceptance.git'
   pipeline %w{test quality build acceptance}
-  project_url 'https://github.com/PoundPay/balanced'
+  project_url 'https://github.com/balanced/balanced'
   python_package 'balanced_service'
   test_db_user 'balanced'
   test_db_name 'balanced'
