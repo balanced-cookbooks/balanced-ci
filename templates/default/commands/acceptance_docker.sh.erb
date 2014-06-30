@@ -25,16 +25,18 @@ bundle install --binstubs --deployment --path <%= @bundle_path || 'vendor/bundle
 bin/kitchen test -d always -p
 if [ -n "$GIT_TAG" ]; then
 
-# tag for `balanceddeploy` owner account, for testing only now
-# we can revisit this later
-# tag stable
-docker tag balanced/<%= @new_resource.name %>:$GIT_TAG balanceddeploy/<%= @new_resource.name %>:$GIT_TAG-stable
-docker tag balanced/<%= @new_resource.name %>:latest balanceddeploy/<%= @new_resource.name %>:latest-stable
+sudo bash -xe <<PUSH
+    # tag for `balanceddeploy` owner account, for testing only now
+    # we can revisit this later
+    # tag stable
+    docker tag balanced/<%= @new_resource.name %>:$GIT_TAG balanceddeploy/<%= @new_resource.name %>:$GIT_TAG-stable
+    docker tag balanced/<%= @new_resource.name %>:latest balanceddeploy/<%= @new_resource.name %>:latest-stable
 
-# upload the image
-<%= render 'commands/_docker.erb', variables: {docker_credentials: @docker_credentials } %>
-docker push balanceddeploy/<%= @new_resource.name %>:$GIT_TAG-stable
-docker push balanceddeploy/<%= @new_resource.name %>:latest-stable
+    # upload the image
+    <%= render 'commands/_docker.erb', variables: {docker_credentials: @docker_credentials } %>
+    docker push balanceddeploy/<%= @new_resource.name %>:$GIT_TAG-stable
+    docker push balanceddeploy/<%= @new_resource.name %>:latest-stable
+PUSH
 
 fi
 <%- end -%>
