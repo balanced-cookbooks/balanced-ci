@@ -1,0 +1,40 @@
+export PACKAGE="<%= @new_resource.omnibus_package %>"
+export ITERATION="1"
+export NUMBERS=`echo $GIT_TAG | sed -re 's/v(.*)/\1/'`  # get v1.0.3 to 1.0.3
+export VERSION="$NUMBERS-$ITERATION"
+
+echo Build is: ${GIT_TAG}
+
+<%- if @new_resource.acceptance_command -%>
+<%= @new_resource.acceptance_command %>
+<%- else -%>
+export PATH="/opt/ruby-210/bin:$PATH"
+if [ -f .kitchen.ci.yml ]; then
+  export KITCHEN_LOCAL_YAML=.kitchen.ci.yml
+else
+  export KITCHEN_LOCAL_YAML=/srv/ci/kitchen.yml
+fi
+export KITCHEN_SSH_KEY=/srv/ci/travis.pem
+export BERKSHELF_CONFIG=/srv/ci/berkshelf.json
+export LANG=en_US.UTF-8
+if [ -n "$GIT_TAG" ]; then
+  export <%= @new_resource.omnibus_package.upcase.gsub(/-/, '_') %>_VERSION="$GIT_TAG"
+fi
+bundle install --binstubs --deployment --path <%= @bundle_path || 'vendor/bundle' %>
+<%= render 'commands/_aws.erb', variables: @aws_travis %>
+bin/kitchen test -d always -p
+if [ -n "$GIT_TAG" ]; then
+
+# tag for `balanceddeploy` owner account, for testing only now
+# we can revisit this later
+# tag stable
+docker tag balanced/<%= @new_resource.name %>:$GIT_TAG balanceddeploy/<%= @new_resource.name %>:$GIT_TAG-stable
+docker tag balanced/<%= @new_resource.name %>:latest balanceddeploy/<%= @new_resource.name %>:latest-stable
+
+# upload the image
+<%= render 'commands/_docker.erb', variables: {docker_credentials: @docker_credentials } %>
+docker push balanceddeploy/<%= @new_resource.name %>:$GIT_TAG-stable
+docker push balanceddeploy/<%= @new_resource.name %>:latest-stable
+
+fi
+<%- end -%>
