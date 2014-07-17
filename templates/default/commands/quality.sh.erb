@@ -1,6 +1,9 @@
 # Consistent environments are more consistent
 source /etc/profile
 
+# install blumpkin for the coverage command
+pip install blumpkin
+
 # enforce coverage
 COVERAGE_ARGS="<%= @new_resource.python_package %>.models:91 <%= @new_resource.python_package %>.resources:92"
 
