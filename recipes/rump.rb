@@ -30,7 +30,7 @@ balanced_ci_pipeline 'rump' do
     cd src
     nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=rump --cover-erase
   COMMAND
-  quality_command 'coverage.py src/coverage.xml rump:50 rump.parser:50 rump.request:50'
+  quality_command 'blumpkin coverage src/coverage.xml rump:50 rump.parser:50 rump.request:50'
 
 end
 

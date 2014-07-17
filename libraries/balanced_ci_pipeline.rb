@@ -166,13 +166,6 @@ class Chef
         package 'libxml2-dev'
         package 'libxslt1-dev'
 
-        cookbook_file '/usr/local/bin/coverage.py' do
-          source 'coverage.py'
-          mode '0755'
-          owner 'root'
-          group 'root'
-        end
-
       end
     end
 

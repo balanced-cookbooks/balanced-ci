@@ -29,7 +29,7 @@ balanced_ci_pipeline 'precog' do
   branch 'omnibussed'
 
   test_command 'pip install --no-use-wheel -e .[tests] && nosetests -sv --with-xunitmp --with-cov --cov=precog_service --cov-report term-missing'
-  quality_command 'coverage.py coverage.xml precog_service.models:92 precog_service.resources:92'
+  quality_command 'blumpking coverage coverage.xml precog_service.models:92 precog_service.resources:92'
 
   job 'build' do |new_resource|
     promotion true
