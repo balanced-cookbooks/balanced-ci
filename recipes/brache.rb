@@ -47,7 +47,7 @@ balanced_ci_pipeline 'brache' do
     nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=brache --cover-erase
   COMMAND
 
-  quality_command 'coverage.py coverage.xml brache:50'
+  quality_command 'blumpkin coverage coverage.xml brache:50'
 
 end
 

@@ -33,7 +33,7 @@ easy_install -U setuptools
 pip install -e .[tests]
 nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=justitia --cover-erase
 COMMAND
-  quality_command 'coverage.py coverage.xml justitia:90'
+  quality_command 'blumpkin coverage coverage.xml justitia:90'
 
   job 'build' do |new_resource|
     #promotion true

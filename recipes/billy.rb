@@ -34,7 +34,7 @@ pip install --no-use-wheel psycopg2
 pip install --no-use-wheel nosexcover
 nosetests -v -s --with-id --with-xunit --with-xcoverage --cover-package=billy --cover-erase
 COMMAND
-  quality_command 'coverage.py coverage.xml billy:95'
+  quality_command 'blumpkin coverage coverage.xml billy:95'
 
   job 'build' do |new_resource|
     promotion true

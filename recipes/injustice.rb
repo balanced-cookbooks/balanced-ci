@@ -91,7 +91,7 @@ balanced_ci_pipeline 'injustice' do
 
   end
 
-  quality_command 'coverage.py coverage.xml injustice_service.apps:80 injustice_service.lib:80'
+  quality_command 'blumpkin coverage coverage.xml injustice_service.apps:80 injustice_service.lib:80'
 end
 
 include_recipe 'balanced-ci'
