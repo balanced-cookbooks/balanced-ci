@@ -9,18 +9,17 @@ export <%= @new_resource.name.upcase.gsub(/-/, '_') %>_VERSION=\$VERSION_NUMBER
 
 virtualenv --no-site-packages .env
 source .env/bin/activate
-pip install -e .
-crane wrl.<%= @new_resource.name %>
+pip install ansible
+pip install boto
+pip install docker-py==0.3.1
 
-# tag for `balanceddeploy` owner account, for testing only now
-# we can revisit this later
-docker tag balanced/<%= @new_resource.name %>:$GIT_TAG balanceddeploy/<%= @new_resource.name %>:$GIT_TAG
-docker tag balanced/<%= @new_resource.name %>:latest balanceddeploy/<%= @new_resource.name %>:latest
+# TODO: this is a little bit abuse here, the AWS key is for depot to uploading
+# deb files, but I just added permission for accessing balanced-ctiadel/docker
+# so that ansible-playbook can get docker password for us, we should probably
+# create another user for doing so later?
+<%= render 'commands/_aws.erb', variables: @aws_depot %>
 
-# upload the image
-<%= render 'commands/_docker.erb', variables: {docker_credentials: @docker_credentials } %>
-docker push balanceddeploy/<%= @new_resource.name %>:$GIT_TAG
-docker push balanceddeploy/<%= @new_resource.name %>:latest
+ansible-playbook -i "localhost," -c local playbooks/images/<%= @new_resource.name %>.yml -e "<%= @new_resource.name %>_version=\$VERSION_NUMBER" -v
 
 BUILD
 <%- end -%>

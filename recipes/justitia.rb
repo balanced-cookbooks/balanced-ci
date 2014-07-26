@@ -22,7 +22,7 @@ balanced_ci_pipeline 'justitia' do
   repository 'git@github.com:balanced/justitia.git'
   cookbook_repository 'git@github.com:balanced-cookbooks/role-justitia.git'
   # not omnibus any more
-  omnibus_repository 'git@github.com:balanced/wrl.git'
+  omnibus_repository 'git@github.com:balanced-cookbooks/ansible-roles.git'
   pipeline %w{test quality build acceptance}
   project_url 'https://github.com/balanced/justitia'
   branch 'master'
