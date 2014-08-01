@@ -41,7 +41,10 @@ COMMAND
     builder_recipe do
       include_recipe 'git'
       include_recipe 'python'
-      include_recipe 'balanced-docker'
+
+      # XXX: try to make the chef work first for now
+      #include_recipe 'balanced-docker'
+  
       # We need this not because we want to use omnibus, simplely because
       # it sets up github keys for us, so that we can pull repos
       include_recipe 'balanced-omnibus'
