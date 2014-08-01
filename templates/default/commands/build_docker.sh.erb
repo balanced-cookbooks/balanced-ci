@@ -19,7 +19,7 @@ pip install docker-py==0.3.1
 # create another user for doing so later?
 <%= render 'commands/_aws.erb', variables: @aws_depot %>
 
-ansible-playbook -i "localhost," -c local playbooks/images/<%= @new_resource.name %>.yml -e "<%= @new_resource.name %>_version=\$VERSION_NUMBER" -v
+ansible-playbook -i "localhost," -c local playbooks/images/<%= @new_resource.name %>.yml -e "builder_version=\$VERSION_NUMBER" -v
 
 BUILD
 <%- end -%>
