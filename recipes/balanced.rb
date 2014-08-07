@@ -28,7 +28,7 @@ balanced_ci_pipeline 'balanced' do
   test_db_host 'localhost'
   branch 'omnibussed'
 
-  test_command "pip install --no-use-wheel -e .[tests] && nosetests --processes=#{node['ci']['balanced']['parallelisms']} -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report term-missing"
+  test_command "pip install --no-use-wheel -e .[tests] && CONF=#{node['ci']['path']}/balanced.conf nosetests --processes=#{node['ci']['balanced']['parallelisms']} -sv --with-xunitmp --with-cov --cov=balanced_service --cov-report term-missing"
   quality_command 'coverage.py coverage.xml balanced_service.models:91 balanced_service.resources:92'
 
   job 'test' do |new_resource|
@@ -85,6 +85,30 @@ balanced_ci_pipeline 'balanced' do
         group node['jenkins']['node']['group']
         mode '600'
         content "[easy_install]\nindex_url = https://omnibus:#{citadel['omnibus/devpi_password'].strip}@pypi.vandelay.io/balanced/prod/+simple/\n"
+      end
+
+      # HACK: override the meta db for the balanced service. we need to figure
+      # out a better strategy than this.
+      file "#{node['ci']['path']}/balanced.conf" do
+        owner node['jenkins']['node']['user']
+        group node['jenkins']['node']['group']
+        mode '644'
+        content <<-EOH
+from balanced_service.settings import DATABASES
+
+DATABASES['meta_masters'] = [
+  "postgresql://balanced:#{citadel['balanced/meta_db_password']}@#{citadel['balanced/meta_db_host']}:5432/balanced_meta_test"
+]
+EOH
+      end
+
+      file "/etc/profile.d/balanced-test" do
+        owner 'root'
+        group 'root'
+        mode '644'
+        content <<-EOH
+export BALANCED_CONF=#{node['ci']['path']}/balanced.conf
+        EOH
       end
 
     end
