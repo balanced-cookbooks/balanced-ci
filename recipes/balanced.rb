@@ -34,18 +34,6 @@ balanced_ci_pipeline 'balanced' do
   job 'test' do |new_resource|
 
     builder_recipe do
-      include_recipe 'git'
-      include_recipe 'python'
-      include_recipe 'rsyslog'
-      include_recipe 'balanced-postgresql'
-      include_recipe 'balanced-postgresql::server'
-      include_recipe 'balanced-postgresql::client'
-      include_recipe 'balanced-rabbitmq'
-      include_recipe 'balanced-elasticsearch'
-      include_recipe 'balanced-mongodb'
-      include_recipe 'redisio::install'
-      include_recipe 'redisio::enable'
-
       package 'libxml2-dev'
       package 'libxslt1-dev'
 
@@ -102,7 +90,7 @@ DATABASES['meta_masters'] = [
 EOH
       end
 
-      file "/etc/profile.d/balanced-test" do
+      file "/etc/profile.d/balanced-test.sh" do
         owner 'root'
         group 'root'
         mode '644'
@@ -110,6 +98,18 @@ EOH
 export BALANCED_CONF=#{node['ci']['path']}/balanced.conf
         EOH
       end
+
+      include_recipe 'git'
+      include_recipe 'python'
+      include_recipe 'rsyslog'
+      include_recipe 'balanced-postgresql'
+      include_recipe 'balanced-postgresql::server'
+      include_recipe 'balanced-postgresql::client'
+      include_recipe 'balanced-rabbitmq'
+      include_recipe 'balanced-elasticsearch'
+      include_recipe 'balanced-mongodb'
+      include_recipe 'redisio::install'
+      include_recipe 'redisio::enable'
 
     end
 
