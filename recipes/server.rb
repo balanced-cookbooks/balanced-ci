@@ -35,6 +35,10 @@ ci_server 'balanced-ci' do
     certificate citadel['jenkins_server/ssl.pem']
     key citadel['jenkins_server/ssl.key']
   end
+  component 'ghprb' do
+    access_token citadel['jenkins_server/github_access_token']
+    admin_list node['balanced-ci']['ghprb']['admin_list']
+  end
 end
 
 jenkins_plugin 'github'
@@ -64,6 +68,7 @@ jenkins_plugin 'violations'
 jenkins_plugin 'view-job-filters'
 jenkins_plugin 'ansicolor'
 jenkins_plugin 'promoted-builds'
+jenkins_plugin 'ghprb'
 
 include_recipe 'balanced-ci'
 include_recipe 'balanced-ci::balanced'

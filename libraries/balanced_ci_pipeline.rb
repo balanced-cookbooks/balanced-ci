@@ -124,6 +124,7 @@ class Chef
         repository new_resource.repository
         branch new_resource.branch
         source new_resource.source
+        project_url new_resource.project_url
         server_api_key citadel['jenkins_builder/hashedToken']
         builder_label new_resource.name
       end
@@ -146,6 +147,7 @@ class Chef
       junit '**/nosetests.xml'
       downstream_triggers ["#{new_resource.name}-quality"]
       environment_script new_resource.env_template_content
+      ghprb_admin_list node['balanced-ci']['ghprb']['admin_list']
       builder_recipe do
         include_recipe 'git'
         include_recipe 'python'
